@@ -1,187 +1,89 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8" />
-  <title>Kassa Sistemi (Realtime)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BAKFON - Web Proqram</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 16px; }
-    h2 { background: red; color: #fff; padding: 10px; border-radius: 8px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
-    th, td { border: 1px solid #555; padding: 6px; text-align: center; }
-    th { background: #f5f5f5; }
-    input[type="text"] { width: 160px; padding: 6px; }
-    input[type="number"] { width: 110px; padding: 6px; text-align: right; }
-    button { padding: 6px 12px; margin: 6px 0; }
-    tfoot .balans { background: #4CAF50; color: white; font-weight: bold; font-size: 20px; }
-    .row-actions button { padding: 4px 10px; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      height: 100vh;
+      background: #f5f7fa;
+    }
+
+    /* Yan panel */
+    .sidebar {
+      width: 220px;
+      background: #1f2937;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .sidebar h2 {
+      margin-bottom: 30px;
+      font-size: 22px;
+      color: #facc15;
+    }
+    .sidebar a {
+      color: #d1d5db;
+      text-decoration: none;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .sidebar a:hover {
+      color: #fff;
+    }
+
+    /* Başlıq + kontent */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      height: 60px;
+      background: #111827;
+      color: #facc15;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
-  <h2>Kassa Hesabatı (Firebase Realtime)</h2>
+  <div class="sidebar">
+    <h2>Menü</h2>
+    <a href="#">🏠 Ana Səhifə</a>
+    <a href="#">📦 Anbar</a>
+    <a href="#">💳 Satış</a>
+    <a href="#">📊 Hesabatlar</a>
+    <a href="#">⚙️ Parametrlər</a>
+  </div>
 
-  <table id="tbl">
-    <thead>
-      <tr>
-        <th>Hesab</th>
-        <th>1</th>
-        <th>2</th>
-        <th>3</th>
-        <th>4</th>
-        <th>5</th>
-        <th>Əməliyyat</th>
-      </tr>
-    </thead>
-    <tbody id="tbody"></tbody>
-    <tfoot>
-      <tr class="balans">
-        <td colspan="7">Balans: <span id="balans">0</span></td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <button id="addRowBtn">+ Sətir əlavə et</button>
-
-  <!-- Firebase SDK (modular v9) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import {
-      getFirestore, collection, addDoc, updateDoc, deleteDoc,
-      onSnapshot, doc, serverTimestamp, query, orderBy
-    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-    import {
-      getAuth, signInAnonymously
-    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
-
-    // 🔧 1) BURAYA ÖZ FIREBASE CONFIG-İNİ YAPIŞDIR
-    // 🔧 1) BURAYA ÖZ FIREBASE CONFIG-İNİ YAPIŞDIR
-const firebaseConfig = {
-  apiKey: "AIzaSyAsFuSc8V8vnWzahq8HwJpGYG7p_kApISw",
-  authDomain: "bakfon-kassa.firebaseapp.com",
-  projectId: "bakfon-kassa",
-  storageBucket: "bakfon-kassa.appspot.com",
-  messagingSenderId: "804463176964",
-  appId: "1:804463176964:web:xxxxxx"
-};
-
-
-    // 🔧 2) Firebase init
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    await signInAnonymously(auth); // Hər kəs yazıb-oxuya bilsin deyə (sonra qaydaları sərtləşdirərik)
-
-    // 🔧 3) Kolleksiya
-    const rowsCol = collection(db, "rows");
-
-    const tbodyEl = document.getElementById("tbody");
-    const balansEl = document.getElementById("balans");
-    const addRowBtn = document.getElementById("addRowBtn");
-
-    // Realtime dinləmə (bütün istifadəçilərə canlı yenilənir)
-    const q = query(rowsCol, orderBy("createdAt", "asc"));
-    onSnapshot(q, (snap) => {
-      // Cədvəli sıfırla və yenidən qur
-      tbodyEl.innerHTML = "";
-      let total = 0;
-
-      snap.forEach((d) => {
-        const row = d.data();
-        const id = d.id;
-
-        // DOM sətirini yarad
-        const tr = document.createElement("tr");
-
-        // Hesab adı
-        const tdAcc = document.createElement("td");
-        const inpAcc = document.createElement("input");
-        inpAcc.type = "text";
-        inpAcc.placeholder = "Hesab adı";
-        inpAcc.value = row.account || "";
-        inpAcc.onchange = () => updateDoc(doc(db, "rows", id), { account: inpAcc.value ?? "" });
-        tdAcc.appendChild(inpAcc);
-        tr.appendChild(tdAcc);
-
-        // 1..5 rəqəm sütunları
-        const numberInputs = [];
-        for (let i = 1; i <= 5; i++) {
-          const td = document.createElement("td");
-          const inp = document.createElement("input");
-          inp.type = "number";
-          if (row["n" + i] === null || row["n" + i] === undefined) {
-            inp.value = "";
-          } else {
-            inp.value = row["n" + i];
-          }
-
-          // Balans hər dəyişiklikdə toplansın (istənilən xanaya yazılanda)
-          inp.onchange = () => {
-            // Sadə yazma: boşdursa null, doludursa number
-            const val = inp.value === "" ? null : Number(inp.value);
-            updateDoc(doc(db, "rows", id), { ["n" + i]: val });
-          };
-
-          td.appendChild(inp);
-          tr.appendChild(td);
-          numberInputs.push(inp);
-
-          // Balans hesabı (bütün xanalardakı rəqəmləri toplayırıq)
-          const v = Number(inp.value) || 0;
-          total += v;
-        }
-
-        // Əməliyyat (Sil) + 5-ci sütun üçün sətrin cəmi məntiqi
-        const tdOps = document.createElement("td");
-        tdOps.className = "row-actions";
-
-        const btnDel = document.createElement("button");
-        btnDel.textContent = "Sil";
-        btnDel.onclick = async () => {
-          await deleteDoc(doc(db, "rows", id));
-        };
-
-        tdOps.appendChild(btnDel);
-        tr.appendChild(tdOps);
-
-        // 5-ci sütun dolanda: sətrin cəmi → 1-ci rəqəm sütununa, digərləri boş
-        numberInputs[4].onchange = async () => {
-          const lastVal = numberInputs[4].value;
-          if (lastVal !== "") {
-            let sum = 0;
-            for (let i = 0; i < 5; i++) sum += Number(numberInputs[i].value) || 0;
-
-            await updateDoc(doc(db, "rows", id), {
-              n1: sum,
-              n2: null,
-              n3: null,
-              n4: null,
-              n5: null
-            });
-          } else {
-            // 5-ci xana boşaldılarsa, sadəcə dəyərini null et
-            await updateDoc(doc(db, "rows", id), { n5: null });
-          }
-        };
-
-        tbodyEl.appendChild(tr);
-      });
-
-      // Alt hissədə Balans (bütün xanalardakı məbləğlərin cəmi)
-      balansEl.textContent = total;
-    });
-
-    // Yeni sətir əlavə et
-    addRowBtn.onclick = async () => {
-      await addDoc(rowsCol, {
-        account: "",
-        n1: null,
-        n2: null,
-        n3: null,
-        n4: null,
-        n5: null,
-        createdAt: serverTimestamp()
-      });
-    };
-  </script>
+  <div class="main">
+    <div class="header">BAKFON</div>
+    <div class="content">
+      <h2>Xoş gəlmisiniz!</h2>
+      <p>Burada sizin üçün BAKFON satış və anbar sisteminin əsas səhifəsi olacaq.</p>
+    </div>
+  </div>
 </body>
 </html>
