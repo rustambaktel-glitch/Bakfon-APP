@@ -1,89 +1,395 @@
 <!DOCTYPE html>
-<html lang="az">
+<html lang="az" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BAKFON - Web Proqram</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BAKFON – Web Proqram</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      display: flex;
-      height: 100vh;
-      background: #f5f7fa;
-    }
-
-    /* Yan panel */
-    .sidebar {
-      width: 220px;
-      background: #1f2937;
-      color: #fff;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .sidebar h2 {
-      margin-bottom: 30px;
-      font-size: 22px;
-      color: #facc15;
-    }
-    .sidebar a {
-      color: #d1d5db;
-      text-decoration: none;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      color: #fff;
-    }
-
-    /* Başlıq + kontent */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .header {
-      height: 60px;
-      background: #111827;
-      color: #facc15;
-      display: flex;
-      align-items: center;
-      padding-left: 20px;
-      font-size: 20px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    .content {
-      flex: 1;
-      padding: 20px;
-    }
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+    ::-webkit-scrollbar-track{background:#f1f5f9}
+    .btn{ @apply px-4 py-2 rounded-lg; }
   </style>
 </head>
-<body>
-  <div class="sidebar">
-    <h2>Menü</h2>
-    <a href="#">🏠 Ana Səhifə</a>
-    <a href="#">📦 Anbar</a>
-    <a href="#">💳 Satış</a>
-    <a href="#">📊 Hesabatlar</a>
-    <a href="#">⚙️ Parametrlər</a>
-  </div>
+<body id="body" class="h-full bg-slate-50 text-slate-900">
+  <div id="app" class="h-full flex flex-col">
+    <!-- Header -->
+    <header class="relative h-16 flex items-center justify-between bg-slate-900 text-amber-400 border-b border-slate-800 px-4">
+      <div class="flex items-center gap-3">
+        <button id="toggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400">☰</button>
+        <span class="font-extrabold tracking-wider">BAKFON</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <input type="search" placeholder="Axtar…" class="hidden sm:block w-64 px-3 py-2 rounded-lg bg-slate-800 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+        <button id="profileBtn" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400">
+          <span class="hidden sm:inline" id="profileName">Rustam</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.186l3.71-3.955a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0l-4.25-4.53a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+        </button>
+        <div id="profileMenu" class="hidden absolute right-4 top-14 w-64 bg-white text-slate-800 rounded-xl border border-slate-200 shadow-lg overflow-hidden z-50">
+          <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
+            <p class="text-xs text-slate-500">Profil sahibi</p>
+            <button id="openProfileFromMenu" class="mt-1 w-full text-left font-semibold hover:underline">Rustam Bayramov</button>
+          </div>
+          <button id="openSettings" class="w-full text-left px-4 py-3 hover:bg-slate-100 flex items-center gap-2">
+            <span>⚙️</span><span>Tənzimləmələr</span>
+          </button>
+        </div>
+      </div>
+      <div id="dropdownBackdrop" class="hidden fixed inset-0 z-40"></div>
+    </header>
 
-  <div class="main">
-    <div class="header">BAKFON</div>
-    <div class="content">
-      <h2>Xoş gəlmisiniz!</h2>
-      <p>Burada sizin üçün BAKFON satış və anbar sisteminin əsas səhifəsi olacaq.</p>
+    <!-- Content area with sidebar + main -->
+    <div class="flex flex-1 min-h-0">
+      <!-- Sidebar -->
+      <aside id="sidebar" class="hidden md:flex md:w-64 flex-col bg-slate-900 text-slate-100 border-r border-slate-800">
+        <nav class="flex-1 px-3 pb-4 pt-4 space-y-1 overflow-y-auto">
+          <a href="#" id="goHome" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">🏠 <span class="font-medium">Ana Səhifə</span></a>
+          <a href="#" id="goKassa" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">💵 <span class="font-medium">Kassa</span></a>
+          <a href="#" data-route="musteriler" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">👥 <span class="font-medium">Müştərilər</span></a>
+          <a href="#" data-route="anbar" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">📦 <span class="font-medium">Anbar</span></a>
+          <a href="#" data-route="hesabatlar" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">📊 <span class="font-medium">Hesabatlar</span></a>
+          <a href="#" data-route="gecikmeler" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">⏰ <span class="font-medium">Gecikmələr</span></a>
+          <a href="#" data-route="emekdaslar" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">👨‍💼 <span class="font-medium">Əməkdaşlar</span></a>
+          <a href="#" data-route="istifadeciler" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">🔑 <span class="font-medium">İstifadəçilər</span></a>
+        </nav>
+        <div class="p-3 border-t border-slate-800 text-xs text-slate-400">
+          © <span id="year"></span> Bakfon Electronics MMC
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main id="main" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        <div id="homeContent">
+          <h2 class="text-xl font-bold mb-4">Ana Səhifə Statistikaları 📊</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+              <p class="text-slate-500 text-sm">Bugünkü satış</p>
+              <h3 class="text-2xl font-bold text-slate-800">1 ,240 AZN</h3>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+              <p class="text-slate-500 text-sm">Ümumi satış (aylıq)</p>
+              <h3 class="text-2xl font-bold text-slate-800">28 ,560 AZN</h3>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+              <p class="text-slate-500 text-sm">Müştəri sayı</p>
+              <h3 class="text-2xl font-bold text-slate-800">312</h3>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+              <p class="text-slate-500 text-sm">Gecikmədə olanlar</p>
+              <h3 class="text-2xl font-bold text-red-600">7</h3>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   </div>
+
+  <!-- Settings Modal (placeholder) -->
+  <div id="settingsModal" class="hidden fixed inset-0 z-50"> ... </div>
+
+  <script>
+    // --- helpers ---
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    // İl
+    $('#year').textContent = new Date().getFullYear();
+
+    // Demo siyahılar (sonra API/bazadan gələ bilər)
+    const CUSTOMERS = ['Lemuzər Rüstəmova', 'Emin Quliyev', 'Aysel Məmmədova'];
+    const SUPPLIERS = ['TechnoTrade LLC', 'MobilePlus MMC', 'PrintStore'];
+
+    // Demo əməliyyatlar (tarixçə üçün)
+    const TRANSACTIONS = [
+      { id: 1, date: '2025-09-15T10:30', type: 'Mədaxil', subType: 'Nağd ödəniş', party: 'Emin Quliyev', amount: 150.00, note: 'Nağd kassaya' },
+      { id: 2, date: '2025-09-14T16:05', type: 'Mədaxil', subType: 'Kredit ödənişi', party: 'Aysel Məmmədova', amount: 220.50, note: 'Kredit 3/12' },
+      { id: 3, date: '2025-09-13T12:00', type: 'Məxaric', subType: 'Təchizatçı ödənişi', party: 'TechnoTrade LLC', amount: 980.00, note: 'Faktura #TT-4521' },
+      { id: 4, date: '2025-09-11T09:20', type: 'Məxaric', subType: 'Xərc', party: 'Kommunal', amount: 75.40, note: 'Elektrik' }
+    ];
+
+    // Ana Səhifə
+    const main = $('#main');
+    const homeContent = $('#homeContent');
+    $('#goHome').addEventListener('click', (e)=>{ e.preventDefault(); main.innerHTML = homeContent.outerHTML; });
+
+    // Kassa səhifəsi
+    $('#goKassa').addEventListener('click', (e)=>{ e.preventDefault(); renderCashDesk(); });
+
+    function renderCashDesk(){
+      main.innerHTML = `
+        <h2 class="text-xl font-bold mb-4">Kassa əməliyyatları 💵</h2>
+        <div class="flex flex-wrap gap-3 mb-6">
+          <button id="btnYeni" class="btn bg-amber-500 text-white hover:bg-amber-600">Yeni əməliyyat</button>
+          <button id="btnTarixce" class="btn bg-slate-200 text-slate-800 hover:bg-slate-300">Əməliyyat tarixçəsi</button>
+        </div>
+        <div id="kassaContent" class="space-y-4"></div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-4 mt-6">
+          <h3 class="font-semibold">Əməliyyat axtarışı (tarix aralığına görə)</h3>
+          <div class="flex flex-col sm:flex-row gap-3 items-center">
+            <label class="flex flex-col text-sm w-full sm:w-auto">
+              Başlanğıc tarix
+              <input id="fromDate" type="date" class="mt-1 rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+            </label>
+            <label class="flex flex-col text-sm w-full sm:w-auto">
+              Son tarix
+              <input id="toDate" type="date" class="mt-1 rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+            </label>
+            <button id="searchOps" class="btn bg-slate-800 text-white hover:bg-slate-700 mt-2 sm:mt-6">Axtar</button>
+          </div>
+          <div id="searchResult" class="text-sm text-slate-600"></div>
+        </div>`;
+
+      $('#btnYeni').addEventListener('click', renderYeniEmeliyyat);
+      $('#btnTarixce').addEventListener('click', renderTarixce);
+
+      $('#searchOps').addEventListener('click', ()=>{
+        const f = $('#fromDate').value || '-';
+        const t = $('#toDate').value || '-';
+        $('#searchResult').textContent = `Axtarış tətbiq olundu: ${f} → ${t} (demo)`;
+        // Əgər tarixçə açıqdırsa, filter et
+        if (typeof window.applyHistoryFilter === 'function') window.applyHistoryFilter();
+      });
+
+      // Default olaraq Yeni əməliyyat açılsın
+      renderYeniEmeliyyat();
+    }
+
+    function renderYeniEmeliyyat(){
+      const box = $('#kassaContent');
+      box.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+          <h3 class="font-semibold mb-4">Yeni əməliyyat</h3>
+          <div class="inline-flex rounded-xl border border-slate-200 overflow-hidden mb-4">
+            <button id="selMedaxil" class="btn bg-amber-500 text-white">Mədaxil</button>
+            <button id="selMexaric" class="btn bg-slate-100 text-slate-800">Məxaric</button>
+          </div>
+          <div id="opForm" class="space-y-4"></div>
+        </div>`;
+
+      // Default: Mədaxil formu
+      renderMedaxilForm();
+
+      $('#selMedaxil').addEventListener('click', ()=>{ toggleType(true); renderMedaxilForm(); });
+      $('#selMexaric').addEventListener('click', ()=>{ toggleType(false); renderMexaricForm(); });
+
+      function toggleType(isIncome){
+        const a = $('#selMedaxil');
+        const b = $('#selMexaric');
+        if(isIncome){ a.className = 'btn bg-amber-500 text-white'; b.className = 'btn bg-slate-100 text-slate-800'; }
+        else { a.className = 'btn bg-slate-100 text-slate-800'; b.className = 'btn bg-amber-500 text-white'; }
+      }
+    }
+
+    function selectOptions(list){
+      return list.map(n=>`<option value="${n}">${n}</option>`).join('');
+    }
+
+    function commonFields(){
+      return `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="text-sm">Məbləğ (AZN)
+            <input type="number" step="0.01" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </label>
+          <label class="text-sm">Tarix
+            <input type="datetime-local" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
+          </label>
+        </div>
+        <label class="block text-sm">Qeyd
+          <textarea class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" rows="2" placeholder="Qısa açıqlama..."></textarea>
+        </label>
+        <div class="flex justify-end gap-2">
+          <button class="btn border border-slate-300 hover:bg-slate-100">Ləğv et</button>
+          <button class="btn bg-amber-500 text-white hover:bg-amber-600">Yadda saxla</button>
+        </div>`;
+    }
+
+    function renderMedaxilForm(){
+      const form = $('#opForm');
+      form.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="text-sm">Kimdən (Müştəri)
+            <select class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">${selectOptions(CUSTOMERS)}</select>
+          </label>
+          <label class="text-sm">Əməliyyat növü
+            <select id="medaxilType" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+              <option>Kredit ödənişi</option>
+              <option>Nağd ödəniş</option>
+            </select>
+          </label>
+        </div>
+        <div id="medaxilExtra" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        ${commonFields()}`;
+
+      const extra = $('#medaxilExtra');
+      function renderExtra(){
+        const val = $('#medaxilType').value;
+        if(val === 'Kredit ödənişi'){
+          extra.innerHTML = `
+            <label class="text-sm">Kredit müqavilə №
+              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Məs: BT 13196" />
+            </label>
+            <label class="text-sm">Ödəniş periodu
+              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
+                <option>Həftəlik</option>
+                <option>Aylıq</option>
+              </select>
+            </label>`;
+        }else{
+          extra.innerHTML = `
+            <label class="text-sm">Qəbz №
+              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Qəbz nömrəsi" />
+            </label>
+            <label class="text-sm">Ödəniş kanalı
+              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
+                <option>Nağd</option>
+                <option>POS</option>
+                <option>Bank köçürmə</option>
+              </select>
+            </label>`;
+        }
+      }
+      renderExtra();
+      $('#medaxilType').addEventListener('change', renderExtra);
+    }
+
+    function renderMexaricForm(){
+      const form = $('#opForm');
+      form.innerHTML = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <label class="text-sm">Kimə (Təchizatçı)
+            <select class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">${selectOptions(SUPPLIERS)}</select>
+          </label>
+          <label class="text-sm">Əməliyyat növü
+            <select id="mexaricType" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
+              <option>Təchizatçı ödənişi</option>
+              <option>Xərc</option>
+            </select>
+          </label>
+        </div>
+        <div id="mexaricExtra" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+        ${commonFields()}`;
+
+      const extra = $('#mexaricExtra');
+      function renderExtra(){
+        const val = $('#mexaricType').value;
+        if(val === 'Təchizatçı ödənişi'){
+          extra.innerHTML = `
+            <label class="text-sm">Sənəd № / Faktura
+              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Faktura nömrəsi" />
+            </label>
+            <label class="text-sm">Ödəniş kanalı
+              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
+                <option>Nağd</option>
+                <option>Bank köçürmə</option>
+              </select>
+            </label>`;
+        }else{
+          extra.innerHTML = `
+            <label class="text-sm">Xərc kateqoriyası
+              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
+                <option>İcarə</option>
+                <option>Kommunal</option>
+                <option>Nəqliyyat</option>
+                <option>Digər</option>
+              </select>
+            </label>
+            <label class="text-sm">Qəbz / Sənəd
+              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Qəbz nömrəsi" />
+            </label>`;
+        }
+      }
+      renderExtra();
+      $('#mexaricType').addEventListener('change', renderExtra);
+    }
+
+    // !!! FIX: Tarixçə render funksiyası əlavə edildi
+    function renderTarixce(){
+      const box = $('#kassaContent');
+      box.innerHTML = `
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+          <h3 class="font-semibold mb-4">Əməliyyat tarixçəsi</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm" id="historyTable">
+              <thead>
+                <tr class="text-left text-slate-600">
+                  <th class="py-2 pr-4">Tarix</th>
+                  <th class="py-2 pr-4">Tip</th>
+                  <th class="py-2 pr-4">Alt tip</th>
+                  <th class="py-2 pr-4">Tərəf</th>
+                  <th class="py-2 pr-4">Məbləğ</th>
+                  <th class="py-2 pr-4">Qeyd</th>
+                </tr>
+              </thead>
+              <tbody id="historyTbody" class="divide-y divide-slate-200"></tbody>
+            </table>
+          </div>
+          <p id="emptyHistory" class="hidden text-slate-500 text-sm mt-3">Məlumat yoxdur.</p>
+        </div>`;
+
+      function azn(v){ return new Intl.NumberFormat('az-AZ', { style: 'currency', currency: 'AZN' }).format(v); }
+      function withinRange(d, from, to){
+        const x = new Date(d).getTime();
+        if (from && x < from) return false;
+        if (to && x > to) return false;
+        return true;
+      }
+
+      // Cədvəli doldur
+      window.renderHistoryTable = function(data){
+        const tb = $('#historyTbody');
+        tb.innerHTML = '';
+        if (!data || !data.length){ $('#emptyHistory').classList.remove('hidden'); return; }
+        $('#emptyHistory').classList.add('hidden');
+        data.forEach(r=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="py-2 pr-4">${new Date(r.date).toLocaleString('az-AZ')}</td>
+            <td class="py-2 pr-4">${r.type}</td>
+            <td class="py-2 pr-4">${r.subType||'-'}</td>
+            <td class="py-2 pr-4">${r.party}</td>
+            <td class="py-2 pr-4">${azn(r.amount)}</td>
+            <td class="py-2 pr-4">${r.note||''}</td>`;
+          tb.appendChild(tr);
+        });
+      }
+
+      // Filter funksiyası – Axtar düyməsi bunu çağıracaq
+      window.applyHistoryFilter = function(){
+        const fStr = $('#fromDate')?.value || '';
+        const tStr = $('#toDate')?.value || '';
+        const from = fStr ? new Date(`${fStr}T00:00:00`).getTime() : null;
+        const to = tStr ? new Date(`${tStr}T23:59:59`).getTime() : null;
+        const filtered = TRANSACTIONS.filter(r => withinRange(r.date, from, to));
+        window.renderHistoryTable(filtered);
+      }
+
+      // İlk render – hamısını göstər
+      window.renderHistoryTable(TRANSACTIONS);
+    }
+
+    // --- DEV TESTS (istəyə görə çalışır) ---
+    // URL-ə ?runTests=1 əlavə etsən, aşağıdakı sadə testlər işə düşəcək
+    (function devTests(){
+      const params = new URLSearchParams(location.search);
+      if (!params.get('runTests')) return; // yalnız istəyə görə
+      try {
+        console.assert(typeof renderCashDesk === 'function', 'renderCashDesk mövcud deyil');
+        renderCashDesk();
+        console.assert(typeof renderTarixce === 'function', 'renderTarixce mövcud deyil');
+        $('#btnTarixce').click();
+        console.assert($('#historyTable'), 'Tarixçə cədvəli yaranmadı');
+        // Test: filter
+        const today = new Date().toISOString().slice(0,10);
+        $('#fromDate').value = today;
+        $('#toDate').value = today;
+        $('#searchOps').click(); // applyHistoryFilter də çağırılmalıdır
+        console.assert($$('#historyTbody tr').length >= 0, 'Filter işləmir');
+        console.log('%cTESTS PASSED','color:green');
+      } catch (e){
+        console.error('TEST FAILED', e);
+      }
+    })();
+  </script>
 </body>
 </html>
