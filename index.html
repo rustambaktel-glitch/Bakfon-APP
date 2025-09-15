@@ -1,395 +1,602 @@
 <!DOCTYPE html>
-<html lang="az" class="h-full">
+<html lang="az">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BAKFON – Web Proqram</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    ::-webkit-scrollbar{width:8px;height:8px}
-    ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
-    ::-webkit-scrollbar-track{background:#f1f5f9}
-    .btn{ @apply px-4 py-2 rounded-lg; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ERP Lite — Satış & Anbar & Kassa</title>
+<style>
+  :root{
+    --bg:#f6f8fb; --text:#0b1220; --muted:#5b677e; --card:#ffffff; --border:#e4e8f0; --primary:#dc2626; --ok:#16a34a; --warn:#b45309;
+    --ring:#60a5fa; --shadow:0 10px 26px rgba(2,6,23,.06); --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial}
+  header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#fff,rgba(255,255,255,.92));border-bottom:1px solid var(--border);backdrop-filter:saturate(1.4) blur(6px)}
+  .bar{max-width:1200px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center}
+  .brand{font-weight:800;letter-spacing:.4px}
+  .nav{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+  .btn{appearance:none;border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:8px}
+  .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
+  .btn.ghost{background:#fff}
+  .btn.small{padding:6px 10px;font-size:12px}
+  .wrap{max-width:1200px;margin:16px auto;padding:0 14px 40px}
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  .card{grid-column:span 12;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+  @media(min-width:900px){.card.half{grid-column:span 6}}
+  h2{margin:4px 0 12px 0;font-size:18px}
+  h3{margin:8px 0 8px 0;font-size:15px;color:var(--muted)}
+  label{font-size:12px;color:var(--muted)}
+  input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid var(--border);background:#fff}
+  .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:8px 0}
+  .col-3{grid-column:span 3}.col-4{grid-column:span 4}.col-6{grid-column:span 6}.col-8{grid-column:span 8}.col-9{grid-column:span 9}.col-12{grid-column:span 12}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid var(--border);padding:8px;text-align:left}
+  .pill{display:inline-block;border:1px solid var(--border);background:#f7f7fb;border-radius:999px;padding:2px 8px;font-size:12px;color:#374151}
+  .status.ok{color:var(--ok)}.status.warn{color:var(--warn)}
+  .tag{font-size:11px;color:#334155;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:3px 8px}
+  .hl{background:#fff7ed;border:1px dashed #fdba74;padding:6px 8px;border-radius:10px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+  .right{margin-left:auto}
+  .sum{font-weight:700}
+  .kbd{font:12px/1.1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#111827;color:#fff;padding:2px 6px;border-radius:6px}
+  canvas{width:100%;height:220px;border:1px solid var(--border);border-radius:12px}
+</style>
 </head>
-<body id="body" class="h-full bg-slate-50 text-slate-900">
-  <div id="app" class="h-full flex flex-col">
-    <!-- Header -->
-    <header class="relative h-16 flex items-center justify-between bg-slate-900 text-amber-400 border-b border-slate-800 px-4">
-      <div class="flex items-center gap-3">
-        <button id="toggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800 text-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-400">☰</button>
-        <span class="font-extrabold tracking-wider">BAKFON</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <input type="search" placeholder="Axtar…" class="hidden sm:block w-64 px-3 py-2 rounded-lg bg-slate-800 text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-        <button id="profileBtn" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800 text-slate-200 hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400">
-          <span class="hidden sm:inline" id="profileName">Rustam</span>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.186l3.71-3.955a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0l-4.25-4.53a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
-        </button>
-        <div id="profileMenu" class="hidden absolute right-4 top-14 w-64 bg-white text-slate-800 rounded-xl border border-slate-200 shadow-lg overflow-hidden z-50">
-          <div class="px-4 py-3 bg-slate-50 border-b border-slate-200">
-            <p class="text-xs text-slate-500">Profil sahibi</p>
-            <button id="openProfileFromMenu" class="mt-1 w-full text-left font-semibold hover:underline">Rustam Bayramov</button>
-          </div>
-          <button id="openSettings" class="w-full text-left px-4 py-3 hover:bg-slate-100 flex items-center gap-2">
-            <span>⚙️</span><span>Tənzimləmələr</span>
-          </button>
-        </div>
-      </div>
-      <div id="dropdownBackdrop" class="hidden fixed inset-0 z-40"></div>
-    </header>
-
-    <!-- Content area with sidebar + main -->
-    <div class="flex flex-1 min-h-0">
-      <!-- Sidebar -->
-      <aside id="sidebar" class="hidden md:flex md:w-64 flex-col bg-slate-900 text-slate-100 border-r border-slate-800">
-        <nav class="flex-1 px-3 pb-4 pt-4 space-y-1 overflow-y-auto">
-          <a href="#" id="goHome" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">🏠 <span class="font-medium">Ana Səhifə</span></a>
-          <a href="#" id="goKassa" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">💵 <span class="font-medium">Kassa</span></a>
-          <a href="#" data-route="musteriler" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">👥 <span class="font-medium">Müştərilər</span></a>
-          <a href="#" data-route="anbar" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">📦 <span class="font-medium">Anbar</span></a>
-          <a href="#" data-route="hesabatlar" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">📊 <span class="font-medium">Hesabatlar</span></a>
-          <a href="#" data-route="gecikmeler" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">⏰ <span class="font-medium">Gecikmələr</span></a>
-          <a href="#" data-route="emekdaslar" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">👨‍💼 <span class="font-medium">Əməkdaşlar</span></a>
-          <a href="#" data-route="istifadeciler" class="group flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800/70 transition">🔑 <span class="font-medium">İstifadəçilər</span></a>
-        </nav>
-        <div class="p-3 border-t border-slate-800 text-xs text-slate-400">
-          © <span id="year"></span> Bakfon Electronics MMC
-        </div>
-      </aside>
-
-      <!-- Main content -->
-      <main id="main" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
-        <div id="homeContent">
-          <h2 class="text-xl font-bold mb-4">Ana Səhifə Statistikaları 📊</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-              <p class="text-slate-500 text-sm">Bugünkü satış</p>
-              <h3 class="text-2xl font-bold text-slate-800">1 ,240 AZN</h3>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-              <p class="text-slate-500 text-sm">Ümumi satış (aylıq)</p>
-              <h3 class="text-2xl font-bold text-slate-800">28 ,560 AZN</h3>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-              <p class="text-slate-500 text-sm">Müştəri sayı</p>
-              <h3 class="text-2xl font-bold text-slate-800">312</h3>
-            </div>
-            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-              <p class="text-slate-500 text-sm">Gecikmədə olanlar</p>
-              <h3 class="text-2xl font-bold text-red-600">7</h3>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+<body>
+<header>
+  <div class="bar">
+    <div class="brand">ERP Lite</div>
+    <nav class="nav" id="nav"></nav>
+    <button class="btn small ghost" id="backupBtn">Yedəklə</button>
+    <button class="btn small ghost" id="restoreBtn">Bərpa et</button>
+    <button class="btn small" onclick="localStorage.clear();location.reload()">Sıfırla</button>
   </div>
+</header>
 
-  <!-- Settings Modal (placeholder) -->
-  <div id="settingsModal" class="hidden fixed inset-0 z-50"> ... </div>
+<div class="wrap">
+  <div class="grid" id="view">
+    <!-- Dinamik bölmələr buraya render olunur -->
+  </div>
+</div>
 
-  <script>
-    // --- helpers ---
-    const $ = (sel, root=document) => root.querySelector(sel);
-    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+<script>
+/**
+ * ERP Lite — Rustam üçün ilkin işlək prototip (localStorage backend)
+ * Modullar: Müştərilər, Tədarükçülər, Məhsullar, Satış, Alış, Kassa (Mədaxil/Məxaric), Ödənişlər,
+ * Hesabatlar (Anbar, Satış/Alış statistikası, Gecikmələr), Əməkdaşlar (maaş/bonus), Parametrlər.
+ * Tək fayl, offline işləyir. Export/Import JSON yedəkləmə var.
+ */
 
-    // İl
-    $('#year').textContent = new Date().getFullYear();
+// ==== Yardımçı util-lər ====
+const $ = (sel,root=document)=>root.querySelector(sel);
+const $$= (sel,root=document)=>Array.from(root.querySelectorAll(sel));
+const fmt = n=> (Number(n||0)).toLocaleString('az-AZ', {minimumFractionDigits:2, maximumFractionDigits:2});
+const today = ()=> new Date().toISOString().slice(0,10);
+const uid = (p='ID')=> p+"_"+Math.random().toString(36).slice(2,9);
+const sum = arr => arr.reduce((a,b)=>a+Number(b||0),0);
+const ls = {
+  get:k=> JSON.parse(localStorage.getItem(k)||'null'),
+  set:(k,v)=> localStorage.setItem(k, JSON.stringify(v)),
+  init:(k,def)=> { if(!ls.get(k)) ls.set(k,def); },
+}
 
-    // Demo siyahılar (sonra API/bazadan gələ bilər)
-    const CUSTOMERS = ['Lemuzər Rüstəmova', 'Emin Quliyev', 'Aysel Məmmədova'];
-    const SUPPLIERS = ['TechnoTrade LLC', 'MobilePlus MMC', 'PrintStore'];
+// ==== İlkin data ==== 
+ls.init('customers', []);
+ls.init('suppliers', []);
+ls.init('products', []);
+ls.init('sales', []);      // {id,date,customerId,items:[{sku,qty,price,cost,disc}], payType, dueDate, paid, total}
+ls.init('purchases', []);  // {id,date,supplierId,items:[{sku,qty,cost,price}], payType, total}
+ls.init('cash', []);       // {id,date,type:'medaxil'|'mexaric', account, amount, note, ref}
+ls.init('payments', []);   // {id,date,customerId, saleId, amount}
+ls.init('employees', []);  // {id,fullname,role,salary,bonus}
+ls.init('settings', {company:"Baktel/ Bakfon", currency:"AZN", vat:0});
 
-    // Demo əməliyyatlar (tarixçə üçün)
-    const TRANSACTIONS = [
-      { id: 1, date: '2025-09-15T10:30', type: 'Mədaxil', subType: 'Nağd ödəniş', party: 'Emin Quliyev', amount: 150.00, note: 'Nağd kassaya' },
-      { id: 2, date: '2025-09-14T16:05', type: 'Mədaxil', subType: 'Kredit ödənişi', party: 'Aysel Məmmədova', amount: 220.50, note: 'Kredit 3/12' },
-      { id: 3, date: '2025-09-13T12:00', type: 'Məxaric', subType: 'Təchizatçı ödənişi', party: 'TechnoTrade LLC', amount: 980.00, note: 'Faktura #TT-4521' },
-      { id: 4, date: '2025-09-11T09:20', type: 'Məxaric', subType: 'Xərc', party: 'Kommunal', amount: 75.40, note: 'Elektrik' }
-    ];
+// ==== Naviqasiya ====
+const TABS = [
+  {id:'dashboard', title:'İdarə paneli'},
+  {id:'customers', title:'Müştərilər'},
+  {id:'suppliers', title:'Tədarükçülər'},
+  {id:'products',  title:'Məhsullar'},
+  {id:'sales',     title:'Satış (Nağd/Kredit/Post/Korporativ)'},
+  {id:'purchases', title:'Alış'},
+  {id:'cash',      title:'Kassa — Mədaxil/Məxaric'},
+  {id:'reports',   title:'Hesabatlar'},
+  {id:'employees', title:'Əməkdaşlar'},
+  {id:'settings',  title:'Parametrlər'}
+];
 
-    // Ana Səhifə
-    const main = $('#main');
-    const homeContent = $('#homeContent');
-    $('#goHome').addEventListener('click', (e)=>{ e.preventDefault(); main.innerHTML = homeContent.outerHTML; });
+const nav = $('#nav');
+TABS.forEach(t=>{
+  const b=document.createElement('button');
+  b.className='btn ghost small';
+  b.textContent=t.title; b.onclick=()=>render(t.id);
+  b.id='tab-'+t.id; nav.appendChild(b);
+});
 
-    // Kassa səhifəsi
-    $('#goKassa').addEventListener('click', (e)=>{ e.preventDefault(); renderCashDesk(); });
+function activate(tab){
+  TABS.forEach(t=> $('#tab-'+t.id).classList.remove('primary'));
+  $('#tab-'+tab).classList.add('primary');
+}
 
-    function renderCashDesk(){
-      main.innerHTML = `
-        <h2 class="text-xl font-bold mb-4">Kassa əməliyyatları 💵</h2>
-        <div class="flex flex-wrap gap-3 mb-6">
-          <button id="btnYeni" class="btn bg-amber-500 text-white hover:bg-amber-600">Yeni əməliyyat</button>
-          <button id="btnTarixce" class="btn bg-slate-200 text-slate-800 hover:bg-slate-300">Əməliyyat tarixçəsi</button>
-        </div>
-        <div id="kassaContent" class="space-y-4"></div>
-        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-4 mt-6">
-          <h3 class="font-semibold">Əməliyyat axtarışı (tarix aralığına görə)</h3>
-          <div class="flex flex-col sm:flex-row gap-3 items-center">
-            <label class="flex flex-col text-sm w-full sm:w-auto">
-              Başlanğıc tarix
-              <input id="fromDate" type="date" class="mt-1 rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-            </label>
-            <label class="flex flex-col text-sm w-full sm:w-auto">
-              Son tarix
-              <input id="toDate" type="date" class="mt-1 rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-            </label>
-            <button id="searchOps" class="btn bg-slate-800 text-white hover:bg-slate-700 mt-2 sm:mt-6">Axtar</button>
-          </div>
-          <div id="searchResult" class="text-sm text-slate-600"></div>
-        </div>`;
+// ==== Render kökü ====
+const view = $('#view');
+function card(title, inner, cls=''){
+  const d=document.createElement('div');
+  d.className='card '+cls; d.innerHTML = `<h2>${title}</h2>${inner||''}`; return d;
+}
+function inputRow(cols){
+  return `<div class="row">${cols.map(c=>`<div class="col-${c.span||12}"><label>${c.label||''}</label>${c.html}</div>`).join('')}</div>`;
+}
 
-      $('#btnYeni').addEventListener('click', renderYeniEmeliyyat);
-      $('#btnTarixce').addEventListener('click', renderTarixce);
+// ==== Dashboard ====
+function dash(){
+  const sales=ls.get('sales'); const purchases=ls.get('purchases'); const cash=ls.get('cash');
+  const revenue=sum(sales.map(s=>s.total||0));
+  const spend =sum(purchases.map(p=>p.total||0));
+  const cashBal = sum(cash.map(c=> c.type==='medaxil'?c.amount:-c.amount ));
+  const profit = revenue - spend;
+  const overdue = sales.filter(s=> s.payType==='Kredit' && !s.paid && s.dueDate && (new Date(s.dueDate) < new Date(Date.now()-24*3600*1000)) ).length;
+  const d = card('İdarə paneli', `
+    <div class="row">
+      <div class="col-3"><div class="hl">Gəlir: <span class="sum">${fmt(revenue)}</span> <span class="tag">${ls.get('settings').currency}</span></div></div>
+      <div class="col-3"><div class="hl">Xərc/Alış: <span class="sum">${fmt(spend)}</span></div></div>
+      <div class="col-3"><div class="hl">Kassa qalığı: <span class="sum">${fmt(cashBal)}</span></div></div>
+      <div class="col-3"><div class="hl">Gecikən müşt.: <span class="sum">${overdue}</span></div></div>
+    </div>
+    <div class="toolbar"><span class="pill">Sürətli: </span>
+      <button class="btn small" onclick="render('sales')">Yeni Satış</button>
+      <button class="btn small" onclick="render('purchases')">Yeni Alış</button>
+      <button class="btn small" onclick="render('cash')">Mədaxil/Məxaric</button>
+    </div>
+    <canvas id="chart"></canvas>
+  `);
+  view.appendChild(d);
+  drawChart();
+}
 
-      $('#searchOps').addEventListener('click', ()=>{
-        const f = $('#fromDate').value || '-';
-        const t = $('#toDate').value || '-';
-        $('#searchResult').textContent = `Axtarış tətbiq olundu: ${f} → ${t} (demo)`;
-        // Əgər tarixçə açıqdırsa, filter et
-        if (typeof window.applyHistoryFilter === 'function') window.applyHistoryFilter();
-      });
+function drawChart(){
+  const ctx = $('#chart').getContext('2d');
+  // Sadə native chart (xətt) — son 7 gün satış cəmi
+  const sales=ls.get('sales');
+  const days=[...Array(7)].map((_,i)=>{
+    const d=new Date(Date.now()-(6-i)*24*3600*1000);return d.toISOString().slice(0,10);
+  });
+  const vals = days.map(day=> sum(sales.filter(s=>s.date===day).map(s=>s.total||0)) );
+  // Manual drawing
+  const W=ctx.canvas.width, H=ctx.canvas.height; ctx.clearRect(0,0,W,H);
+  const max=Math.max(1,...vals); const pad=24; const X=(i)=> pad + i*( (W-2*pad)/(days.length-1) );
+  const Y=(v)=> H-pad - (v/max)*(H-2*pad);
+  // axes
+  ctx.strokeStyle="#cbd5e1"; ctx.beginPath(); ctx.moveTo(pad, H-pad); ctx.lineTo(W-pad,H-pad); ctx.stroke();
+  // line
+  ctx.beginPath(); ctx.moveTo(X(0),Y(vals[0])); for(let i=1;i<vals.length;i++){ ctx.lineTo(X(i),Y(vals[i])); } ctx.strokeStyle="#111827"; ctx.lineWidth=2; ctx.stroke();
+  // points
+  vals.forEach((v,i)=>{ ctx.beginPath(); ctx.arc(X(i),Y(v),3,0,Math.PI*2); ctx.fillStyle="#111827"; ctx.fill(); });
+  // labels
+  ctx.fillStyle="#475569"; ctx.font="12px system-ui";
+  days.forEach((d,i)=>{ ctx.fillText(d.slice(5), X(i)-12, H-6); });
+}
 
-      // Default olaraq Yeni əməliyyat açılsın
-      renderYeniEmeliyyat();
+// ==== Müştərilər ====
+function customersView(){
+  const list = ls.get('customers');
+  const d = card('Müştərilər', `
+    <div class="toolbar">
+      <button class="btn small primary" id="addC">Yeni Müştəri</button>
+      <input id="cSearch" placeholder="Axtar: ad, FIN, tel"/>
+      <span class="right pill">Cəmi: ${list.length}</span>
+    </div>
+    <table><thead><tr><th>Ad</th><th>Tel</th><th>SV Seriya/№</th><th>FIN</th><th>Doğum</th><th>Ünvan</th><th></th></tr></thead>
+    <tbody id="cT"></tbody></table>
+  `);
+  view.appendChild(d);
+  const tbody = $('#cT');
+  function paint(rows){
+    tbody.innerHTML = rows.map(c=>`<tr>
+      <td>${c.name||''}</td><td>${c.phone||''}</td><td>${c.pass||''}</td><td>${c.fin||''}</td><td>${c.dob||''}</td><td>${c.addr||''}</td>
+      <td><button class="btn small" onclick="editCustomer('${c.id}')">Düzəlt</button></td>
+    </tr>`).join('');
+  }
+  paint(list);
+  $('#cSearch').oninput = (e)=>{
+    const q=e.target.value.toLowerCase();
+    paint(list.filter(c=> (c.name+" "+(c.fin||'')+" "+(c.phone||'')).toLowerCase().includes(q) ));
+  }
+  $('#addC').onclick=()=>editCustomer();
+}
+
+function editCustomer(id){
+  const list=ls.get('customers'); const c = id? list.find(x=>x.id===id): {id:uid('C'),name:'',phone:'',pass:'',fin:'',dob:'',addr:''};
+  const d = card('Müştəri kartı', `
+    ${inputRow([
+      {span:6,label:'Ad Soyad', html:`<input id="cName" value="${c.name}">`},
+      {span:3,label:'Telefon', html:`<input id="cPhone" value="${c.phone}">`},
+      {span:3,label:'Doğum tarixi', html:`<input type="date" id="cDob" value="${c.dob||''}">`},
+    ])}
+    ${inputRow([
+      {span:4,label:'Ş/V Seriya və №', html:`<input id="cPass" value="${c.pass}">`},
+      {span:4,label:'FIN', html:`<input id="cFin" value="${c.fin}">`},
+      {span:4,label:'Ünvan', html:`<input id="cAddr" value="${c.addr}">`},
+    ])}
+    <div class="toolbar">
+      <button class="btn primary" id="saveC">Yadda saxla</button>
+      <button class="btn" onclick="render('customers')">Geri</button>
+    </div>
+  `);
+  view.innerHTML=''; view.appendChild(d);
+  $('#saveC').onclick=()=>{
+    c.name=$('#cName').value.trim(); c.phone=$('#cPhone').value.trim(); c.dob=$('#cDob').value; c.pass=$('#cPass').value.trim(); c.fin=$('#cFin').value.trim(); c.addr=$('#cAddr').value.trim();
+    let arr=ls.get('customers'); const i=arr.findIndex(x=>x.id===c.id); if(i>-1) arr[i]=c; else arr.push(c); ls.set('customers',arr); render('customers');
+  }
+}
+
+// ==== Tədarükçülər ====
+function suppliersView(){
+  const list = ls.get('suppliers');
+  const d = card('Tədarükçülər', `
+    <div class="toolbar"><button class="btn small primary" id="addS">Yeni Tədarükçü</button><span class="right pill">${list.length} ədəd</span></div>
+    <table><thead><tr><th>Ad</th><th>Tel</th><th>Vergi/VÖEN</th><th>Qeyd</th><th></th></tr></thead><tbody id="sT"></tbody></table>
+  `); view.appendChild(d);
+  const tbody=$('#sT'); tbody.innerHTML=list.map(s=>`<tr><td>${s.name||''}</td><td>${s.phone||''}</td><td>${s.vat||''}</td><td>${s.note||''}</td><td><button class="btn small" onclick="editSupplier('${s.id}')">Düzəlt</button></td></tr>`).join('');
+  $('#addS').onclick=()=>editSupplier();
+}
+function editSupplier(id){
+  const list=ls.get('suppliers'); const s = id? list.find(x=>x.id===id): {id:uid('S'),name:'',phone:'',vat:'',note:''};
+  const d = card('Tədarükçü kartı', `
+    ${inputRow([
+      {span:6,label:'Ad', html:`<input id="sName" value="${s.name}">`},
+      {span:3,label:'Telefon', html:`<input id="sPhone" value="${s.phone}">`},
+      {span:3,label:'VÖEN', html:`<input id="sVat" value="${s.vat}">`},
+    ])}
+    ${inputRow([{span:12,label:'Qeyd', html:`<input id="sNote" value="${s.note}">`}])}
+    <div class="toolbar">
+      <button class="btn primary" id="saveS">Yadda saxla</button>
+      <button class="btn" onclick="render('suppliers')">Geri</button>
+    </div>
+  `);
+  view.innerHTML=''; view.appendChild(d);
+  $('#saveS').onclick=()=>{
+    s.name=$('#sName').value.trim(); s.phone=$('#sPhone').value.trim(); s.vat=$('#sVat').value.trim(); s.note=$('#sNote').value.trim();
+    let arr=ls.get('suppliers'); const i=arr.findIndex(x=>x.id===s.id); if(i>-1) arr[i]=s; else arr.push(s); ls.set('suppliers',arr); render('suppliers');
+  }
+}
+
+// ==== Məhsullar ====
+function productsView(){
+  const list = ls.get('products');
+  const d = card('Məhsullar', `
+    <div class="toolbar">
+      <button class="btn small primary" id="addP">Yeni Məhsul</button>
+      <input id="pSearch" placeholder="Axtar: SKU, ad"/>
+      <span class="right pill">${list.length} ədəd</span>
+    </div>
+    <table><thead><tr><th>SKU</th><th>Ad</th><th>Vahid</th><th>Satış qiyməti</th><th>Maya</th><th>Anbar</th><th></th></tr></thead>
+    <tbody id="pT"></tbody></table>
+  `); view.appendChild(d);
+  const tbody=$('#pT');
+  function paint(rows){
+    tbody.innerHTML=rows.map(p=>`<tr>
+      <td>${p.sku}</td><td>${p.name}</td><td>${p.unit||'əd'}</td><td>${fmt(p.price)}</td><td>${fmt(p.cost||0)}</td><td>${p.stock||0}</td>
+      <td><button class="btn small" onclick="editProduct('${p.id}')">Düzəlt</button></td>
+    </tr>`).join('');
+  }
+  paint(list);
+  $('#pSearch').oninput=(e)=>{
+    const q=e.target.value.toLowerCase(); paint(list.filter(p=> (p.sku+" "+p.name).toLowerCase().includes(q) ));
+  }
+  $('#addP').onclick=()=>editProduct();
+}
+function editProduct(id){
+  const list=ls.get('products'); const p = id? list.find(x=>x.id===id): {id:uid('P'),sku:'',name:'',unit:'əd',price:0,cost:0,stock:0};
+  const d = card('Məhsul kartı', `
+    ${inputRow([
+      {span:3,label:'SKU', html:`<input id="pSku" value="${p.sku}">`},
+      {span:5,label:'Ad', html:`<input id="pName" value="${p.name}">`},
+      {span:2,label:'Vahid', html:`<input id="pUnit" value="${p.unit}">`},
+      {span:2,label:'Anbar say', html:`<input type="number" id="pStock" value="${p.stock}">`},
+    ])}
+    ${inputRow([
+      {span:3,label:'Satış qiyməti', html:`<input type="number" step="0.01" id="pPrice" value="${p.price}">`},
+      {span:3,label:'Maya (alış dəy.)', html:`<input type="number" step="0.01" id="pCost" value="${p.cost}">`},
+      {span:6,label:'Qeyd', html:`<input id="pNote" value="${p.note||''}">`},
+    ])}
+    <div class="toolbar">
+      <button class="btn primary" id="saveP">Yadda saxla</button>
+      <button class="btn" onclick="render('products')">Geri</button>
+    </div>
+  `);
+  view.innerHTML=''; view.appendChild(d);
+  $('#saveP').onclick=()=>{
+    p.sku=$('#pSku').value.trim(); p.name=$('#pName').value.trim(); p.unit=$('#pUnit').value.trim(); p.stock=Number($('#pStock').value||0);
+    p.price=Number($('#pPrice').value||0); p.cost=Number($('#pCost').value||0); p.note=$('#pNote').value.trim();
+    let arr=ls.get('products'); const i=arr.findIndex(x=>x.id===p.id); if(i>-1) arr[i]=p; else arr.push(p); ls.set('products',arr); render('products');
+  }
+}
+
+// ==== Satış ====
+function salesView(){
+  const customers=ls.get('customers'); const products=ls.get('products');
+  const d = card('Satış əməliyyatı', `
+    ${inputRow([
+      {span:3,label:'Tarix', html:`<input type="date" id="sDate" value="${today()}">`},
+      {span:4,label:'Müştəri', html:`<select id="sCustomer">${['','...'].map(()=>'' )}${customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select>`},
+      {span:3,label:'Ödəmə tipi', html:`<select id="sPay"><option>Nağd</option><option>Kredit</option><option>Post</option><option>Korporativ</option></select>`},
+      {span:2,label:'Son ödəmə (kredit)', html:`<input type="date" id="sDue">`},
+    ])}
+    <h3>Məhsul əlavə et</h3>
+    ${inputRow([
+      {span:3,label:'Məhsul', html:`<select id="sSku">${products.map(p=>`<option value="${p.id}">${p.sku} — ${p.name}</option>`).join('')}</select>`},
+      {span:2,label:'Say', html:`<input type="number" id="sQty" value="1">`},
+      {span:2,label:'Qiymət', html:`<input type="number" step="0.01" id="sPrice">`},
+      {span:2,label:'Endirim', html:`<input type="number" step="0.01" id="sDisc" value="0">`},
+      {span:3,label:' ', html:`<button class="btn" id="addItem">Sətir əlavə et</button>`},
+    ])}
+    <table><thead><tr><th>SKU</th><th>Ad</th><th>Say</th><th>Qiymət</th><th>Endirim</th><th>Cəm</th><th></th></tr></thead><tbody id="sItems"></tbody></table>
+    <div class="toolbar">
+      <span class="pill">Cəm: <b id="sTotal">0.00</b> AZN</span>
+      <button class="btn primary right" id="saveSale">Satışı yadda saxla</button>
+    </div>
+  `);
+  view.appendChild(d);
+  const items=[]; const tbody=$('#sItems'); const priceField=$('#sPrice');
+  function paint(){
+    tbody.innerHTML= items.map((it,i)=>`<tr><td>${it.sku}</td><td>${it.name}</td><td>${it.qty}</td><td>${fmt(it.price)}</td><td>${fmt(it.disc)}</td><td>${fmt((it.qty*it.price)-it.disc)}</td><td><button class="btn small" onclick="_delItem(${i})">Sil</button></td></tr>`).join('');
+    $('#sTotal').textContent= fmt(items.reduce((a,it)=> a + (it.qty*it.price - it.disc), 0));
+  }
+  window._delItem=(i)=>{ items.splice(i,1); paint(); };
+  // auto-fill price from product
+  function syncPrice(){
+    const pid=$('#sSku').value; const p=ls.get('products').find(x=>x.id===pid); if(p) priceField.value=p.price||0;
+  }
+  syncPrice(); $('#sSku').onchange=syncPrice;
+  $('#addItem').onclick=()=>{
+    const pid=$('#sSku').value; const p=ls.get('products').find(x=>x.id===pid); if(!p) return;
+    const qty=Number($('#sQty').value||1); const price=Number($('#sPrice').value||p.price||0); const disc=Number($('#sDisc').value||0);
+    items.push({productId:p.id, sku:p.sku, name:p.name, qty, price, disc, cost:p.cost||0}); paint();
+  }
+  $('#saveSale').onclick=()=>{
+    if(!$('#sCustomer').value){ alert('Müştəri seçin'); return; }
+    if(items.length===0){ alert('Ən azı bir sətir əlavə edin'); return; }
+    const sale={ id:uid('SL'), date:$('#sDate').value, customerId:$('#sCustomer').value, items, payType:$('#sPay').value, dueDate:$('#sDue').value||null, paid:($('#sPay').value!=='Kredit'), total: items.reduce((a,it)=>a+(it.qty*it.price - it.disc),0) };
+    let sales=ls.get('sales'); sales.push(sale); ls.set('sales',sales);
+    // anbar düşümü
+    let prods=ls.get('products'); items.forEach(it=>{ const pr=prods.find(x=>x.id===it.productId); if(pr) pr.stock = Number(pr.stock||0) - Number(it.qty||0); }); ls.set('products',prods);
+    // kassa (nağd/post/korporativ dərhal mədaxil)
+    if(sale.payType!=='Kredit'){
+      let cash=ls.get('cash'); cash.push({id:uid('K'), date:sale.date, type:'medaxil', account:sale.payType, amount:sale.total, note:'Satış '+sale.id, ref:sale.id}); ls.set('cash',cash);
     }
+    alert('Satış qeyd olundu'); render('salesList');
+  }
+}
 
-    function renderYeniEmeliyyat(){
-      const box = $('#kassaContent');
-      box.innerHTML = `
-        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-          <h3 class="font-semibold mb-4">Yeni əməliyyat</h3>
-          <div class="inline-flex rounded-xl border border-slate-200 overflow-hidden mb-4">
-            <button id="selMedaxil" class="btn bg-amber-500 text-white">Mədaxil</button>
-            <button id="selMexaric" class="btn bg-slate-100 text-slate-800">Məxaric</button>
-          </div>
-          <div id="opForm" class="space-y-4"></div>
-        </div>`;
+function salesList(){
+  const list=ls.get('sales'); const customers=ls.get('customers');
+  const d = card('Satışlar', `
+    <div class="toolbar">
+      <button class="btn small" onclick="render('sales')">Yeni satış</button>
+      <input id="sFind" placeholder="Axtar: müştəri, ID"/>
+      <span class="right pill">${list.length} əməliyyat</span>
+    </div>
+    <table><thead><tr><th>ID</th><th>Tarix</th><th>Müştəri</th><th>Tip</th><th>Son ödəmə</th><th>Cəm</th><th>Vəziyyət</th><th></th></tr></thead><tbody id="sT"></tbody></table>
+  `); view.appendChild(d);
+  const tbody=$('#sT');
+  function row(s){
+    const c=customers.find(x=>x.id===s.customerId); const status = (s.payType==='Kredit' && !s.paid)? (new Date(s.dueDate)<new Date(Date.now()-24*3600*1000)?'<span class="status warn">Gecikib</span>':'<span class="status ok">Aktiv</span>') : '<span class="status ok">Bağlı</span>';
+    return `<tr><td>${s.id}</td><td>${s.date}</td><td>${c?c.name:''}</td><td>${s.payType}</td><td>${s.dueDate||''}</td><td>${fmt(s.total)}</td><td>${status}</td><td><button class="btn small" onclick="collect('${s.id}')">Ödəniş</button></td></tr>`;
+  }
+  function paint(rows){ tbody.innerHTML = rows.map(row).join(''); }
+  paint(list);
+  $('#sFind').oninput=(e)=>{
+    const q=e.target.value.toLowerCase();
+    paint(list.filter(s=> (s.id+" "+(customers.find(c=>c.id===s.customerId)?.name||'')).toLowerCase().includes(q) ));
+  }
+}
 
-      // Default: Mədaxil formu
-      renderMedaxilForm();
+function collect(saleId){
+  const sale=ls.get('sales').find(s=>s.id===saleId); const cust=ls.get('customers').find(c=>c.id===sale.customerId);
+  const paidAmount = sum(ls.get('payments').filter(p=>p.saleId===saleId).map(p=>p.amount));
+  const remain = (sale.total - paidAmount);
+  const d = card('Kredit ödənişi', `
+    <div class="hl">Müştəri: <b>${cust?.name||''}</b> — Satış: <span class="kbd">${sale.id}</span> — Qalıq: <b>${fmt(remain)}</b> AZN</div>
+    ${inputRow([
+      {span:3,label:'Tarix', html:`<input type="date" id="pDate" value="${today()}">`},
+      {span:3,label:'Məbləğ', html:`<input type="number" id="pAmt" value="${remain}">`},
+      {span:4,label:'Qeyd', html:`<input id="pNote" placeholder="Ödəniş qeydi">`},
+      {span:2,label:' ', html:`<button class="btn" id="pSave">Təsdiq</button>`},
+    ])}
+  `);
+  view.innerHTML=''; view.appendChild(d);
+  $('#pSave').onclick=()=>{
+    const amt=Number($('#pAmt').value||0); if(amt<=0) return alert('Məbləğ xətalı');
+    let pays=ls.get('payments'); pays.push({id:uid('PM'), date:$('#pDate').value, customerId:sale.customerId, saleId:sale.id, amount:amt}); ls.set('payments',pays);
+    // kassa mədaxil
+    let cash=ls.get('cash'); cash.push({id:uid('K'), date:$('#pDate').value, type:'medaxil', account:'Kredit', amount:amt, note:'Kredit ödənişi '+sale.id, ref:sale.id}); ls.set('cash',cash);
+    if(amt>=remain){ sale.paid=true; let sales=ls.get('sales'); const i=sales.findIndex(x=>x.id===sale.id); sales[i]=sale; ls.set('sales',sales); }
+    alert('Ödəniş qeyd olundu'); render('salesList');
+  }
+}
 
-      $('#selMedaxil').addEventListener('click', ()=>{ toggleType(true); renderMedaxilForm(); });
-      $('#selMexaric').addEventListener('click', ()=>{ toggleType(false); renderMexaricForm(); });
+// ==== Alış ====
+function purchasesView(){
+  const suppliers=ls.get('suppliers'); const products=ls.get('products');
+  const d = card('Alış əməliyyatı', `
+    ${inputRow([
+      {span:3,label:'Tarix', html:`<input type="date" id="bDate" value="${today()}">`},
+      {span:5,label:'Tədarükçü', html:`<select id="bSup">${suppliers.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select>`},
+      {span:4,label:'Ödəmə tipi', html:`<select id="bPay"><option>Nağd</option><option>Korporativ</option></select>`},
+    ])}
+    <h3>Məhsul əlavə et</h3>
+    ${inputRow([
+      {span:3,label:'Məhsul', html:`<select id="bSku">${products.map(p=>`<option value="${p.id}">${p.sku} — ${p.name}</option>`).join('')}</select>`},
+      {span:2,label:'Say', html:`<input type="number" id="bQty" value="1">`},
+      {span:2,label:'Maya (alış)', html:`<input type="number" step="0.01" id="bCost">`},
+      {span:2,label:'Satış qiyməti', html:`<input type="number" step="0.01" id="bPrice">`},
+      {span:3,label:' ', html:`<button class="btn" id="bAdd">Sətir əlavə et</button>`},
+    ])}
+    <table><thead><tr><th>SKU</th><th>Ad</th><th>Say</th><th>Maya</th><th>Satış qiyməti</th><th>Cəm</th><th></th></tr></thead><tbody id="bItems"></tbody></table>
+    <div class="toolbar">
+      <span class="pill">Cəm: <b id="bTotal">0.00</b> AZN</span>
+      <button class="btn primary right" id="saveBuy">Alışı yadda saxla</button>
+    </div>
+  `);
+  view.appendChild(d);
+  const items=[]; const tbody=$('#bItems');
+  function paint(){
+    tbody.innerHTML= items.map((it,i)=>`<tr><td>${it.sku}</td><td>${it.name}</td><td>${it.qty}</td><td>${fmt(it.cost)}</td><td>${fmt(it.price)}</td><td>${fmt(it.qty*it.cost)}</td><td><button class="btn small" onclick="_bDel(${i})">Sil</button></td></tr>`).join('');
+    $('#bTotal').textContent= fmt(items.reduce((a,it)=> a + (it.qty*it.cost), 0));
+  }
+  window._bDel=(i)=>{ items.splice(i,1); paint(); };
+  function syncDefaults(){
+    const pid=$('#bSku').value; const p=ls.get('products').find(x=>x.id===pid); if(p){ $('#bCost').value=p.cost||0; $('#bPrice').value=p.price||0; }
+  }
+  syncDefaults(); $('#bSku').onchange=syncDefaults;
+  $('#bAdd').onclick=()=>{
+    const pid=$('#bSku').value; const p=ls.get('products').find(x=>x.id===pid); if(!p) return;
+    const qty=Number($('#bQty').value||1); const cost=Number($('#bCost').value||0); const price=Number($('#bPrice').value||0);
+    items.push({productId:p.id, sku:p.sku, name:p.name, qty, cost, price}); paint();
+  }
+  $('#saveBuy').onclick=()=>{
+    if(!$('#bSup').value || items.length===0) return alert('Məlumatları tamamlayın');
+    const buy={ id:uid('PU'), date:$('#bDate').value, supplierId:$('#bSup').value, items, payType:$('#bPay').value, total: items.reduce((a,it)=>a+(it.qty*it.cost),0) };
+    let purchases=ls.get('purchases'); purchases.push(buy); ls.set('purchases',purchases);
+    // anbar artımı + maya/satış qiyməti yenilənməsi
+    let prods=ls.get('products'); items.forEach(it=>{ const pr=prods.find(x=>x.id===it.productId); if(pr){ pr.stock = Number(pr.stock||0) + Number(it.qty||0); pr.cost=it.cost; if(it.price>0) pr.price=it.price; }}); ls.set('products',prods);
+    // kassa mexaric (nağd)
+    if(buy.payType==='Nağd'){ let cash=ls.get('cash'); cash.push({id:uid('K'), date:buy.date, type:'mexaric', account:'Nağd', amount:buy.total, note:'Alış '+buy.id, ref:buy.id}); ls.set('cash',cash); }
+    alert('Alış qeyd olundu'); render('purchasesList');
+  }
+}
 
-      function toggleType(isIncome){
-        const a = $('#selMedaxil');
-        const b = $('#selMexaric');
-        if(isIncome){ a.className = 'btn bg-amber-500 text-white'; b.className = 'btn bg-slate-100 text-slate-800'; }
-        else { a.className = 'btn bg-slate-100 text-slate-800'; b.className = 'btn bg-amber-500 text-white'; }
-      }
-    }
+function purchasesList(){
+  const list=ls.get('purchases'); const sups=ls.get('suppliers');
+  const d = card('Alışlar', `
+    <div class="toolbar"><button class="btn small" onclick="render('purchases')">Yeni alış</button><span class="right pill">${list.length} əməliyyat</span></div>
+    <table><thead><tr><th>ID</th><th>Tarix</th><th>Tədarükçü</th><th>Cəm</th><th>Tip</th></tr></thead><tbody>${list.map(b=>`<tr><td>${b.id}</td><td>${b.date}</td><td>${sups.find(s=>s.id===b.supplierId)?.name||''}</td><td>${fmt(b.total)}</td><td>${b.payType}</td></tr>`).join('')}</tbody></table>
+  `); view.appendChild(d);
+}
 
-    function selectOptions(list){
-      return list.map(n=>`<option value="${n}">${n}</option>`).join('');
-    }
+// ==== Kassa (Mədaxil/Məxaric) ====
+function cashView(){
+  const list=ls.get('cash');
+  const d = card('Kassa (Mədaxil/Məxaric)', `
+    ${inputRow([
+      {span:2,label:'Tarix', html:`<input type="date" id="kDate" value="${today()}">`},
+      {span:3,label:'Əməliyyat', html:`<select id="kType"><option value="medaxil">Mədaxil</option><option value="mexaric">Məxaric</option></select>`},
+      {span:3,label:'Hesab', html:`<select id="kAcc"><option>Nağd</option><option>Post</option><option>Korporativ</option><option>Kredit</option></select>`},
+      {span:2,label:'Məbləğ', html:`<input type="number" id="kAmt" value="0">`},
+      {span:2,label:'Qeyd', html:`<input id="kNote">`},
+    ])}
+    <div class="toolbar">
+      <button class="btn" id="kAdd">Əlavə et</button>
+      <span class="right pill">Qalıq: <b id="kBal">0.00</b> AZN</span>
+    </div>
+    <table><thead><tr><th>Tarix</th><th>Tip</th><th>Hesab</th><th>Məbləğ</th><th>Qeyd</th></tr></thead><tbody id="kT"></tbody></table>
+  `); view.appendChild(d);
+  const tbody=$('#kT');
+  function balance(){ return sum(list.map(c=> c.type==='medaxil'?c.amount:-c.amount )); }
+  function paint(){
+    $('#kBal').textContent=fmt(balance());
+    tbody.innerHTML=list.slice().reverse().map(c=>`<tr><td>${c.date}</td><td>${c.type}</td><td>${c.account}</td><td>${fmt(c.amount)}</td><td>${c.note||''}</td></tr>`).join('');
+  }
+  paint();
+  $('#kAdd').onclick=()=>{
+    const it={id:uid('K'), date:$('#kDate').value, type:$('#kType').value, account:$('#kAcc').value, amount:Number($('#kAmt').value||0), note:$('#kNote').value};
+    list.push(it); ls.set('cash',list); paint();
+  }
+}
 
-    function commonFields(){
-      return `
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label class="text-sm">Məbləğ (AZN)
-            <input type="number" step="0.01" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-          </label>
-          <label class="text-sm">Tarix
-            <input type="datetime-local" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" />
-          </label>
-        </div>
-        <label class="block text-sm">Qeyd
-          <textarea class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-400" rows="2" placeholder="Qısa açıqlama..."></textarea>
-        </label>
-        <div class="flex justify-end gap-2">
-          <button class="btn border border-slate-300 hover:bg-slate-100">Ləğv et</button>
-          <button class="btn bg-amber-500 text-white hover:bg-amber-600">Yadda saxla</button>
-        </div>`;
-    }
+// ==== Əməkdaşlar ====
+function employeesView(){
+  const list=ls.get('employees');
+  const d = card('Əməkdaşlar', `
+    <div class="toolbar"><button class="btn small primary" id="eAdd">Yeni əməkdaş</button><span class="right pill">${list.length} nəfər</span></div>
+    <table><thead><tr><th>Ad</th><th>Vəzifə</th><th>Maaş</th><th>Bonus</th></tr></thead><tbody id="eT"></tbody></table>
+  `); view.appendChild(d);
+  const tbody=$('#eT'); tbody.innerHTML=list.map(e=>`<tr><td>${e.fullname}</td><td>${e.role||''}</td><td>${fmt(e.salary||0)}</td><td>${fmt(e.bonus||0)}</td></tr>`).join('');
+  $('#eAdd').onclick=()=>{
+    const e={id:uid('E'), fullname:prompt('Ad Soyad?')||'', role:prompt('Vəzifə?')||'', salary:Number(prompt('Aylıq maaş?')||0), bonus:Number(prompt('Bonus?')||0)};
+    let arr=ls.get('employees'); arr.push(e); ls.set('employees',arr); render('employees');
+  }
+}
 
-    function renderMedaxilForm(){
-      const form = $('#opForm');
-      form.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label class="text-sm">Kimdən (Müştəri)
-            <select class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">${selectOptions(CUSTOMERS)}</select>
-          </label>
-          <label class="text-sm">Əməliyyat növü
-            <select id="medaxilType" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
-              <option>Kredit ödənişi</option>
-              <option>Nağd ödəniş</option>
-            </select>
-          </label>
-        </div>
-        <div id="medaxilExtra" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-        ${commonFields()}`;
+// ==== Hesabatlar ====
+function reportsView(){
+  const sales=ls.get('sales'); const purchases=ls.get('purchases'); const payments=ls.get('payments'); const products=ls.get('products');
+  const overdue = sales.filter(s=> s.payType==='Kredit' && !s.paid && s.dueDate && (new Date(s.dueDate) < new Date(Date.now()-24*3600*1000)) );
+  const revenue = sum(sales.map(s=>s.total));
+  const cogs = sum(sales.flatMap(s=> s.items.map(it=> it.cost*it.qty)));
+  const expenses = sum(ls.get('cash').filter(c=>c.type==='mexaric').map(c=>c.amount));
+  const profit = revenue - cogs - expenses;
+  const d = card('Hesabatlar', `
+    <div class="row">
+      <div class="col-6">
+        <div class="hl">Mənfəət/Zərər (təxmini): <b class="sum">${fmt(profit)}</b> AZN <span class="tag">Gəlir: ${fmt(revenue)} | COGS: ${fmt(cogs)} | Xərc: ${fmt(expenses)}</span></div>
+      </div>
+      <div class="col-6">
+        <div class="hl">Gecikən kreditlər: <b>${overdue.length}</b> əməliyyat</div>
+      </div>
+    </div>
+    <h3>Anbar qalığı</h3>
+    <table><thead><tr><th>SKU</th><th>Ad</th><th>Anbar</th><th>Maya</th><th>Satış</th></tr></thead><tbody>
+      ${products.map(p=>`<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.stock||0}</td><td>${fmt(p.cost||0)}</td><td>${fmt(p.price||0)}</td></tr>`).join('')}
+    </tbody></table>
+    <h3>Gecikmələr</h3>
+    <table><thead><tr><th>Satış ID</th><th>Müştəri</th><th>Son ödəmə</th><th>Qalıq</th></tr></thead><tbody id="ovT"></tbody></table>
+  `);
+  view.appendChild(d);
+  const customers=ls.get('customers');
+  $('#ovT').innerHTML = overdue.map(s=>{
+    const paid = sum(ls.get('payments').filter(p=>p.saleId===s.id).map(p=>p.amount));
+    const remain = s.total - paid;
+    return `<tr><td>${s.id}</td><td>${customers.find(c=>c.id===s.customerId)?.name||''}</td><td>${s.dueDate}</td><td>${fmt(remain)}</td></tr>`;
+  }).join('');
+}
 
-      const extra = $('#medaxilExtra');
-      function renderExtra(){
-        const val = $('#medaxilType').value;
-        if(val === 'Kredit ödənişi'){
-          extra.innerHTML = `
-            <label class="text-sm">Kredit müqavilə №
-              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Məs: BT 13196" />
-            </label>
-            <label class="text-sm">Ödəniş periodu
-              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
-                <option>Həftəlik</option>
-                <option>Aylıq</option>
-              </select>
-            </label>`;
-        }else{
-          extra.innerHTML = `
-            <label class="text-sm">Qəbz №
-              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Qəbz nömrəsi" />
-            </label>
-            <label class="text-sm">Ödəniş kanalı
-              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
-                <option>Nağd</option>
-                <option>POS</option>
-                <option>Bank köçürmə</option>
-              </select>
-            </label>`;
-        }
-      }
-      renderExtra();
-      $('#medaxilType').addEventListener('change', renderExtra);
-    }
+// ==== Parametrlər ====
+function settingsView(){
+  const set=ls.get('settings');
+  const d = card('Parametrlər', `
+    ${inputRow([
+      {span:6,label:'Şirkət adı', html:`<input id="stName" value="${set.company}">`},
+      {span:2,label:'Valyuta', html:`<input id="stCur" value="${set.currency}">`},
+      {span:2,label:'ƏDV (%)', html:`<input type="number" id="stVat" value="${set.vat}">`},
+      {span:2,label:' ', html:`<button class="btn" id="stSave">Yadda saxla</button>`},
+    ])}
+  `); view.appendChild(d);
+  $('#stSave').onclick=()=>{ set.company=$('#stName').value.trim(); set.currency=$('#stCur').value.trim(); set.vat=Number($('#stVat').value||0); ls.set('settings',set); alert('Yadda saxlandı'); };
+}
 
-    function renderMexaricForm(){
-      const form = $('#opForm');
-      form.innerHTML = `
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <label class="text-sm">Kimə (Təchizatçı)
-            <select class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">${selectOptions(SUPPLIERS)}</select>
-          </label>
-          <label class="text-sm">Əməliyyat növü
-            <select id="mexaricType" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2">
-              <option>Təchizatçı ödənişi</option>
-              <option>Xərc</option>
-            </select>
-          </label>
-        </div>
-        <div id="mexaricExtra" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
-        ${commonFields()}`;
+// ==== Backup/Restore ====
+$('#backupBtn').onclick=()=>{
+  const data={customers:ls.get('customers'), suppliers:ls.get('suppliers'), products:ls.get('products'), sales:ls.get('sales'), purchases:ls.get('purchases'), cash:ls.get('cash'), payments:ls.get('payments'), employees:ls.get('employees'), settings:ls.get('settings')};
+  const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='erp-lite-backup.json'; a.click();
+}
+$('#restoreBtn').onclick=()=>{
+  const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=e=>{
+    const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ const data=JSON.parse(r.result);
+      Object.keys(data).forEach(k=> ls.set(k,data[k]) ); alert('Bərpa olundu'); location.reload(); }catch(err){ alert('Fayl xətalı'); } }; r.readAsText(f);
+  }; inp.click();
+}
 
-      const extra = $('#mexaricExtra');
-      function renderExtra(){
-        const val = $('#mexaricType').value;
-        if(val === 'Təchizatçı ödənişi'){
-          extra.innerHTML = `
-            <label class="text-sm">Sənəd № / Faktura
-              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Faktura nömrəsi" />
-            </label>
-            <label class="text-sm">Ödəniş kanalı
-              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
-                <option>Nağd</option>
-                <option>Bank köçürmə</option>
-              </select>
-            </label>`;
-        }else{
-          extra.innerHTML = `
-            <label class="text-sm">Xərc kateqoriyası
-              <select class="mt-1 rounded-lg border border-slate-300 px-3 py-2">
-                <option>İcarə</option>
-                <option>Kommunal</option>
-                <option>Nəqliyyat</option>
-                <option>Digər</option>
-              </select>
-            </label>
-            <label class="text-sm">Qəbz / Sənəd
-              <input type="text" class="mt-1 rounded-lg border border-slate-300 px-3 py-2" placeholder="Qəbz nömrəsi" />
-            </label>`;
-        }
-      }
-      renderExtra();
-      $('#mexaricType').addEventListener('change', renderExtra);
-    }
+// ==== Router ====
+function render(tab){
+  activate(tab); view.innerHTML='';
+  if(tab==='dashboard') dash();
+  if(tab==='customers') customersView();
+  if(tab==='suppliers') suppliersView();
+  if(tab==='products') productsView();
+  if(tab==='sales') salesView();
+  if(tab==='salesList') salesList();
+  if(tab==='purchases') purchasesView();
+  if(tab==='purchasesList') purchasesList();
+  if(tab==='cash') cashView();
+  if(tab==='reports') reportsView();
+  if(tab==='employees') employeesView();
+  if(tab==='settings') settingsView();
+}
 
-    // !!! FIX: Tarixçə render funksiyası əlavə edildi
-    function renderTarixce(){
-      const box = $('#kassaContent');
-      box.innerHTML = `
-        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-          <h3 class="font-semibold mb-4">Əməliyyat tarixçəsi</h3>
-          <div class="overflow-x-auto">
-            <table class="min-w-full text-sm" id="historyTable">
-              <thead>
-                <tr class="text-left text-slate-600">
-                  <th class="py-2 pr-4">Tarix</th>
-                  <th class="py-2 pr-4">Tip</th>
-                  <th class="py-2 pr-4">Alt tip</th>
-                  <th class="py-2 pr-4">Tərəf</th>
-                  <th class="py-2 pr-4">Məbləğ</th>
-                  <th class="py-2 pr-4">Qeyd</th>
-                </tr>
-              </thead>
-              <tbody id="historyTbody" class="divide-y divide-slate-200"></tbody>
-            </table>
-          </div>
-          <p id="emptyHistory" class="hidden text-slate-500 text-sm mt-3">Məlumat yoxdur.</p>
-        </div>`;
-
-      function azn(v){ return new Intl.NumberFormat('az-AZ', { style: 'currency', currency: 'AZN' }).format(v); }
-      function withinRange(d, from, to){
-        const x = new Date(d).getTime();
-        if (from && x < from) return false;
-        if (to && x > to) return false;
-        return true;
-      }
-
-      // Cədvəli doldur
-      window.renderHistoryTable = function(data){
-        const tb = $('#historyTbody');
-        tb.innerHTML = '';
-        if (!data || !data.length){ $('#emptyHistory').classList.remove('hidden'); return; }
-        $('#emptyHistory').classList.add('hidden');
-        data.forEach(r=>{
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td class="py-2 pr-4">${new Date(r.date).toLocaleString('az-AZ')}</td>
-            <td class="py-2 pr-4">${r.type}</td>
-            <td class="py-2 pr-4">${r.subType||'-'}</td>
-            <td class="py-2 pr-4">${r.party}</td>
-            <td class="py-2 pr-4">${azn(r.amount)}</td>
-            <td class="py-2 pr-4">${r.note||''}</td>`;
-          tb.appendChild(tr);
-        });
-      }
-
-      // Filter funksiyası – Axtar düyməsi bunu çağıracaq
-      window.applyHistoryFilter = function(){
-        const fStr = $('#fromDate')?.value || '';
-        const tStr = $('#toDate')?.value || '';
-        const from = fStr ? new Date(`${fStr}T00:00:00`).getTime() : null;
-        const to = tStr ? new Date(`${tStr}T23:59:59`).getTime() : null;
-        const filtered = TRANSACTIONS.filter(r => withinRange(r.date, from, to));
-        window.renderHistoryTable(filtered);
-      }
-
-      // İlk render – hamısını göstər
-      window.renderHistoryTable(TRANSACTIONS);
-    }
-
-    // --- DEV TESTS (istəyə görə çalışır) ---
-    // URL-ə ?runTests=1 əlavə etsən, aşağıdakı sadə testlər işə düşəcək
-    (function devTests(){
-      const params = new URLSearchParams(location.search);
-      if (!params.get('runTests')) return; // yalnız istəyə görə
-      try {
-        console.assert(typeof renderCashDesk === 'function', 'renderCashDesk mövcud deyil');
-        renderCashDesk();
-        console.assert(typeof renderTarixce === 'function', 'renderTarixce mövcud deyil');
-        $('#btnTarixce').click();
-        console.assert($('#historyTable'), 'Tarixçə cədvəli yaranmadı');
-        // Test: filter
-        const today = new Date().toISOString().slice(0,10);
-        $('#fromDate').value = today;
-        $('#toDate').value = today;
-        $('#searchOps').click(); // applyHistoryFilter də çağırılmalıdır
-        console.assert($$('#historyTbody tr').length >= 0, 'Filter işləmir');
-        console.log('%cTESTS PASSED','color:green');
-      } catch (e){
-        console.error('TEST FAILED', e);
-      }
-    })();
-  </script>
+// İlk açılış
+render('dashboard');
+</script>
 </body>
 </html>
