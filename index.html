@@ -1,602 +1,199 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ERP Lite — Satış & Anbar & Kassa</title>
-<style>
-  :root{
-    --bg:#f6f8fb; --text:#0b1220; --muted:#5b677e; --card:#ffffff; --border:#e4e8f0; --primary:#dc2626; --ok:#16a34a; --warn:#b45309;
-    --ring:#60a5fa; --shadow:0 10px 26px rgba(2,6,23,.06); --radius:16px;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial}
-  header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#fff,rgba(255,255,255,.92));border-bottom:1px solid var(--border);backdrop-filter:saturate(1.4) blur(6px)}
-  .bar{max-width:1200px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center}
-  .brand{font-weight:800;letter-spacing:.4px}
-  .nav{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
-  .btn{appearance:none;border:1px solid var(--border);background:#fff;border-radius:999px;padding:8px 12px;cursor:pointer;box-shadow:var(--shadow);display:inline-flex;align-items:center;gap:8px}
-  .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
-  .btn.ghost{background:#fff}
-  .btn.small{padding:6px 10px;font-size:12px}
-  .wrap{max-width:1200px;margin:16px auto;padding:0 14px 40px}
-  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
-  .card{grid-column:span 12;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
-  @media(min-width:900px){.card.half{grid-column:span 6}}
-  h2{margin:4px 0 12px 0;font-size:18px}
-  h3{margin:8px 0 8px 0;font-size:15px;color:var(--muted)}
-  label{font-size:12px;color:var(--muted)}
-  input,select,textarea{width:100%;padding:10px;border-radius:12px;border:1px solid var(--border);background:#fff}
-  .row{display:grid;grid-template-columns:repeat(12,1fr);gap:10px;margin:8px 0}
-  .col-3{grid-column:span 3}.col-4{grid-column:span 4}.col-6{grid-column:span 6}.col-8{grid-column:span 8}.col-9{grid-column:span 9}.col-12{grid-column:span 12}
-  table{width:100%;border-collapse:collapse}
-  th,td{border-bottom:1px solid var(--border);padding:8px;text-align:left}
-  .pill{display:inline-block;border:1px solid var(--border);background:#f7f7fb;border-radius:999px;padding:2px 8px;font-size:12px;color:#374151}
-  .status.ok{color:var(--ok)}.status.warn{color:var(--warn)}
-  .tag{font-size:11px;color:#334155;background:#eef2ff;border:1px solid #c7d2fe;border-radius:999px;padding:3px 8px}
-  .hl{background:#fff7ed;border:1px dashed #fdba74;padding:6px 8px;border-radius:10px}
-  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-  .right{margin-left:auto}
-  .sum{font-weight:700}
-  .kbd{font:12px/1.1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#111827;color:#fff;padding:2px 6px;border-radius:6px}
-  canvas{width:100%;height:220px;border:1px solid var(--border);border-radius:12px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xatırlatma Proqramı</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 12px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #reminder-list {
+            margin-top: 20px;
+            width: 100%;
+            list-style: none;
+            padding: 0;
+        }
+        .reminder-item {
+            background-color: #e9e9e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .reminder-item .details {
+            display: flex;
+            flex-direction: column;
+        }
+        .reminder-item .details .title {
+            font-weight: bold;
+            color: #333;
+        }
+        .reminder-item .details .time {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <div class="bar">
-    <div class="brand">ERP Lite</div>
-    <nav class="nav" id="nav"></nav>
-    <button class="btn small ghost" id="backupBtn">Yedəklə</button>
-    <button class="btn small ghost" id="restoreBtn">Bərpa et</button>
-    <button class="btn small" onclick="localStorage.clear();location.reload()">Sıfırla</button>
-  </div>
-</header>
 
-<div class="wrap">
-  <div class="grid" id="view">
-    <!-- Dinamik bölmələr buraya render olunur -->
-  </div>
+<div class="container">
+    <h1>Xatırlatma Proqramı</h1>
+    <form id="reminder-form">
+        <label for="reminder-title">Xatırlatma Adı:</label>
+        <input type="text" id="reminder-title" required>
+
+        <label for="reminder-time">Tarix və Vaxt:</label>
+        <input type="datetime-local" id="reminder-time" required>
+
+        <button type="submit">Əlavə et</button>
+    </form>
+    
+    <hr style="margin: 20px 0;">
+    
+    <h2>Xatırlatmalarınız</h2>
+    <ul id="reminder-list"></ul>
 </div>
 
 <script>
-/**
- * ERP Lite — Rustam üçün ilkin işlək prototip (localStorage backend)
- * Modullar: Müştərilər, Tədarükçülər, Məhsullar, Satış, Alış, Kassa (Mədaxil/Məxaric), Ödənişlər,
- * Hesabatlar (Anbar, Satış/Alış statistikası, Gecikmələr), Əməkdaşlar (maaş/bonus), Parametrlər.
- * Tək fayl, offline işləyir. Export/Import JSON yedəkləmə var.
- */
+    const form = document.getElementById('reminder-form');
+    const reminderList = document.getElementById('reminder-list');
+    
+    // Səsli bildiriş üçün obyekt
+    const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); 
 
-// ==== Yardımçı util-lər ====
-const $ = (sel,root=document)=>root.querySelector(sel);
-const $$= (sel,root=document)=>Array.from(root.querySelectorAll(sel));
-const fmt = n=> (Number(n||0)).toLocaleString('az-AZ', {minimumFractionDigits:2, maximumFractionDigits:2});
-const today = ()=> new Date().toISOString().slice(0,10);
-const uid = (p='ID')=> p+"_"+Math.random().toString(36).slice(2,9);
-const sum = arr => arr.reduce((a,b)=>a+Number(b||0),0);
-const ls = {
-  get:k=> JSON.parse(localStorage.getItem(k)||'null'),
-  set:(k,v)=> localStorage.setItem(k, JSON.stringify(v)),
-  init:(k,def)=> { if(!ls.get(k)) ls.set(k,def); },
-}
+    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
 
-// ==== İlkin data ==== 
-ls.init('customers', []);
-ls.init('suppliers', []);
-ls.init('products', []);
-ls.init('sales', []);      // {id,date,customerId,items:[{sku,qty,price,cost,disc}], payType, dueDate, paid, total}
-ls.init('purchases', []);  // {id,date,supplierId,items:[{sku,qty,cost,price}], payType, total}
-ls.init('cash', []);       // {id,date,type:'medaxil'|'mexaric', account, amount, note, ref}
-ls.init('payments', []);   // {id,date,customerId, saleId, amount}
-ls.init('employees', []);  // {id,fullname,role,salary,bonus}
-ls.init('settings', {company:"Baktel/ Bakfon", currency:"AZN", vat:0});
-
-// ==== Naviqasiya ====
-const TABS = [
-  {id:'dashboard', title:'İdarə paneli'},
-  {id:'customers', title:'Müştərilər'},
-  {id:'suppliers', title:'Tədarükçülər'},
-  {id:'products',  title:'Məhsullar'},
-  {id:'sales',     title:'Satış (Nağd/Kredit/Post/Korporativ)'},
-  {id:'purchases', title:'Alış'},
-  {id:'cash',      title:'Kassa — Mədaxil/Məxaric'},
-  {id:'reports',   title:'Hesabatlar'},
-  {id:'employees', title:'Əməkdaşlar'},
-  {id:'settings',  title:'Parametrlər'}
-];
-
-const nav = $('#nav');
-TABS.forEach(t=>{
-  const b=document.createElement('button');
-  b.className='btn ghost small';
-  b.textContent=t.title; b.onclick=()=>render(t.id);
-  b.id='tab-'+t.id; nav.appendChild(b);
-});
-
-function activate(tab){
-  TABS.forEach(t=> $('#tab-'+t.id).classList.remove('primary'));
-  $('#tab-'+tab).classList.add('primary');
-}
-
-// ==== Render kökü ====
-const view = $('#view');
-function card(title, inner, cls=''){
-  const d=document.createElement('div');
-  d.className='card '+cls; d.innerHTML = `<h2>${title}</h2>${inner||''}`; return d;
-}
-function inputRow(cols){
-  return `<div class="row">${cols.map(c=>`<div class="col-${c.span||12}"><label>${c.label||''}</label>${c.html}</div>`).join('')}</div>`;
-}
-
-// ==== Dashboard ====
-function dash(){
-  const sales=ls.get('sales'); const purchases=ls.get('purchases'); const cash=ls.get('cash');
-  const revenue=sum(sales.map(s=>s.total||0));
-  const spend =sum(purchases.map(p=>p.total||0));
-  const cashBal = sum(cash.map(c=> c.type==='medaxil'?c.amount:-c.amount ));
-  const profit = revenue - spend;
-  const overdue = sales.filter(s=> s.payType==='Kredit' && !s.paid && s.dueDate && (new Date(s.dueDate) < new Date(Date.now()-24*3600*1000)) ).length;
-  const d = card('İdarə paneli', `
-    <div class="row">
-      <div class="col-3"><div class="hl">Gəlir: <span class="sum">${fmt(revenue)}</span> <span class="tag">${ls.get('settings').currency}</span></div></div>
-      <div class="col-3"><div class="hl">Xərc/Alış: <span class="sum">${fmt(spend)}</span></div></div>
-      <div class="col-3"><div class="hl">Kassa qalığı: <span class="sum">${fmt(cashBal)}</span></div></div>
-      <div class="col-3"><div class="hl">Gecikən müşt.: <span class="sum">${overdue}</span></div></div>
-    </div>
-    <div class="toolbar"><span class="pill">Sürətli: </span>
-      <button class="btn small" onclick="render('sales')">Yeni Satış</button>
-      <button class="btn small" onclick="render('purchases')">Yeni Alış</button>
-      <button class="btn small" onclick="render('cash')">Mədaxil/Məxaric</button>
-    </div>
-    <canvas id="chart"></canvas>
-  `);
-  view.appendChild(d);
-  drawChart();
-}
-
-function drawChart(){
-  const ctx = $('#chart').getContext('2d');
-  // Sadə native chart (xətt) — son 7 gün satış cəmi
-  const sales=ls.get('sales');
-  const days=[...Array(7)].map((_,i)=>{
-    const d=new Date(Date.now()-(6-i)*24*3600*1000);return d.toISOString().slice(0,10);
-  });
-  const vals = days.map(day=> sum(sales.filter(s=>s.date===day).map(s=>s.total||0)) );
-  // Manual drawing
-  const W=ctx.canvas.width, H=ctx.canvas.height; ctx.clearRect(0,0,W,H);
-  const max=Math.max(1,...vals); const pad=24; const X=(i)=> pad + i*( (W-2*pad)/(days.length-1) );
-  const Y=(v)=> H-pad - (v/max)*(H-2*pad);
-  // axes
-  ctx.strokeStyle="#cbd5e1"; ctx.beginPath(); ctx.moveTo(pad, H-pad); ctx.lineTo(W-pad,H-pad); ctx.stroke();
-  // line
-  ctx.beginPath(); ctx.moveTo(X(0),Y(vals[0])); for(let i=1;i<vals.length;i++){ ctx.lineTo(X(i),Y(vals[i])); } ctx.strokeStyle="#111827"; ctx.lineWidth=2; ctx.stroke();
-  // points
-  vals.forEach((v,i)=>{ ctx.beginPath(); ctx.arc(X(i),Y(v),3,0,Math.PI*2); ctx.fillStyle="#111827"; ctx.fill(); });
-  // labels
-  ctx.fillStyle="#475569"; ctx.font="12px system-ui";
-  days.forEach((d,i)=>{ ctx.fillText(d.slice(5), X(i)-12, H-6); });
-}
-
-// ==== Müştərilər ====
-function customersView(){
-  const list = ls.get('customers');
-  const d = card('Müştərilər', `
-    <div class="toolbar">
-      <button class="btn small primary" id="addC">Yeni Müştəri</button>
-      <input id="cSearch" placeholder="Axtar: ad, FIN, tel"/>
-      <span class="right pill">Cəmi: ${list.length}</span>
-    </div>
-    <table><thead><tr><th>Ad</th><th>Tel</th><th>SV Seriya/№</th><th>FIN</th><th>Doğum</th><th>Ünvan</th><th></th></tr></thead>
-    <tbody id="cT"></tbody></table>
-  `);
-  view.appendChild(d);
-  const tbody = $('#cT');
-  function paint(rows){
-    tbody.innerHTML = rows.map(c=>`<tr>
-      <td>${c.name||''}</td><td>${c.phone||''}</td><td>${c.pass||''}</td><td>${c.fin||''}</td><td>${c.dob||''}</td><td>${c.addr||''}</td>
-      <td><button class="btn small" onclick="editCustomer('${c.id}')">Düzəlt</button></td>
-    </tr>`).join('');
-  }
-  paint(list);
-  $('#cSearch').oninput = (e)=>{
-    const q=e.target.value.toLowerCase();
-    paint(list.filter(c=> (c.name+" "+(c.fin||'')+" "+(c.phone||'')).toLowerCase().includes(q) ));
-  }
-  $('#addC').onclick=()=>editCustomer();
-}
-
-function editCustomer(id){
-  const list=ls.get('customers'); const c = id? list.find(x=>x.id===id): {id:uid('C'),name:'',phone:'',pass:'',fin:'',dob:'',addr:''};
-  const d = card('Müştəri kartı', `
-    ${inputRow([
-      {span:6,label:'Ad Soyad', html:`<input id="cName" value="${c.name}">`},
-      {span:3,label:'Telefon', html:`<input id="cPhone" value="${c.phone}">`},
-      {span:3,label:'Doğum tarixi', html:`<input type="date" id="cDob" value="${c.dob||''}">`},
-    ])}
-    ${inputRow([
-      {span:4,label:'Ş/V Seriya və №', html:`<input id="cPass" value="${c.pass}">`},
-      {span:4,label:'FIN', html:`<input id="cFin" value="${c.fin}">`},
-      {span:4,label:'Ünvan', html:`<input id="cAddr" value="${c.addr}">`},
-    ])}
-    <div class="toolbar">
-      <button class="btn primary" id="saveC">Yadda saxla</button>
-      <button class="btn" onclick="render('customers')">Geri</button>
-    </div>
-  `);
-  view.innerHTML=''; view.appendChild(d);
-  $('#saveC').onclick=()=>{
-    c.name=$('#cName').value.trim(); c.phone=$('#cPhone').value.trim(); c.dob=$('#cDob').value; c.pass=$('#cPass').value.trim(); c.fin=$('#cFin').value.trim(); c.addr=$('#cAddr').value.trim();
-    let arr=ls.get('customers'); const i=arr.findIndex(x=>x.id===c.id); if(i>-1) arr[i]=c; else arr.push(c); ls.set('customers',arr); render('customers');
-  }
-}
-
-// ==== Tədarükçülər ====
-function suppliersView(){
-  const list = ls.get('suppliers');
-  const d = card('Tədarükçülər', `
-    <div class="toolbar"><button class="btn small primary" id="addS">Yeni Tədarükçü</button><span class="right pill">${list.length} ədəd</span></div>
-    <table><thead><tr><th>Ad</th><th>Tel</th><th>Vergi/VÖEN</th><th>Qeyd</th><th></th></tr></thead><tbody id="sT"></tbody></table>
-  `); view.appendChild(d);
-  const tbody=$('#sT'); tbody.innerHTML=list.map(s=>`<tr><td>${s.name||''}</td><td>${s.phone||''}</td><td>${s.vat||''}</td><td>${s.note||''}</td><td><button class="btn small" onclick="editSupplier('${s.id}')">Düzəlt</button></td></tr>`).join('');
-  $('#addS').onclick=()=>editSupplier();
-}
-function editSupplier(id){
-  const list=ls.get('suppliers'); const s = id? list.find(x=>x.id===id): {id:uid('S'),name:'',phone:'',vat:'',note:''};
-  const d = card('Tədarükçü kartı', `
-    ${inputRow([
-      {span:6,label:'Ad', html:`<input id="sName" value="${s.name}">`},
-      {span:3,label:'Telefon', html:`<input id="sPhone" value="${s.phone}">`},
-      {span:3,label:'VÖEN', html:`<input id="sVat" value="${s.vat}">`},
-    ])}
-    ${inputRow([{span:12,label:'Qeyd', html:`<input id="sNote" value="${s.note}">`}])}
-    <div class="toolbar">
-      <button class="btn primary" id="saveS">Yadda saxla</button>
-      <button class="btn" onclick="render('suppliers')">Geri</button>
-    </div>
-  `);
-  view.innerHTML=''; view.appendChild(d);
-  $('#saveS').onclick=()=>{
-    s.name=$('#sName').value.trim(); s.phone=$('#sPhone').value.trim(); s.vat=$('#sVat').value.trim(); s.note=$('#sNote').value.trim();
-    let arr=ls.get('suppliers'); const i=arr.findIndex(x=>x.id===s.id); if(i>-1) arr[i]=s; else arr.push(s); ls.set('suppliers',arr); render('suppliers');
-  }
-}
-
-// ==== Məhsullar ====
-function productsView(){
-  const list = ls.get('products');
-  const d = card('Məhsullar', `
-    <div class="toolbar">
-      <button class="btn small primary" id="addP">Yeni Məhsul</button>
-      <input id="pSearch" placeholder="Axtar: SKU, ad"/>
-      <span class="right pill">${list.length} ədəd</span>
-    </div>
-    <table><thead><tr><th>SKU</th><th>Ad</th><th>Vahid</th><th>Satış qiyməti</th><th>Maya</th><th>Anbar</th><th></th></tr></thead>
-    <tbody id="pT"></tbody></table>
-  `); view.appendChild(d);
-  const tbody=$('#pT');
-  function paint(rows){
-    tbody.innerHTML=rows.map(p=>`<tr>
-      <td>${p.sku}</td><td>${p.name}</td><td>${p.unit||'əd'}</td><td>${fmt(p.price)}</td><td>${fmt(p.cost||0)}</td><td>${p.stock||0}</td>
-      <td><button class="btn small" onclick="editProduct('${p.id}')">Düzəlt</button></td>
-    </tr>`).join('');
-  }
-  paint(list);
-  $('#pSearch').oninput=(e)=>{
-    const q=e.target.value.toLowerCase(); paint(list.filter(p=> (p.sku+" "+p.name).toLowerCase().includes(q) ));
-  }
-  $('#addP').onclick=()=>editProduct();
-}
-function editProduct(id){
-  const list=ls.get('products'); const p = id? list.find(x=>x.id===id): {id:uid('P'),sku:'',name:'',unit:'əd',price:0,cost:0,stock:0};
-  const d = card('Məhsul kartı', `
-    ${inputRow([
-      {span:3,label:'SKU', html:`<input id="pSku" value="${p.sku}">`},
-      {span:5,label:'Ad', html:`<input id="pName" value="${p.name}">`},
-      {span:2,label:'Vahid', html:`<input id="pUnit" value="${p.unit}">`},
-      {span:2,label:'Anbar say', html:`<input type="number" id="pStock" value="${p.stock}">`},
-    ])}
-    ${inputRow([
-      {span:3,label:'Satış qiyməti', html:`<input type="number" step="0.01" id="pPrice" value="${p.price}">`},
-      {span:3,label:'Maya (alış dəy.)', html:`<input type="number" step="0.01" id="pCost" value="${p.cost}">`},
-      {span:6,label:'Qeyd', html:`<input id="pNote" value="${p.note||''}">`},
-    ])}
-    <div class="toolbar">
-      <button class="btn primary" id="saveP">Yadda saxla</button>
-      <button class="btn" onclick="render('products')">Geri</button>
-    </div>
-  `);
-  view.innerHTML=''; view.appendChild(d);
-  $('#saveP').onclick=()=>{
-    p.sku=$('#pSku').value.trim(); p.name=$('#pName').value.trim(); p.unit=$('#pUnit').value.trim(); p.stock=Number($('#pStock').value||0);
-    p.price=Number($('#pPrice').value||0); p.cost=Number($('#pCost').value||0); p.note=$('#pNote').value.trim();
-    let arr=ls.get('products'); const i=arr.findIndex(x=>x.id===p.id); if(i>-1) arr[i]=p; else arr.push(p); ls.set('products',arr); render('products');
-  }
-}
-
-// ==== Satış ====
-function salesView(){
-  const customers=ls.get('customers'); const products=ls.get('products');
-  const d = card('Satış əməliyyatı', `
-    ${inputRow([
-      {span:3,label:'Tarix', html:`<input type="date" id="sDate" value="${today()}">`},
-      {span:4,label:'Müştəri', html:`<select id="sCustomer">${['','...'].map(()=>'' )}${customers.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select>`},
-      {span:3,label:'Ödəmə tipi', html:`<select id="sPay"><option>Nağd</option><option>Kredit</option><option>Post</option><option>Korporativ</option></select>`},
-      {span:2,label:'Son ödəmə (kredit)', html:`<input type="date" id="sDue">`},
-    ])}
-    <h3>Məhsul əlavə et</h3>
-    ${inputRow([
-      {span:3,label:'Məhsul', html:`<select id="sSku">${products.map(p=>`<option value="${p.id}">${p.sku} — ${p.name}</option>`).join('')}</select>`},
-      {span:2,label:'Say', html:`<input type="number" id="sQty" value="1">`},
-      {span:2,label:'Qiymət', html:`<input type="number" step="0.01" id="sPrice">`},
-      {span:2,label:'Endirim', html:`<input type="number" step="0.01" id="sDisc" value="0">`},
-      {span:3,label:' ', html:`<button class="btn" id="addItem">Sətir əlavə et</button>`},
-    ])}
-    <table><thead><tr><th>SKU</th><th>Ad</th><th>Say</th><th>Qiymət</th><th>Endirim</th><th>Cəm</th><th></th></tr></thead><tbody id="sItems"></tbody></table>
-    <div class="toolbar">
-      <span class="pill">Cəm: <b id="sTotal">0.00</b> AZN</span>
-      <button class="btn primary right" id="saveSale">Satışı yadda saxla</button>
-    </div>
-  `);
-  view.appendChild(d);
-  const items=[]; const tbody=$('#sItems'); const priceField=$('#sPrice');
-  function paint(){
-    tbody.innerHTML= items.map((it,i)=>`<tr><td>${it.sku}</td><td>${it.name}</td><td>${it.qty}</td><td>${fmt(it.price)}</td><td>${fmt(it.disc)}</td><td>${fmt((it.qty*it.price)-it.disc)}</td><td><button class="btn small" onclick="_delItem(${i})">Sil</button></td></tr>`).join('');
-    $('#sTotal').textContent= fmt(items.reduce((a,it)=> a + (it.qty*it.price - it.disc), 0));
-  }
-  window._delItem=(i)=>{ items.splice(i,1); paint(); };
-  // auto-fill price from product
-  function syncPrice(){
-    const pid=$('#sSku').value; const p=ls.get('products').find(x=>x.id===pid); if(p) priceField.value=p.price||0;
-  }
-  syncPrice(); $('#sSku').onchange=syncPrice;
-  $('#addItem').onclick=()=>{
-    const pid=$('#sSku').value; const p=ls.get('products').find(x=>x.id===pid); if(!p) return;
-    const qty=Number($('#sQty').value||1); const price=Number($('#sPrice').value||p.price||0); const disc=Number($('#sDisc').value||0);
-    items.push({productId:p.id, sku:p.sku, name:p.name, qty, price, disc, cost:p.cost||0}); paint();
-  }
-  $('#saveSale').onclick=()=>{
-    if(!$('#sCustomer').value){ alert('Müştəri seçin'); return; }
-    if(items.length===0){ alert('Ən azı bir sətir əlavə edin'); return; }
-    const sale={ id:uid('SL'), date:$('#sDate').value, customerId:$('#sCustomer').value, items, payType:$('#sPay').value, dueDate:$('#sDue').value||null, paid:($('#sPay').value!=='Kredit'), total: items.reduce((a,it)=>a+(it.qty*it.price - it.disc),0) };
-    let sales=ls.get('sales'); sales.push(sale); ls.set('sales',sales);
-    // anbar düşümü
-    let prods=ls.get('products'); items.forEach(it=>{ const pr=prods.find(x=>x.id===it.productId); if(pr) pr.stock = Number(pr.stock||0) - Number(it.qty||0); }); ls.set('products',prods);
-    // kassa (nağd/post/korporativ dərhal mədaxil)
-    if(sale.payType!=='Kredit'){
-      let cash=ls.get('cash'); cash.push({id:uid('K'), date:sale.date, type:'medaxil', account:sale.payType, amount:sale.total, note:'Satış '+sale.id, ref:sale.id}); ls.set('cash',cash);
+    // Bildiriş üçün icazə istəyir
+    function requestNotificationPermission() {
+        if (!("Notification" in window)) {
+            alert("Bu brauzer bildirişləri dəstəkləmir.");
+        } else if (Notification.permission === "granted") {
+            console.log("Bildirişlər üçün icazə artıq verilib.");
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    console.log("Bildirişlər üçün icazə verildi.");
+                }
+            });
+        }
     }
-    alert('Satış qeyd olundu'); render('salesList');
-  }
-}
 
-function salesList(){
-  const list=ls.get('sales'); const customers=ls.get('customers');
-  const d = card('Satışlar', `
-    <div class="toolbar">
-      <button class="btn small" onclick="render('sales')">Yeni satış</button>
-      <input id="sFind" placeholder="Axtar: müştəri, ID"/>
-      <span class="right pill">${list.length} əməliyyat</span>
-    </div>
-    <table><thead><tr><th>ID</th><th>Tarix</th><th>Müştəri</th><th>Tip</th><th>Son ödəmə</th><th>Cəm</th><th>Vəziyyət</th><th></th></tr></thead><tbody id="sT"></tbody></table>
-  `); view.appendChild(d);
-  const tbody=$('#sT');
-  function row(s){
-    const c=customers.find(x=>x.id===s.customerId); const status = (s.payType==='Kredit' && !s.paid)? (new Date(s.dueDate)<new Date(Date.now()-24*3600*1000)?'<span class="status warn">Gecikib</span>':'<span class="status ok">Aktiv</span>') : '<span class="status ok">Bağlı</span>';
-    return `<tr><td>${s.id}</td><td>${s.date}</td><td>${c?c.name:''}</td><td>${s.payType}</td><td>${s.dueDate||''}</td><td>${fmt(s.total)}</td><td>${status}</td><td><button class="btn small" onclick="collect('${s.id}')">Ödəniş</button></td></tr>`;
-  }
-  function paint(rows){ tbody.innerHTML = rows.map(row).join(''); }
-  paint(list);
-  $('#sFind').oninput=(e)=>{
-    const q=e.target.value.toLowerCase();
-    paint(list.filter(s=> (s.id+" "+(customers.find(c=>c.id===s.customerId)?.name||'')).toLowerCase().includes(q) ));
-  }
-}
+    function checkReminders() {
+        const now = new Date().getTime();
+        reminders.forEach((reminder, index) => {
+            const reminderTime = new Date(reminder.time).getTime();
+            if (reminderTime <= now) {
+                if (Notification.permission === "granted") {
+                    new Notification('Xatırlatma!', {
+                        body: reminder.title,
+                        icon: 'https://cdn.pixabay.com/photo/2016/03/31/19/50/bell-1295325_1280.png'
+                    });
+                }
+                audio.play();
+                
+                // Xatırlatma bildirişi verildikdən sonra yaddaşdan silinir
+                reminders.splice(index, 1);
+                localStorage.setItem('reminders', JSON.stringify(reminders));
+                renderReminders();
+            }
+        });
+    }
 
-function collect(saleId){
-  const sale=ls.get('sales').find(s=>s.id===saleId); const cust=ls.get('customers').find(c=>c.id===sale.customerId);
-  const paidAmount = sum(ls.get('payments').filter(p=>p.saleId===saleId).map(p=>p.amount));
-  const remain = (sale.total - paidAmount);
-  const d = card('Kredit ödənişi', `
-    <div class="hl">Müştəri: <b>${cust?.name||''}</b> — Satış: <span class="kbd">${sale.id}</span> — Qalıq: <b>${fmt(remain)}</b> AZN</div>
-    ${inputRow([
-      {span:3,label:'Tarix', html:`<input type="date" id="pDate" value="${today()}">`},
-      {span:3,label:'Məbləğ', html:`<input type="number" id="pAmt" value="${remain}">`},
-      {span:4,label:'Qeyd', html:`<input id="pNote" placeholder="Ödəniş qeydi">`},
-      {span:2,label:' ', html:`<button class="btn" id="pSave">Təsdiq</button>`},
-    ])}
-  `);
-  view.innerHTML=''; view.appendChild(d);
-  $('#pSave').onclick=()=>{
-    const amt=Number($('#pAmt').value||0); if(amt<=0) return alert('Məbləğ xətalı');
-    let pays=ls.get('payments'); pays.push({id:uid('PM'), date:$('#pDate').value, customerId:sale.customerId, saleId:sale.id, amount:amt}); ls.set('payments',pays);
-    // kassa mədaxil
-    let cash=ls.get('cash'); cash.push({id:uid('K'), date:$('#pDate').value, type:'medaxil', account:'Kredit', amount:amt, note:'Kredit ödənişi '+sale.id, ref:sale.id}); ls.set('cash',cash);
-    if(amt>=remain){ sale.paid=true; let sales=ls.get('sales'); const i=sales.findIndex(x=>x.id===sale.id); sales[i]=sale; ls.set('sales',sales); }
-    alert('Ödəniş qeyd olundu'); render('salesList');
-  }
-}
+    function renderReminders() {
+        reminderList.innerHTML = '';
+        reminders.forEach(reminder => {
+            const li = document.createElement('li');
+            li.className = 'reminder-item';
+            
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'details';
+            
+            const titleSpan = document.createElement('span');
+            titleSpan.className = 'title';
+            titleSpan.textContent = reminder.title;
+            
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'time';
+            timeSpan.textContent = new Date(reminder.time).toLocaleString('az-AZ');
 
-// ==== Alış ====
-function purchasesView(){
-  const suppliers=ls.get('suppliers'); const products=ls.get('products');
-  const d = card('Alış əməliyyatı', `
-    ${inputRow([
-      {span:3,label:'Tarix', html:`<input type="date" id="bDate" value="${today()}">`},
-      {span:5,label:'Tədarükçü', html:`<select id="bSup">${suppliers.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select>`},
-      {span:4,label:'Ödəmə tipi', html:`<select id="bPay"><option>Nağd</option><option>Korporativ</option></select>`},
-    ])}
-    <h3>Məhsul əlavə et</h3>
-    ${inputRow([
-      {span:3,label:'Məhsul', html:`<select id="bSku">${products.map(p=>`<option value="${p.id}">${p.sku} — ${p.name}</option>`).join('')}</select>`},
-      {span:2,label:'Say', html:`<input type="number" id="bQty" value="1">`},
-      {span:2,label:'Maya (alış)', html:`<input type="number" step="0.01" id="bCost">`},
-      {span:2,label:'Satış qiyməti', html:`<input type="number" step="0.01" id="bPrice">`},
-      {span:3,label:' ', html:`<button class="btn" id="bAdd">Sətir əlavə et</button>`},
-    ])}
-    <table><thead><tr><th>SKU</th><th>Ad</th><th>Say</th><th>Maya</th><th>Satış qiyməti</th><th>Cəm</th><th></th></tr></thead><tbody id="bItems"></tbody></table>
-    <div class="toolbar">
-      <span class="pill">Cəm: <b id="bTotal">0.00</b> AZN</span>
-      <button class="btn primary right" id="saveBuy">Alışı yadda saxla</button>
-    </div>
-  `);
-  view.appendChild(d);
-  const items=[]; const tbody=$('#bItems');
-  function paint(){
-    tbody.innerHTML= items.map((it,i)=>`<tr><td>${it.sku}</td><td>${it.name}</td><td>${it.qty}</td><td>${fmt(it.cost)}</td><td>${fmt(it.price)}</td><td>${fmt(it.qty*it.cost)}</td><td><button class="btn small" onclick="_bDel(${i})">Sil</button></td></tr>`).join('');
-    $('#bTotal').textContent= fmt(items.reduce((a,it)=> a + (it.qty*it.cost), 0));
-  }
-  window._bDel=(i)=>{ items.splice(i,1); paint(); };
-  function syncDefaults(){
-    const pid=$('#bSku').value; const p=ls.get('products').find(x=>x.id===pid); if(p){ $('#bCost').value=p.cost||0; $('#bPrice').value=p.price||0; }
-  }
-  syncDefaults(); $('#bSku').onchange=syncDefaults;
-  $('#bAdd').onclick=()=>{
-    const pid=$('#bSku').value; const p=ls.get('products').find(x=>x.id===pid); if(!p) return;
-    const qty=Number($('#bQty').value||1); const cost=Number($('#bCost').value||0); const price=Number($('#bPrice').value||0);
-    items.push({productId:p.id, sku:p.sku, name:p.name, qty, cost, price}); paint();
-  }
-  $('#saveBuy').onclick=()=>{
-    if(!$('#bSup').value || items.length===0) return alert('Məlumatları tamamlayın');
-    const buy={ id:uid('PU'), date:$('#bDate').value, supplierId:$('#bSup').value, items, payType:$('#bPay').value, total: items.reduce((a,it)=>a+(it.qty*it.cost),0) };
-    let purchases=ls.get('purchases'); purchases.push(buy); ls.set('purchases',purchases);
-    // anbar artımı + maya/satış qiyməti yenilənməsi
-    let prods=ls.get('products'); items.forEach(it=>{ const pr=prods.find(x=>x.id===it.productId); if(pr){ pr.stock = Number(pr.stock||0) + Number(it.qty||0); pr.cost=it.cost; if(it.price>0) pr.price=it.price; }}); ls.set('products',prods);
-    // kassa mexaric (nağd)
-    if(buy.payType==='Nağd'){ let cash=ls.get('cash'); cash.push({id:uid('K'), date:buy.date, type:'mexaric', account:'Nağd', amount:buy.total, note:'Alış '+buy.id, ref:buy.id}); ls.set('cash',cash); }
-    alert('Alış qeyd olundu'); render('purchasesList');
-  }
-}
+            detailsDiv.appendChild(titleSpan);
+            detailsDiv.appendChild(timeSpan);
+            
+            li.appendChild(detailsDiv);
+            reminderList.appendChild(li);
+        });
+    }
 
-function purchasesList(){
-  const list=ls.get('purchases'); const sups=ls.get('suppliers');
-  const d = card('Alışlar', `
-    <div class="toolbar"><button class="btn small" onclick="render('purchases')">Yeni alış</button><span class="right pill">${list.length} əməliyyat</span></div>
-    <table><thead><tr><th>ID</th><th>Tarix</th><th>Tədarükçü</th><th>Cəm</th><th>Tip</th></tr></thead><tbody>${list.map(b=>`<tr><td>${b.id}</td><td>${b.date}</td><td>${sups.find(s=>s.id===b.supplierId)?.name||''}</td><td>${fmt(b.total)}</td><td>${b.payType}</td></tr>`).join('')}</tbody></table>
-  `); view.appendChild(d);
-}
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('reminder-title').value;
+        const time = document.getElementById('reminder-time').value;
 
-// ==== Kassa (Mədaxil/Məxaric) ====
-function cashView(){
-  const list=ls.get('cash');
-  const d = card('Kassa (Mədaxil/Məxaric)', `
-    ${inputRow([
-      {span:2,label:'Tarix', html:`<input type="date" id="kDate" value="${today()}">`},
-      {span:3,label:'Əməliyyat', html:`<select id="kType"><option value="medaxil">Mədaxil</option><option value="mexaric">Məxaric</option></select>`},
-      {span:3,label:'Hesab', html:`<select id="kAcc"><option>Nağd</option><option>Post</option><option>Korporativ</option><option>Kredit</option></select>`},
-      {span:2,label:'Məbləğ', html:`<input type="number" id="kAmt" value="0">`},
-      {span:2,label:'Qeyd', html:`<input id="kNote">`},
-    ])}
-    <div class="toolbar">
-      <button class="btn" id="kAdd">Əlavə et</button>
-      <span class="right pill">Qalıq: <b id="kBal">0.00</b> AZN</span>
-    </div>
-    <table><thead><tr><th>Tarix</th><th>Tip</th><th>Hesab</th><th>Məbləğ</th><th>Qeyd</th></tr></thead><tbody id="kT"></tbody></table>
-  `); view.appendChild(d);
-  const tbody=$('#kT');
-  function balance(){ return sum(list.map(c=> c.type==='medaxil'?c.amount:-c.amount )); }
-  function paint(){
-    $('#kBal').textContent=fmt(balance());
-    tbody.innerHTML=list.slice().reverse().map(c=>`<tr><td>${c.date}</td><td>${c.type}</td><td>${c.account}</td><td>${fmt(c.amount)}</td><td>${c.note||''}</td></tr>`).join('');
-  }
-  paint();
-  $('#kAdd').onclick=()=>{
-    const it={id:uid('K'), date:$('#kDate').value, type:$('#kType').value, account:$('#kAcc').value, amount:Number($('#kAmt').value||0), note:$('#kNote').value};
-    list.push(it); ls.set('cash',list); paint();
-  }
-}
+        if (title && time) {
+            const newReminder = { title, time };
+            reminders.push(newReminder);
+            localStorage.setItem('reminders', JSON.stringify(reminders));
+            renderReminders();
+            form.reset();
+        }
+    });
 
-// ==== Əməkdaşlar ====
-function employeesView(){
-  const list=ls.get('employees');
-  const d = card('Əməkdaşlar', `
-    <div class="toolbar"><button class="btn small primary" id="eAdd">Yeni əməkdaş</button><span class="right pill">${list.length} nəfər</span></div>
-    <table><thead><tr><th>Ad</th><th>Vəzifə</th><th>Maaş</th><th>Bonus</th></tr></thead><tbody id="eT"></tbody></table>
-  `); view.appendChild(d);
-  const tbody=$('#eT'); tbody.innerHTML=list.map(e=>`<tr><td>${e.fullname}</td><td>${e.role||''}</td><td>${fmt(e.salary||0)}</td><td>${fmt(e.bonus||0)}</td></tr>`).join('');
-  $('#eAdd').onclick=()=>{
-    const e={id:uid('E'), fullname:prompt('Ad Soyad?')||'', role:prompt('Vəzifə?')||'', salary:Number(prompt('Aylıq maaş?')||0), bonus:Number(prompt('Bonus?')||0)};
-    let arr=ls.get('employees'); arr.push(e); ls.set('employees',arr); render('employees');
-  }
-}
+    // Proqram ilk dəfə yüklənəndə və ya yeniləndə icazə istəyir
+    requestNotificationPermission();
 
-// ==== Hesabatlar ====
-function reportsView(){
-  const sales=ls.get('sales'); const purchases=ls.get('purchases'); const payments=ls.get('payments'); const products=ls.get('products');
-  const overdue = sales.filter(s=> s.payType==='Kredit' && !s.paid && s.dueDate && (new Date(s.dueDate) < new Date(Date.now()-24*3600*1000)) );
-  const revenue = sum(sales.map(s=>s.total));
-  const cogs = sum(sales.flatMap(s=> s.items.map(it=> it.cost*it.qty)));
-  const expenses = sum(ls.get('cash').filter(c=>c.type==='mexaric').map(c=>c.amount));
-  const profit = revenue - cogs - expenses;
-  const d = card('Hesabatlar', `
-    <div class="row">
-      <div class="col-6">
-        <div class="hl">Mənfəət/Zərər (təxmini): <b class="sum">${fmt(profit)}</b> AZN <span class="tag">Gəlir: ${fmt(revenue)} | COGS: ${fmt(cogs)} | Xərc: ${fmt(expenses)}</span></div>
-      </div>
-      <div class="col-6">
-        <div class="hl">Gecikən kreditlər: <b>${overdue.length}</b> əməliyyat</div>
-      </div>
-    </div>
-    <h3>Anbar qalığı</h3>
-    <table><thead><tr><th>SKU</th><th>Ad</th><th>Anbar</th><th>Maya</th><th>Satış</th></tr></thead><tbody>
-      ${products.map(p=>`<tr><td>${p.sku}</td><td>${p.name}</td><td>${p.stock||0}</td><td>${fmt(p.cost||0)}</td><td>${fmt(p.price||0)}</td></tr>`).join('')}
-    </tbody></table>
-    <h3>Gecikmələr</h3>
-    <table><thead><tr><th>Satış ID</th><th>Müştəri</th><th>Son ödəmə</th><th>Qalıq</th></tr></thead><tbody id="ovT"></tbody></table>
-  `);
-  view.appendChild(d);
-  const customers=ls.get('customers');
-  $('#ovT').innerHTML = overdue.map(s=>{
-    const paid = sum(ls.get('payments').filter(p=>p.saleId===s.id).map(p=>p.amount));
-    const remain = s.total - paid;
-    return `<tr><td>${s.id}</td><td>${customers.find(c=>c.id===s.customerId)?.name||''}</td><td>${s.dueDate}</td><td>${fmt(remain)}</td></tr>`;
-  }).join('');
-}
-
-// ==== Parametrlər ====
-function settingsView(){
-  const set=ls.get('settings');
-  const d = card('Parametrlər', `
-    ${inputRow([
-      {span:6,label:'Şirkət adı', html:`<input id="stName" value="${set.company}">`},
-      {span:2,label:'Valyuta', html:`<input id="stCur" value="${set.currency}">`},
-      {span:2,label:'ƏDV (%)', html:`<input type="number" id="stVat" value="${set.vat}">`},
-      {span:2,label:' ', html:`<button class="btn" id="stSave">Yadda saxla</button>`},
-    ])}
-  `); view.appendChild(d);
-  $('#stSave').onclick=()=>{ set.company=$('#stName').value.trim(); set.currency=$('#stCur').value.trim(); set.vat=Number($('#stVat').value||0); ls.set('settings',set); alert('Yadda saxlandı'); };
-}
-
-// ==== Backup/Restore ====
-$('#backupBtn').onclick=()=>{
-  const data={customers:ls.get('customers'), suppliers:ls.get('suppliers'), products:ls.get('products'), sales:ls.get('sales'), purchases:ls.get('purchases'), cash:ls.get('cash'), payments:ls.get('payments'), employees:ls.get('employees'), settings:ls.get('settings')};
-  const blob=new Blob([JSON.stringify(data,null,2)], {type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='erp-lite-backup.json'; a.click();
-}
-$('#restoreBtn').onclick=()=>{
-  const inp=document.createElement('input'); inp.type='file'; inp.accept='application/json'; inp.onchange=e=>{
-    const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ try{ const data=JSON.parse(r.result);
-      Object.keys(data).forEach(k=> ls.set(k,data[k]) ); alert('Bərpa olundu'); location.reload(); }catch(err){ alert('Fayl xətalı'); } }; r.readAsText(f);
-  }; inp.click();
-}
-
-// ==== Router ====
-function render(tab){
-  activate(tab); view.innerHTML='';
-  if(tab==='dashboard') dash();
-  if(tab==='customers') customersView();
-  if(tab==='suppliers') suppliersView();
-  if(tab==='products') productsView();
-  if(tab==='sales') salesView();
-  if(tab==='salesList') salesList();
-  if(tab==='purchases') purchasesView();
-  if(tab==='purchasesList') purchasesList();
-  if(tab==='cash') cashView();
-  if(tab==='reports') reportsView();
-  if(tab==='employees') employeesView();
-  if(tab==='settings') settingsView();
-}
-
-// İlk açılış
-render('dashboard');
+    // Hər saniyə xatırlatmaları yoxlayır
+    setInterval(checkReminders, 1000); 
+    
+    renderReminders();
 </script>
+
 </body>
 </html>
