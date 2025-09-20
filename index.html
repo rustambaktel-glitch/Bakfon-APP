@@ -20,7 +20,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
         }
         h1 {
             color: #2c3e50;
@@ -83,7 +83,8 @@
         }
         #payment-schedule {
             margin-top: 25px;
-            display: none; /* İlk başda gizli saxlayırıq */
+            display: none;
+            overflow-x: auto;
         }
         #payment-schedule h2 {
             text-align: center;
@@ -91,6 +92,7 @@
         }
         #schedule-table {
             width: 100%;
+            min-width: 600px;
             border-collapse: collapse;
             margin-top: 15px;
         }
@@ -147,7 +149,9 @@
             <thead>
                 <tr>
                     <th>Ay</th>
+                    <th>Ödəniş Tarixi</th>
                     <th>Ödəniş Məbləği</th>
+                    <th>Qalıq Borc</th>
                 </tr>
             </thead>
             <tbody>
@@ -172,7 +176,7 @@
             return;
         }
 
-        const remainingAmount = price - initialPayment;
+        let remainingAmount = price - initialPayment;
         const monthlyPayment = remainingAmount / months;
 
         const resultDiv = document.getElementById('result');
@@ -186,14 +190,31 @@
         resultDiv.style.display = 'block';
 
         // Ödəniş cədvəlini doldurur
-        scheduleTableBody.innerHTML = ''; // Əvvəlki məlumatları silir
+        scheduleTableBody.innerHTML = ''; 
+        const today = new Date();
+
         for (let i = 1; i <= months; i++) {
             const row = scheduleTableBody.insertRow();
-            const monthCell = row.insertCell(0);
-            const paymentCell = row.insertCell(1);
             
+            const monthCell = row.insertCell(0);
+            const dateCell = row.insertCell(1);
+            const paymentCell = row.insertCell(2);
+            const remainingCell = row.insertCell(3);
+
+            // Ödəniş tarixi hesablanması
+            let paymentDate = new Date(today.getFullYear(), today.getMonth() + i, today.getDate());
+            
+            // Son ayda yuvarlaqlaşdırma səhvlərini düzəldir
+            if (i === months) {
+                remainingAmount = 0;
+            } else {
+                remainingAmount -= monthlyPayment;
+            }
+
             monthCell.textContent = i;
+            dateCell.textContent = paymentDate.toLocaleDateString('az-AZ');
             paymentCell.textContent = `${monthlyPayment.toFixed(2)} AZN`;
+            remainingCell.textContent = `${remainingAmount.toFixed(2)} AZN`;
         }
 
         paymentScheduleDiv.style.display = 'block';
