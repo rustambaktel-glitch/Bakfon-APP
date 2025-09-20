@@ -3,196 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xatırlatma Proqramı</title>
+    <title>Kredit Kalkulyatoru</title>
     <style>
         body {
-            font-family: sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f6;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            flex-direction: column;
             padding: 20px;
-            background-color: #f4f4f9;
         }
         .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
         }
-        h1, h2 {
-            color: #333;
+        h1 {
+            color: #2c3e50;
             text-align: center;
+            margin-bottom: 25px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .input-group {
+            margin-bottom: 20px;
         }
         label {
-            font-weight: bold;
-            color: #555;
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
         }
-        input[type="text"], input[type="datetime-local"] {
+        input, select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 8px;
             box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
         }
         button {
-            padding: 12px;
-            background-color: #007BFF;
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #0056b3;
+            background-color: #2980b9;
         }
-        #reminder-list {
-            margin-top: 20px;
-            width: 100%;
-            list-style: none;
-            padding: 0;
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            border: 1px solid #dcdcdc;
+            text-align: center;
         }
-        .reminder-item {
-            background-color: #e9e9e9;
-            padding: 15px;
-            border-radius: 4px;
+        #result h2 {
+            color: #34495e;
             margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
-        .reminder-item .details {
-            display: flex;
-            flex-direction: column;
+        #result p {
+            font-size: 1.1em;
+            color: #555;
+            line-height: 1.6;
         }
-        .reminder-item .details .title {
-            font-weight: bold;
+        #payment-schedule {
+            margin-top: 25px;
+            display: none; /* İlk başda gizli saxlayırıq */
+        }
+        #payment-schedule h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        #schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        #schedule-table th, #schedule-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        #schedule-table th {
+            background-color: #f2f2f2;
             color: #333;
+            font-weight: 600;
         }
-        .reminder-item .details .time {
-            color: #666;
-            font-size: 0.9em;
+        #schedule-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Xatırlatma Proqramı</h1>
-    <form id="reminder-form">
-        <label for="reminder-title">Xatırlatma Adı:</label>
-        <input type="text" id="reminder-title" required>
+    <h1>Kredit Kalkulyatoru</h1>
+    <div class="input-group">
+        <label for="price">Məhsulun Qiyməti (AZN):</label>
+        <input type="number" id="price" placeholder="Məsələn, 1200" required>
+    </div>
+    <div class="input-group">
+        <label for="initial-payment">İlkin Ödəniş (AZN):</label>
+        <input type="number" id="initial-payment" value="0" required>
+    </div>
+    <div class="input-group">
+        <label for="months">Ay sayı:</label>
+        <select id="months">
+            <option value="3">3 ay</option>
+            <option value="6">6 ay</option>
+            <option value="9">9 ay</option>
+            <option value="12">12 ay</option>
+            <option value="18">18 ay</option>
+            <option value="24">24 ay</option>
+            <option value="36">36 ay</option>
+        </select>
+    </div>
+    <button onclick="calculateCredit()">Hesabla</button>
 
-        <label for="reminder-time">Tarix və Vaxt:</label>
-        <input type="datetime-local" id="reminder-time" required>
+    <div id="result" style="display:none;">
+        <h2>Hesablamanın Nəticəsi</h2>
+        <p id="monthly-payment"></p>
+        <p id="total-payment"></p>
+    </div>
 
-        <button type="submit">Əlavə et</button>
-    </form>
-    
-    <hr style="margin: 20px 0;">
-    
-    <h2>Xatırlatmalarınız</h2>
-    <ul id="reminder-list"></ul>
+    <div id="payment-schedule">
+        <h2>Ödəniş Cədvəli</h2>
+        <table id="schedule-table">
+            <thead>
+                <tr>
+                    <th>Ay</th>
+                    <th>Ödəniş Məbləği</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    const form = document.getElementById('reminder-form');
-    const reminderList = document.getElementById('reminder-list');
-    
-    // Səsli bildiriş üçün obyekt
-    const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'); 
+    function calculateCredit() {
+        const price = parseFloat(document.getElementById('price').value);
+        const initialPayment = parseFloat(document.getElementById('initial-payment').value);
+        const months = parseInt(document.getElementById('months').value);
 
-    let reminders = JSON.parse(localStorage.getItem('reminders')) || [];
-
-    // Bildiriş üçün icazə istəyir
-    function requestNotificationPermission() {
-        if (!("Notification" in window)) {
-            alert("Bu brauzer bildirişləri dəstəkləmir.");
-        } else if (Notification.permission === "granted") {
-            console.log("Bildirişlər üçün icazə artıq verilib.");
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
-                    console.log("Bildirişlər üçün icazə verildi.");
-                }
-            });
+        if (isNaN(price) || isNaN(initialPayment) || price <= 0 || initialPayment < 0) {
+            alert("Zəhmət olmasa, düzgün rəqəmlər daxil edin.");
+            return;
         }
-    }
 
-    function checkReminders() {
-        const now = new Date().getTime();
-        reminders.forEach((reminder, index) => {
-            const reminderTime = new Date(reminder.time).getTime();
-            if (reminderTime <= now) {
-                if (Notification.permission === "granted") {
-                    new Notification('Xatırlatma!', {
-                        body: reminder.title,
-                        icon: 'https://cdn.pixabay.com/photo/2016/03/31/19/50/bell-1295325_1280.png'
-                    });
-                }
-                audio.play();
-                
-                // Xatırlatma bildirişi verildikdən sonra yaddaşdan silinir
-                reminders.splice(index, 1);
-                localStorage.setItem('reminders', JSON.stringify(reminders));
-                renderReminders();
-            }
-        });
-    }
-
-    function renderReminders() {
-        reminderList.innerHTML = '';
-        reminders.forEach(reminder => {
-            const li = document.createElement('li');
-            li.className = 'reminder-item';
-            
-            const detailsDiv = document.createElement('div');
-            detailsDiv.className = 'details';
-            
-            const titleSpan = document.createElement('span');
-            titleSpan.className = 'title';
-            titleSpan.textContent = reminder.title;
-            
-            const timeSpan = document.createElement('span');
-            timeSpan.className = 'time';
-            timeSpan.textContent = new Date(reminder.time).toLocaleString('az-AZ');
-
-            detailsDiv.appendChild(titleSpan);
-            detailsDiv.appendChild(timeSpan);
-            
-            li.appendChild(detailsDiv);
-            reminderList.appendChild(li);
-        });
-    }
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const title = document.getElementById('reminder-title').value;
-        const time = document.getElementById('reminder-time').value;
-
-        if (title && time) {
-            const newReminder = { title, time };
-            reminders.push(newReminder);
-            localStorage.setItem('reminders', JSON.stringify(reminders));
-            renderReminders();
-            form.reset();
+        if (initialPayment >= price) {
+            alert("İlkin ödəniş məhsulun qiymətindən çox və ya ona bərabər ola bilməz.");
+            return;
         }
-    });
 
-    // Proqram ilk dəfə yüklənəndə və ya yeniləndə icazə istəyir
-    requestNotificationPermission();
+        const remainingAmount = price - initialPayment;
+        const monthlyPayment = remainingAmount / months;
 
-    // Hər saniyə xatırlatmaları yoxlayır
-    setInterval(checkReminders, 1000); 
-    
-    renderReminders();
+        const resultDiv = document.getElementById('result');
+        const monthlyPaymentP = document.getElementById('monthly-payment');
+        const totalPaymentP = document.getElementById('total-payment');
+        const paymentScheduleDiv = document.getElementById('payment-schedule');
+        const scheduleTableBody = document.getElementById('schedule-table').getElementsByTagName('tbody')[0];
+
+        monthlyPaymentP.innerHTML = `Aylıq Ödəniş: <strong>${monthlyPayment.toFixed(2)} AZN</strong>`;
+        totalPaymentP.innerHTML = `Ümumi Ödəniləcək Məbləğ: <strong>${remainingAmount.toFixed(2)} AZN</strong>`;
+        resultDiv.style.display = 'block';
+
+        // Ödəniş cədvəlini doldurur
+        scheduleTableBody.innerHTML = ''; // Əvvəlki məlumatları silir
+        for (let i = 1; i <= months; i++) {
+            const row = scheduleTableBody.insertRow();
+            const monthCell = row.insertCell(0);
+            const paymentCell = row.insertCell(1);
+            
+            monthCell.textContent = i;
+            paymentCell.textContent = `${monthlyPayment.toFixed(2)} AZN`;
+        }
+
+        paymentScheduleDiv.style.display = 'block';
+    }
 </script>
 
 </body>
