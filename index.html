@@ -208,6 +208,7 @@
         const addProductBtn = document.getElementById('addProductBtn');
         const calculateBtn = document.getElementById('calculateBtn');
         const saveBtn = document.getElementById('saveBtn');
+        const printBtn = document.getElementById('printBtn'); // Əlavə olaraq printBtn dəyişəni
         const resultsDiv = document.getElementById('results');
         const offersList = document.getElementById('offersList');
         const noOffersMessage = document.getElementById('noOffersMessage');
@@ -223,7 +224,11 @@
                 userId = user.uid;
                 loadOffers();
                 // Tarixi avtomatik doldur
-                offerDateInput.valueAsDate = new Date();
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                offerDateInput.value = `${year}-${month}-${day}`;
             } else {
                 try {
                     await signInAnonymously(auth);
@@ -460,6 +465,26 @@
                 alert("Təklifi yadda saxlayarkən xəta baş verdi. Zəhmət olmasa, yenidən cəhd edin.");
             }
         });
+
+        // "Sənədi çap et" düyməsi üçün hadisə dinləyicisi
+        printBtn.addEventListener('click', () => {
+            const offerData = calculateAndShow();
+            const offerNumber = document.getElementById('offerNumber').value;
+            const offerDate = document.getElementById('offerDate').value;
+            const customerName = document.getElementById('customerName').value;
+
+            // Çap üçün data hazırlanır
+            const printableData = {
+                ...offerData,
+                offerNumber,
+                offerDate,
+                customerName
+            };
+
+            updatePrintableContent(printableData);
+            showView('singleOfferView');
+        });
+
 
         offersList.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.view-offer-btn');
