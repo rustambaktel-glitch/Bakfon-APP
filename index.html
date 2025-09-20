@@ -80,12 +80,20 @@
         #calculate-btn:hover {
             background-color: #2980b9;
         }
-        #print-btn {
+        #finalize-btn {
             background-color: #2ecc71;
-            display: none;
+        }
+        #finalize-btn:hover {
+            background-color: #27ae60;
+        }
+        #print-btn {
+            background-color: #34495e;
         }
         #print-btn:hover {
-            background-color: #27ae60;
+            background-color: #2c3e50;
+        }
+        .hidden-section {
+            display: none;
         }
         .info-section {
             margin-top: 30px;
@@ -137,21 +145,62 @@
             margin: 25px 0;
         }
 
+        /* Çap üçün stil */
         @media print {
             body {
                 background-color: #fff;
             }
             .container {
                 box-shadow: none;
+                padding: 0;
             }
-            .input-group, .form-row, .button-group {
+            h1, form, #monthly-result, .divider, .button-group {
                 display: none;
             }
-            #result-info, #payment-schedule {
+            #full-details-section {
                 display: block !important;
             }
-            .divider {
-                display: none;
+            #result-info, #payment-schedule, #customer-info-form {
+                display: block !important;
+                margin-top: 0;
+            }
+            .info-section {
+                padding: 0;
+                border: none;
+                background-color: #fff;
+                border: 1px solid #000;
+                padding: 10px;
+            }
+            .info-section h2, #payment-schedule h2, #customer-info-form h2 {
+                text-align: left;
+                margin-bottom: 10px;
+                border-bottom: 2px solid #333;
+                padding-bottom: 5px;
+            }
+            #result-info p {
+                border-bottom: 1px solid #ccc;
+                padding: 5px 0;
+                margin: 0;
+            }
+            #result-info p:last-child {
+                border-bottom: none;
+            }
+            #customer-info-form .form-row {
+                display: block;
+            }
+            #customer-info-form .form-row .input-group {
+                margin-bottom: 10px;
+            }
+            #customer-info-form label {
+                font-weight: bold;
+                margin-right: 5px;
+            }
+            #customer-info-form input {
+                border: none;
+                background: transparent;
+                padding: 0;
+                display: inline-block;
+                width: auto;
             }
         }
     </style>
@@ -161,104 +210,125 @@
 <div class="container">
     <h1>Kredit Kalkulyatoru</h1>
     
-    <div class="form-row double">
-        <div class="input-group">
-            <label for="customer-name">Müştəri Adı, Soyadı, Atasının Adı:</label>
-            <input type="text" id="customer-name" placeholder="Məsələn, Əli Əliyev Vəli oğlu" required>
+    <form id="calculation-form">
+        <div class="form-row double">
+            <div class="input-group">
+                <label for="price">Məhsulun Qiyməti (AZN):</label>
+                <input type="number" id="price" placeholder="Məsələn, 1200" required>
+            </div>
+            <div class="input-group">
+                <label for="initial-payment">İlkin Ödəniş (AZN):</label>
+                <input type="number" id="initial-payment" value="0" required>
+            </div>
         </div>
-        <div class="input-group">
-            <label for="fin-code">FIN Kod:</label>
-            <input type="text" id="fin-code" placeholder="Məsələn, 1A2B3C4" required>
+        <div class="form-row">
+            <div class="input-group">
+                <label for="months">Ay sayı:</label>
+                <select id="months">
+                    <option value="3">3 ay</option>
+                    <option value="6">6 ay</option>
+                    <option value="9">9 ay</option>
+                    <option value="12">12 ay</option>
+                    <option value="18">18 ay</option>
+                    <option value="24">24 ay</option>
+                    <option value="36">36 ay</option>
+                </select>
+            </div>
         </div>
-    </div>
-    <div class="form-row double">
-        <div class="input-group">
-            <label for="sv-series">Ş/V Seriya və Nömrəsi:</label>
-            <input type="text" id="sv-series" placeholder="Məsələn, AA1234567" required>
+        <button type="submit" id="calculate-btn">Hesabla</button>
+    </form>
+
+    <div id="monthly-result" class="hidden-section">
+        <div class="info-section">
+            <p>Aylıq Ödəniş: <strong><span id="monthly-payment"></span> AZN</strong></p>
+            <p>Ümumi Ödəniləcək Məbləğ: <strong><span id="total-payment"></span> AZN</strong></p>
         </div>
-        <div class="input-group">
-            <label for="dob">Doğum Tarixi:</label>
-            <input type="date" id="dob" required>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="input-group">
-            <label for="address">Ünvan:</label>
-            <input type="text" id="address" placeholder="Məsələn, Bakı şəhəri, Səməd Vurğun küç. 5" required>
+        <div class="button-group" style="margin-top: 20px;">
+            <button id="finalize-btn">Rəsmiləşdir</button>
         </div>
     </div>
     
-    <div class="divider"></div>
+    <div id="full-details-section" class="hidden-section">
+        <div class="divider"></div>
+        <form id="customer-info-form">
+            <h2>Müştəri Məlumatları</h2>
+            <div class="form-row double">
+                <div class="input-group">
+                    <label for="customer-name">Müştəri Adı, Soyadı, Atasının Adı:</label>
+                    <input type="text" id="customer-name" placeholder="Məsələn, Əli Əliyev Vəli oğlu" required>
+                </div>
+                <div class="input-group">
+                    <label for="fin-code">FIN Kod:</label>
+                    <input type="text" id="fin-code" placeholder="Məsələn, 1A2B3C4" required>
+                </div>
+            </div>
+            <div class="form-row double">
+                <div class="input-group">
+                    <label for="sv-series">Ş/V Seriya və Nömrəsi:</label>
+                    <input type="text" id="sv-series" placeholder="Məsələn, AA1234567" required>
+                </div>
+                <div class="input-group">
+                    <label for="dob">Doğum Tarixi:</label>
+                    <input type="date" id="dob" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="address">Ünvan:</label>
+                    <input type="text" id="address" placeholder="Məsələn, Bakı şəhəri, Səməd Vurğun küç. 5" required>
+                </div>
+            </div>
+            <div class="button-group">
+                <button type="submit" id="print-btn">Çap et</button>
+            </div>
+        </form>
 
-    <div class="form-row double">
-        <div class="input-group">
-            <label for="price">Məhsulun Qiyməti (AZN):</label>
-            <input type="number" id="price" placeholder="Məsələn, 1200" required>
+        <div id="result-info" class="info-section">
+            <h2>Kredit Məlumatları</h2>
+            <p><strong>Müştəri:</strong> <span id="info-name"></span></p>
+            <p><strong>FIN Kod:</strong> <span id="info-fin"></span></p>
+            <p><strong>Ş/V Seriya və Nömrəsi:</strong> <span id="info-sv"></span></p>
+            <p><strong>Kreditin Məbləği:</strong> <span id="info-credit-amount"></span></p>
+            <p><strong>İlkin Ödəniş:</strong> <span id="info-initial-payment"></span></p>
+            <p><strong>Müddət:</strong> <span id="info-months"></span></p>
+            <p><strong>Aylıq Ödəniş:</strong> <span id="info-monthly-payment"></span></p>
         </div>
-        <div class="input-group">
-            <label for="initial-payment">İlkin Ödəniş (AZN):</label>
-            <input type="number" id="initial-payment" value="0" required>
+
+        <div id="payment-schedule">
+            <h2>Ödəniş Cədvəli</h2>
+            <table id="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Ay</th>
+                        <th>Ödəniş Tarixi</th>
+                        <th>Ödəniş Məbləği</th>
+                        <th>Qalıq Borc</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
         </div>
-    </div>
-    <div class="form-row">
-        <div class="input-group">
-            <label for="months">Ay sayı:</label>
-            <select id="months">
-                <option value="3">3 ay</option>
-                <option value="6">6 ay</option>
-                <option value="9">9 ay</option>
-                <option value="12">12 ay</option>
-                <option value="18">18 ay</option>
-                <option value="24">24 ay</option>
-                <option value="36">36 ay</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="button-group">
-        <button id="calculate-btn" onclick="calculateCredit()">Hesabla</button>
-        <button id="print-btn" onclick="window.print()">Çap et</button>
-    </div>
-
-    <div id="result-info" class="info-section">
-        <h2>Kredit Məlumatları</h2>
-        <p><strong>Müştəri:</strong> <span id="info-name"></span></p>
-        <p><strong>FIN Kod:</strong> <span id="info-fin"></span></p>
-        <p><strong>Ş/V Seriya və Nömrəsi:</strong> <span id="info-sv"></span></p>
-        <p><strong>Kreditin Məbləği:</strong> <span id="info-credit-amount"></span></p>
-        <p><strong>İlkin Ödəniş:</strong> <span id="info-initial-payment"></span></p>
-        <p><strong>Müddət:</strong> <span id="info-months"></span></p>
-        <p><strong>Aylıq Ödəniş:</strong> <span id="info-monthly-payment"></span></p>
-    </div>
-
-    <div id="payment-schedule">
-        <h2>Ödəniş Cədvəli</h2>
-        <table id="schedule-table">
-            <thead>
-                <tr>
-                    <th>Ay</th>
-                    <th>Ödəniş Tarixi</th>
-                    <th>Ödəniş Məbləği</th>
-                    <th>Qalıq Borc</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
     </div>
 </div>
 
 <script>
-    function calculateCredit() {
-        const customerName = document.getElementById('customer-name').value;
-        const finCode = document.getElementById('fin-code').value;
-        const svSeries = document.getElementById('sv-series').value;
+    const calculationForm = document.getElementById('calculation-form');
+    const monthlyResultDiv = document.getElementById('monthly-result');
+    const finalizeBtn = document.getElementById('finalize-btn');
+    const fullDetailsSection = document.getElementById('full-details-section');
+    const customerInfoForm = document.getElementById('customer-info-form');
+
+    let calculatedData = {};
+
+    calculationForm.addEventListener('submit', function(e) {
+        e.preventDefault();
         const price = parseFloat(document.getElementById('price').value);
         const initialPayment = parseFloat(document.getElementById('initial-payment').value);
         const months = parseInt(document.getElementById('months').value);
 
-        if (!customerName || !finCode || !svSeries || isNaN(price) || isNaN(initialPayment) || price <= 0 || initialPayment < 0) {
-            alert("Zəhmət olmasa, bütün məlumatları düzgün daxil edin.");
+        if (isNaN(price) || isNaN(initialPayment) || price <= 0 || initialPayment < 0) {
+            alert("Zəhmət olmasa, qiymət və ilkin ödəniş sahələrini düzgün doldurun.");
             return;
         }
 
@@ -267,50 +337,76 @@
             return;
         }
 
-        let remainingAmount = price - initialPayment;
+        const remainingAmount = price - initialPayment;
         const monthlyPayment = remainingAmount / months;
 
-        document.getElementById('info-name').textContent = customerName;
-        document.getElementById('info-fin').textContent = finCode;
-        document.getElementById('info-sv').textContent = svSeries;
-        document.getElementById('info-credit-amount').textContent = `${(price - initialPayment).toFixed(2)} AZN`;
-        document.getElementById('info-initial-payment').textContent = `${initialPayment.toFixed(2)} AZN`;
-        document.getElementById('info-months').textContent = `${months} ay`;
-        document.getElementById('info-monthly-payment').textContent = `${monthlyPayment.toFixed(2)} AZN`;
+        document.getElementById('monthly-payment').textContent = monthlyPayment.toFixed(2);
+        document.getElementById('total-payment').textContent = remainingAmount.toFixed(2);
+        monthlyResultDiv.classList.remove('hidden-section');
 
-        document.getElementById('result-info').style.display = 'block';
-        document.getElementById('print-btn').style.display = 'block';
+        calculatedData = { price, initialPayment, months, monthlyPayment, remainingAmount };
+    });
 
-        const paymentScheduleDiv = document.getElementById('payment-schedule');
-        const scheduleTableBody = document.getElementById('schedule-table').getElementsByTagName('tbody')[0];
+    finalizeBtn.addEventListener('click', function() {
+        fullDetailsSection.classList.remove('hidden-section');
+    });
 
-        scheduleTableBody.innerHTML = ''; 
-        const today = new Date();
+    customerInfoForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const customerName = document.getElementById('customer-name').value;
+        const finCode = document.getElementById('fin-code').value;
+        const svSeries = document.getElementById('sv-series').value;
+        const dob = document.getElementById('dob').value;
+        const address = document.getElementById('address').value;
 
-        for (let i = 1; i <= months; i++) {
-            const row = scheduleTableBody.insertRow();
+        if (customerInfoForm.checkValidity()) {
+            const { price, initialPayment, months, monthlyPayment, remainingAmount } = calculatedData;
             
-            const monthCell = row.insertCell(0);
-            const dateCell = row.insertCell(1);
-            const paymentCell = row.insertCell(2);
-            const remainingCell = row.insertCell(3);
+            document.getElementById('info-name').textContent = customerName;
+            document.getElementById('info-fin').textContent = finCode;
+            document.getElementById('info-sv').textContent = svSeries;
+            document.getElementById('info-credit-amount').textContent = `${remainingAmount.toFixed(2)} AZN`;
+            document.getElementById('info-initial-payment').textContent = `${initialPayment.toFixed(2)} AZN`;
+            document.getElementById('info-months').textContent = `${months} ay`;
+            document.getElementById('info-monthly-payment').textContent = `${monthlyPayment.toFixed(2)} AZN`;
 
-            let paymentDate = new Date(today.getFullYear(), today.getMonth() + i, today.getDate());
-            
-            if (i === months) {
-                remainingAmount = 0;
-            } else {
-                remainingAmount -= monthlyPayment;
+            document.getElementById('result-info').style.display = 'block';
+
+            const paymentScheduleDiv = document.getElementById('payment-schedule');
+            const scheduleTableBody = document.getElementById('schedule-table').getElementsByTagName('tbody')[0];
+
+            scheduleTableBody.innerHTML = ''; 
+            const today = new Date();
+
+            let currentRemaining = remainingAmount;
+            for (let i = 1; i <= months; i++) {
+                const row = scheduleTableBody.insertRow();
+                
+                const monthCell = row.insertCell(0);
+                const dateCell = row.insertCell(1);
+                const paymentCell = row.insertCell(2);
+                const remainingCell = row.insertCell(3);
+
+                let paymentDate = new Date(today.getFullYear(), today.getMonth() + i, today.getDate());
+                
+                if (i === months) {
+                    currentRemaining = 0;
+                } else {
+                    currentRemaining -= monthlyPayment;
+                }
+
+                monthCell.textContent = i;
+                dateCell.textContent = paymentDate.toLocaleDateString('az-AZ');
+                paymentCell.textContent = `${monthlyPayment.toFixed(2)} AZN`;
+                remainingCell.textContent = `${currentRemaining.toFixed(2)} AZN`;
             }
-
-            monthCell.textContent = i;
-            dateCell.textContent = paymentDate.toLocaleDateString('az-AZ');
-            paymentCell.textContent = `${monthlyPayment.toFixed(2)} AZN`;
-            remainingCell.textContent = `${remainingAmount.toFixed(2)} AZN`;
+            paymentScheduleDiv.style.display = 'block';
+            
+            window.print();
+        } else {
+            alert("Zəhmət olmasa, bütün müştəri məlumatlarını doldurun.");
         }
-
-        paymentScheduleDiv.style.display = 'block';
-    }
+    });
 </script>
 
 </body>
