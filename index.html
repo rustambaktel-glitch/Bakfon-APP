@@ -173,28 +173,10 @@
                 </button>
             </div>
         </div>
-
     </div>
     
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Həqiqi Firebase konfiqurasiya məlumatlarınızı bura daxil edin.
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const appId = firebaseConfig.appId;
+        import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 
         // UI elementləri
         const offerFormView = document.getElementById('offerFormView');
@@ -202,7 +184,6 @@
         const singleOfferView = document.getElementById('singleOfferView');
         const homeBtn = document.getElementById('home-btn');
         const offersBtn = document.getElementById('offers-btn');
-        const offerForm = document.getElementById('offerForm');
         const productsContainer = document.getElementById('productsContainer');
         const addProductBtn = document.getElementById('addProductBtn');
         const calculateBtn = document.getElementById('calculateBtn');
@@ -213,29 +194,10 @@
         const noOffersMessage = document.getElementById('noOffersMessage');
         const backBtn = document.getElementById('backBtn');
         const offerDateInput = document.getElementById('offerDate');
+        const offerNumberInput = document.getElementById('offerNumber');
+        const customerNameInput = document.getElementById('customerName');
 
-        let userId = null;
         let productIndex = 0;
-
-        // İstifadəçi anonim olaraq daxil olur
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                userId = user.uid;
-                loadOffers();
-                // Tarixi avtomatik doldur
-                const today = new Date();
-                const year = today.getFullYear();
-                const month = String(today.getMonth() + 1).padStart(2, '0');
-                const day = String(today.getDate()).padStart(2, '0');
-                offerDateInput.value = `${year}-${month}-${day}`;
-            } else {
-                try {
-                    await signInAnonymously(auth);
-                } catch (error) {
-                    console.error("Anonim daxil olarkən xəta:", error);
-                }
-            }
-        });
 
         // Baxışları idarə edir
         function showView(viewId) {
@@ -243,6 +205,15 @@
             savedOffersView.classList.add('hidden');
             singleOfferView.classList.add('hidden');
             document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        // Cari tarixi avtomatik doldurur
+        function setTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            offerDateInput.value = `${year}-${month}-${day}`;
         }
 
         // Məhsul nömrələrini yeniləyir
@@ -254,6 +225,16 @@
                     numberSpan.textContent = index + 1;
                 }
             });
+        }
+
+        // Formu təmizləyir
+        function clearForm() {
+            offerNumberInput.value = '';
+            customerNameInput.value = '';
+            productsContainer.innerHTML = '';
+            resultsDiv.classList.add('hidden');
+            addProductRow();
+            setTodayDate();
         }
 
         // Təklif sətirlərini əlavə edir
@@ -340,75 +321,62 @@
             document.getElementById('printTotal').textContent = offer.total.toFixed(2) + ' AZN';
         }
 
-        // Təklifləri bazadan yükləyir
+        // Təklifləri yerli yaddaşdan yükləyir
         function loadOffers() {
-            if (!userId) return;
-            const offersCol = collection(db, `artifacts/${appId}/users/${userId}/offers`);
+            offersList.innerHTML = '';
+            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
             
-            onSnapshot(offersCol, (snapshot) => {
-                offersList.innerHTML = '';
-                if (snapshot.empty) {
-                    noOffersMessage.style.display = 'block';
-                } else {
-                    noOffersMessage.style.display = 'none';
-                    snapshot.forEach(doc => {
-                        const offer = doc.data();
-                        const offerId = doc.id;
-                        
-                        const offerDiv = document.createElement('div');
-                        offerDiv.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm';
-                        offerDiv.innerHTML = `
-                            <div>
-                                <h3 class="font-bold text-gray-800">Müştəri: ${offer.customerName}</h3>
-                                <p class="text-sm text-gray-500">Təklif nömrəsi: ${offer.offerNumber || '---'}</p>
-                                <p class="text-xs text-gray-400">Tarix: ${offer.offerDate || '---'}</p>
-                                <p class="text-xs text-gray-400">Yekun məbləğ: ${offer.total.toFixed(2)} AZN</p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button data-id="${offerId}" class="view-offer-btn bg-blue-500 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">Bax</button>
-                                <button data-id="${offerId}" class="delete-offer-btn bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors">Sil</button>
-                            </div>
-                        `;
-                        offersList.appendChild(offerDiv);
-                    });
-                }
-            });
+            if (savedOffers.length === 0) {
+                noOffersMessage.style.display = 'block';
+            } else {
+                noOffersMessage.style.display = 'none';
+                savedOffers.forEach(offer => {
+                    const offerDiv = document.createElement('div');
+                    offerDiv.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm';
+                    offerDiv.innerHTML = `
+                        <div>
+                            <h3 class="font-bold text-gray-800">Müştəri: ${offer.customerName}</h3>
+                            <p class="text-sm text-gray-500">Təklif nömrəsi: ${offer.offerNumber || '---'}</p>
+                            <p class="text-xs text-gray-400">Tarix: ${offer.offerDate || '---'}</p>
+                            <p class="text-xs text-gray-400">Yekun məbləğ: ${offer.total.toFixed(2)} AZN</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button data-id="${offer.id}" class="view-offer-btn bg-blue-500 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">Bax</button>
+                            <button data-id="${offer.id}" class="delete-offer-btn bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors">Sil</button>
+                        </div>
+                    `;
+                    offersList.appendChild(offerDiv);
+                });
+            }
         }
 
         // Təklifə baxma funksiyası
-        async function viewOffer(offerId) {
-            const offerDocRef = doc(db, `artifacts/${appId}/users/${userId}/offers`, offerId);
-            try {
-                const offerDoc = await getDoc(offerDocRef);
-                if (offerDoc.exists()) {
-                    updatePrintableContent(offerDoc.data());
-                    showView('singleOfferView');
-                } else {
-                    console.error("Təklif tapılmadı.");
-                    alert("Təklif tapılmadı.");
-                }
-            } catch (error) {
-                console.error("Təklifə baxarkən xəta:", error);
-                alert("Təklifə baxarkən xəta baş verdi.");
+        function viewOffer(offerId) {
+            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
+            const offer = savedOffers.find(o => o.id === offerId);
+            
+            if (offer) {
+                updatePrintableContent(offer);
+                showView('singleOfferView');
+            } else {
+                alert("Təklif tapılmadı.");
             }
         }
 
         // Təklif silmə funksiyası
-        async function deleteOffer(offerId) {
+        function deleteOffer(offerId) {
             if (!confirm("Bu təklifi silmək istədiyinizə əminsiniz?")) {
                 return;
             }
-            try {
-                const offerDocRef = doc(db, `artifacts/${appId}/users/${userId}/offers`, offerId);
-                await deleteDoc(offerDocRef);
-            } catch (error) {
-                console.error("Təklifi silərkən xəta:", error);
-                alert("Təklifi silərkən xəta baş verdi.");
-            }
+            let savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
+            savedOffers = savedOffers.filter(o => o.id !== offerId);
+            localStorage.setItem('baktelOffers', JSON.stringify(savedOffers));
+            loadOffers();
         }
 
         // Hadisə dinləyiciləri
         homeBtn.addEventListener('click', () => {
+            clearForm();
             showView('offerFormView');
         });
 
@@ -434,10 +402,10 @@
             calculateAndShow();
         });
 
-        saveBtn.addEventListener('click', async () => {
-            const offerNumber = document.getElementById('offerNumber').value;
-            const offerDate = document.getElementById('offerDate').value;
-            const customerName = document.getElementById('customerName').value;
+        saveBtn.addEventListener('click', () => {
+            const offerNumber = offerNumberInput.value;
+            const offerDate = offerDateInput.value;
+            const customerName = customerNameInput.value;
             
             const { products, subtotal, vat, total } = calculateAndShow();
 
@@ -446,32 +414,33 @@
                 return;
             }
 
-            try {
-                await addDoc(collection(db, `artifacts/${appId}/users/${userId}/offers`), {
-                    offerNumber,
-                    offerDate,
-                    customerName,
-                    products,
-                    subtotal,
-                    vat,
-                    total,
-                    createdAt: new Date().toISOString()
-                });
-                alert("Təklif uğurla yadda saxlanıldı!");
-                showView('savedOffersView');
-            } catch (error) {
-                console.error("Təklifi yadda saxlayarkən xəta:", error);
-                alert("Təklifi yadda saxlayarkən xəta baş verdi. Zəhmət olmasa, yenidən cəhd edin.");
-            }
+            const newOffer = {
+                id: uuidv4(),
+                offerNumber,
+                offerDate,
+                customerName,
+                products,
+                subtotal,
+                vat,
+                total,
+                createdAt: new Date().toISOString()
+            };
+
+            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
+            savedOffers.push(newOffer);
+            localStorage.setItem('baktelOffers', JSON.stringify(savedOffers));
+            
+            alert("Təklif uğurla yadda saxlanıldı!");
+            showView('savedOffersView');
+            loadOffers();
         });
 
         printBtn.addEventListener('click', () => {
             const offerData = calculateAndShow();
-            const offerNumber = document.getElementById('offerNumber').value;
-            const offerDate = document.getElementById('offerDate').value;
-            const customerName = document.getElementById('customerName').value;
+            const offerNumber = offerNumberInput.value;
+            const offerDate = offerDateInput.value;
+            const customerName = customerNameInput.value;
 
-            // Çap üçün data hazırlanır
             const printableData = {
                 ...offerData,
                 offerNumber,
@@ -482,7 +451,6 @@
             updatePrintableContent(printableData);
             showView('singleOfferView');
         });
-
 
         offersList.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.view-offer-btn');
