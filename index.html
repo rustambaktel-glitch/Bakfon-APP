@@ -64,22 +64,21 @@
         button:hover {
             background-color: #2980b9;
         }
-        #result {
+        .info-section {
             margin-top: 30px;
             padding: 20px;
             background-color: #ecf0f1;
             border-radius: 8px;
             border: 1px solid #dcdcdc;
+            line-height: 1.6;
+        }
+        .info-section h2 {
+            color: #34495e;
+            margin-top: 0;
             text-align: center;
         }
-        #result h2 {
-            color: #34495e;
-            margin-bottom: 10px;
-        }
-        #result p {
-            font-size: 1.1em;
-            color: #555;
-            line-height: 1.6;
+        #result-info {
+            display: none;
         }
         #payment-schedule {
             margin-top: 25px;
@@ -109,12 +108,41 @@
         #schedule-table tr:nth-child(even) {
             background-color: #f9f9f9;
         }
+        .divider {
+            height: 1px;
+            background-color: #ddd;
+            margin: 25px 0;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Kredit Kalkulyatoru</h1>
+    
+    <div class="input-group">
+        <label for="customer-name">Müştəri Adı, Soyadı, Atasının Adı:</label>
+        <input type="text" id="customer-name" placeholder="Məsələn, Əli Əliyev Vəli oğlu" required>
+    </div>
+    <div class="input-group">
+        <label for="fin-code">FIN Kod:</label>
+        <input type="text" id="fin-code" placeholder="Məsələn, 1A2B3C4" required>
+    </div>
+    <div class="input-group">
+        <label for="sv-series">Ş/V Seriya və Nömrəsi:</label>
+        <input type="text" id="sv-series" placeholder="Məsələn, AA1234567" required>
+    </div>
+    <div class="input-group">
+        <label for="dob">Doğum Tarixi:</label>
+        <input type="date" id="dob" required>
+    </div>
+    <div class="input-group">
+        <label for="address">Ünvan:</label>
+        <input type="text" id="address" placeholder="Məsələn, Bakı şəhəri, Səməd Vurğun küç. 5" required>
+    </div>
+    
+    <div class="divider"></div>
+
     <div class="input-group">
         <label for="price">Məhsulun Qiyməti (AZN):</label>
         <input type="number" id="price" placeholder="Məsələn, 1200" required>
@@ -137,10 +165,15 @@
     </div>
     <button onclick="calculateCredit()">Hesabla</button>
 
-    <div id="result" style="display:none;">
-        <h2>Hesablamanın Nəticəsi</h2>
-        <p id="monthly-payment"></p>
-        <p id="total-payment"></p>
+    <div id="result-info" class="info-section">
+        <h2>Kredit Məlumatları</h2>
+        <p><strong>Müştəri:</strong> <span id="info-name"></span></p>
+        <p><strong>FIN Kod:</strong> <span id="info-fin"></span></p>
+        <p><strong>Ş/V Seriya və Nömrəsi:</strong> <span id="info-sv"></span></p>
+        <p><strong>Kreditin Məbləği:</strong> <span id="info-credit-amount"></span></p>
+        <p><strong>İlkin Ödəniş:</strong> <span id="info-initial-payment"></span></p>
+        <p><strong>Müddət:</strong> <span id="info-months"></span></p>
+        <p><strong>Aylıq Ödəniş:</strong> <span id="info-monthly-payment"></span></p>
     </div>
 
     <div id="payment-schedule">
@@ -162,12 +195,15 @@
 
 <script>
     function calculateCredit() {
+        const customerName = document.getElementById('customer-name').value;
+        const finCode = document.getElementById('fin-code').value;
+        const svSeries = document.getElementById('sv-series').value;
         const price = parseFloat(document.getElementById('price').value);
         const initialPayment = parseFloat(document.getElementById('initial-payment').value);
         const months = parseInt(document.getElementById('months').value);
 
-        if (isNaN(price) || isNaN(initialPayment) || price <= 0 || initialPayment < 0) {
-            alert("Zəhmət olmasa, düzgün rəqəmlər daxil edin.");
+        if (!customerName || !finCode || !svSeries || isNaN(price) || isNaN(initialPayment) || price <= 0 || initialPayment < 0) {
+            alert("Zəhmət olmasa, bütün məlumatları düzgün daxil edin.");
             return;
         }
 
@@ -179,15 +215,19 @@
         let remainingAmount = price - initialPayment;
         const monthlyPayment = remainingAmount / months;
 
-        const resultDiv = document.getElementById('result');
-        const monthlyPaymentP = document.getElementById('monthly-payment');
-        const totalPaymentP = document.getElementById('total-payment');
+        // Yuxarı hissədəki məlumatları doldurur
+        document.getElementById('info-name').textContent = customerName;
+        document.getElementById('info-fin').textContent = finCode;
+        document.getElementById('info-sv').textContent = svSeries;
+        document.getElementById('info-credit-amount').textContent = `${(price - initialPayment).toFixed(2)} AZN`;
+        document.getElementById('info-initial-payment').textContent = `${initialPayment.toFixed(2)} AZN`;
+        document.getElementById('info-months').textContent = `${months} ay`;
+        document.getElementById('info-monthly-payment').textContent = `${monthlyPayment.toFixed(2)} AZN`;
+
+        document.getElementById('result-info').style.display = 'block';
+
         const paymentScheduleDiv = document.getElementById('payment-schedule');
         const scheduleTableBody = document.getElementById('schedule-table').getElementsByTagName('tbody')[0];
-
-        monthlyPaymentP.innerHTML = `Aylıq Ödəniş: <strong>${monthlyPayment.toFixed(2)} AZN</strong>`;
-        totalPaymentP.innerHTML = `Ümumi Ödəniləcək Məbləğ: <strong>${remainingAmount.toFixed(2)} AZN</strong>`;
-        resultDiv.style.display = 'block';
 
         // Ödəniş cədvəlini doldurur
         scheduleTableBody.innerHTML = ''; 
@@ -201,10 +241,8 @@
             const paymentCell = row.insertCell(2);
             const remainingCell = row.insertCell(3);
 
-            // Ödəniş tarixi hesablanması
             let paymentDate = new Date(today.getFullYear(), today.getMonth() + i, today.getDate());
             
-            // Son ayda yuvarlaqlaşdırma səhvlərini düzəldir
             if (i === months) {
                 remainingAmount = 0;
             } else {
