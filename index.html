@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baktel Electronics MMC - Təklif Forması</title>
+    <title>Baktel Electronics MMC - Qiymət Razılaşdırma Protokolu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -11,197 +11,282 @@
             body { background-color: #fff; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            .container { box-shadow: none; border: none; }
-            .product-row input, .product-row select { border: none; }
+            .print-container { box-shadow: none; border: none; }
             .invoice-table th, .invoice-table td { padding: 8px; border: 1px solid #000; }
+            .product-row input, .product-row select { border: none; }
         }
         .print-only { display: none; }
         
         /* Yenilənmiş xana stilləri */
         input[type="text"], input[type="date"], input[type="number"], select {
-            padding: 14px; /* Daxili boşluğu artırır */
-            font-size: 18px; /* Şrift ölçüsünü artırır */
+            padding: 8px; /* Daxili boşluğu daha da azaldır */
+            font-size: 14px; /* Şrift ölçüsünü azaldır */
+            border: 1px solid #d1d5db; /* Açıq boz rəngli sərhəd əlavə edir */
         }
     </style>
 </head>
-<body class="bg-gray-100 p-4">
+<body class="bg-gray-200 flex h-screen overflow-hidden">
+    <!-- Yan Panel -->
+    <div class="no-print w-64 bg-gray-800 text-white flex flex-col p-4 space-y-4">
+        <h2 class="text-2xl font-bold mb-4">Menyu</h2>
+        <button id="home-btn" class="bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300">
+            Ana səhifə
+        </button>
+        <button id="offers-btn" class="bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300">
+            Təkliflər
+        </button>
+    </div>
 
-    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg no-print">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Təklif Forması</h1>
-        <form id="offerForm" class="space-y-6">
-            <!-- Header Məlumatları -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label for="offerNumber" class="block text-sm font-medium text-gray-700">Təklif nömrəsi:</label>
-                    <input type="text" id="offerNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
-                <div>
-                    <label for="offerDate" class="block text-sm font-medium text-gray-700">Tarix:</label>
-                    <input type="date" id="offerDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
-            </div>
-
-            <!-- Müştəri Məlumatları -->
-            <div class="border p-4 rounded-lg bg-gray-50">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">Müştəri məlumatları</h2>
+    <!-- Əsas Məzmun Sahəsi -->
+    <div id="main-content" class="flex-1 overflow-y-auto p-8">
+        <!-- 1. Yeni Təklif Forması -->
+        <div id="offerFormView" class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Qiymət Razılaşdırma Protokolu</h1>
+            <form id="offerForm" class="space-y-6">
+                <!-- Header Məlumatları -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="customerName" class="block text-sm font-medium text-gray-700">Şirkətin adı:</label>
-                        <input type="text" id="customerName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                        <label for="offerNumber" class="block text-sm font-medium text-gray-700">Təklif nömrəsi:</label>
+                        <input type="text" id="offerNumber" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                     <div>
-                        <label for="customerVOEN" class="block text-sm font-medium text-gray-700">VÖEN:</label>
-                        <input type="text" id="customerVOEN" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                        <label for="offerDate" class="block text-sm font-medium text-gray-700">Tarix:</label>
+                        <input type="date" id="offerDate" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     </div>
                 </div>
-                <div class="mt-4">
-                    <label for="customerAddress" class="block text-sm font-medium text-gray-700">Ünvan:</label>
-                    <input type="text" id="customerAddress" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
-            </div>
 
-            <!-- Məhsullar -->
-            <div class="border p-4 rounded-lg bg-gray-50">
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">Məhsullar</h2>
-                <div id="productsContainer" class="space-y-4">
-                    <!-- Dinamik olaraq məhsullar bura əlavə ediləcək -->
+                <!-- Müştəri Məlumatları -->
+                <div class="border p-4 rounded-lg bg-gray-50">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Qarşı tərəf</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="customerName" class="block text-sm font-medium text-gray-700">Şirkətin adı:</label>
+                            <input type="text" id="customerName" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                        </div>
+                    </div>
                 </div>
-                <button type="button" id="addProductBtn" class="mt-4 w-full bg-indigo-500 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors">
-                    + Məhsul əlavə et
+
+                <!-- Məhsullar -->
+                <div class="border p-4 rounded-lg bg-gray-50">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Məhsullar</h2>
+                    <div id="productsContainer" class="space-y-4">
+                        <!-- Dinamik olaraq məhsullar bura əlavə ediləcək -->
+                    </div>
+                    <button type="button" id="addProductBtn" class="mt-4 w-full bg-indigo-500 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors">
+                        + Məhsul əlavə et
+                    </button>
+                </div>
+
+                <!-- Hesablama düyməsi -->
+                <button type="button" id="calculateBtn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-md hover:bg-green-600 transition-colors">
+                    Hesabla
                 </button>
-            </div>
 
-            <!-- Hesablama düyməsi -->
-            <button type="button" id="calculateBtn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-md hover:bg-green-600 transition-colors">
-                Hesabla
-            </button>
-
-            <!-- Hesablama nəticələri -->
-            <div id="results" class="hidden">
-                <div class="border p-4 rounded-lg bg-gray-50 mt-6">
-                    <div class="flex justify-end items-center mb-2">
-                        <span class="text-gray-700 font-bold">Cəm məbləğ:</span>
-                        <span id="subtotal" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
+                <!-- Hesablama nəticələri -->
+                <div id="results" class="hidden">
+                    <div class="border p-4 rounded-lg bg-gray-50 mt-6">
+                        <div class="flex justify-end items-center mb-2">
+                            <span class="text-gray-700 font-bold">Cəm məbləğ:</span>
+                            <span id="subtotal" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
+                        </div>
+                        <div class="flex justify-end items-center mb-2">
+                            <span class="text-gray-700 font-bold">ƏDV (18%):</span>
+                            <span id="vat" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
+                        </div>
+                        <div class="flex justify-end items-center border-t pt-2 mt-2">
+                            <span class="text-xl text-gray-800 font-extrabold">Yekun məbləğ:</span>
+                            <span id="total" class="ml-4 text-xl text-indigo-600 font-extrabold">0.00 AZN</span>
+                        </div>
                     </div>
-                    <div class="flex justify-end items-center mb-2">
-                        <span class="text-gray-700 font-bold">ƏDV (18%):</span>
-                        <span id="vat" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
-                    </div>
-                    <div class="flex justify-end items-center border-t pt-2 mt-2">
-                        <span class="text-xl text-gray-800 font-extrabold">Yekun məbləğ:</span>
-                        <span id="total" class="ml-4 text-xl text-indigo-600 font-extrabold">0.00 AZN</span>
+                    <div class="flex space-x-4 mt-4">
+                        <button type="button" id="saveBtn" class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
+                            Yadda saxla
+                        </button>
+                        <button type="button" id="printBtn" class="flex-1 bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-colors">
+                            Sənədi çap et
+                        </button>
                     </div>
                 </div>
-                <button type="button" id="printBtn" class="mt-4 w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
+            </form>
+        </div>
+        
+        <!-- 2. Saxlanmış Təkliflər Siyahısı -->
+        <div id="savedOffersView" class="max-w-4xl mx-auto hidden bg-white p-8 rounded-lg shadow-lg">
+            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Saxlanmış Təkliflər</h1>
+            <div id="offersList" class="space-y-4">
+                <p id="noOffersMessage" class="text-center text-gray-500">Hələ heç bir təklif yoxdur.</p>
+            </div>
+        </div>
+
+        <!-- 3. Təklifə Baxış Və Çap Üçün Səhifə -->
+        <div id="singleOfferView" class="max-w-4xl mx-auto hidden bg-white p-8 rounded-lg shadow-lg">
+            <div id="printableArea" class="p-8">
+                <div class="mb-8">
+                    <h1 class="text-4xl font-extrabold text-gray-900 text-center">QİYMƏT RAZILAŞDIRMA PROTOKOLU</h1>
+                    <div class="flex justify-between items-center mt-4">
+                        <div>
+                            <p class="text-sm font-semibold">Göndərən:</p>
+                            <p class="font-bold text-lg">Baktel Electronics MMC</p>
+                            <p class="text-sm">VÖEN: 1234567890</p>
+                            <p class="text-sm">Ünvan: Bakı şəhəri, ...</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-semibold">Təklif nömrəsi: <span id="printOfferNumber"></span></p>
+                            <p class="text-sm font-semibold">Tarix: <span id="printOfferDate"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <p class="text-sm font-semibold">Alan:</p>
+                    <p class="text-lg font-bold"><span id="printCustomerName"></span></p>
+                </div>
+
+                <table class="w-full border-collapse invoice-table">
+                    <thead>
+                        <tr>
+                            <th class="border px-4 py-2">№</th>
+                            <th class="border px-4 py-2 text-left">Məhsulun adı</th>
+                            <th class="border px-4 py-2">Miqdar</th>
+                            <th class="border px-4 py-2">Qiymət (AZN)</th>
+                            <th class="border px-4 py-2">Cəmi (AZN)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="printProductsTable">
+                    </tbody>
+                </table>
+
+                <div class="flex justify-end mt-8">
+                    <div class="w-1/2">
+                        <div class="flex justify-between font-bold">
+                            <p>Cəm məbləğ:</p>
+                            <p><span id="printSubtotal">0.00 AZN</span></p>
+                        </div>
+                        <div class="flex justify-between font-bold">
+                            <p>ƏDV (18%):</p>
+                            <p><span id="printVat">0.00 AZN</span></p>
+                        </div>
+                        <div class="flex justify-between font-extrabold text-lg mt-4 border-t-2 pt-2">
+                            <p>Yekun məbləğ:</p>
+                            <p><span id="printTotal">0.00 AZN</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 text-center text-sm">
+                    <p>Baktel Electronics MMC-nin rəsmi təklif formasıdır.</p>
+                </div>
+            </div>
+            <div class="flex space-x-4 mt-8 no-print">
+                <button type="button" id="backBtn" class="flex-1 bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-colors">
+                    Geri qayıt
+                </button>
+                <button type="button" onclick="window.print()" class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
                     Sənədi çap et
                 </button>
             </div>
-        </form>
+        </div>
+
     </div>
 
-    <!-- Yalnız çap üçün görünəcək səhifə -->
-    <div id="printableArea" class="print-only p-8">
-        <div class="mb-8">
-            <h1 class="text-4xl font-extrabold text-gray-900 text-center">TƏKLİF FORMASI</h1>
-            <div class="flex justify-between items-center mt-4">
-                <div>
-                    <p class="text-sm font-semibold">Göndərən:</p>
-                    <p class="font-bold text-lg">Baktel Electronics MMC</p>
-                    <p class="text-sm">VÖEN: 1234567890</p>
-                    <p class="text-sm">Ünvan: Bakı şəhəri, ...</p>
-                </div>
-                <div class="text-right">
-                    <p class="text-sm font-semibold">Təklif nömrəsi: <span id="printOfferNumber"></span></p>
-                    <p class="text-sm font-semibold">Tarix: <span id="printOfferDate"></span></p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mb-8">
-            <p class="text-sm font-semibold">Alan:</p>
-            <p class="text-lg font-bold"><span id="printCustomerName"></span></p>
-            <p class="text-sm">VÖEN: <span id="printCustomerVOEN"></span></p>
-            <p class="text-sm">Ünvan: <span id="printCustomerAddress"></span></p>
-        </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        <table class="w-full border-collapse invoice-table">
-            <thead>
-                <tr>
-                    <th class="border px-4 py-2">№</th>
-                    <th class="border px-4 py-2 text-left">Məhsulun adı</th>
-                    <th class="border px-4 py-2">Miqdar</th>
-                    <th class="border px-4 py-2">Qiymət (AZN)</th>
-                    <th class="border px-4 py-2">Cəmi (AZN)</th>
-                </tr>
-            </thead>
-            <tbody id="printProductsTable">
-            </tbody>
-        </table>
+        // Firebase-in global dəyişənlərini istifadə edərək tətbiqi başlat
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
 
-        <div class="flex justify-end mt-8">
-            <div class="w-1/2">
-                <div class="flex justify-between font-bold">
-                    <p>Cəm məbləğ:</p>
-                    <p><span id="printSubtotal">0.00 AZN</span></p>
-                </div>
-                <div class="flex justify-between font-bold">
-                    <p>ƏDV (18%):</p>
-                    <p><span id="printVat">0.00 AZN</span></p>
-                </div>
-                <div class="flex justify-between font-extrabold text-lg mt-4 border-t-2 pt-2">
-                    <p>Yekun məbləğ:</p>
-                    <p><span id="printTotal">0.00 AZN</span></p>
-                </div>
-            </div>
-        </div>
-        <div class="mt-12 text-center text-sm">
-            <p>Baktel Electronics MMC-nin rəsmi təklif formasıdır.</p>
-        </div>
-    </div>
+        // Firebase xidmətlərini başlat
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-    <script>
+        // UI elementləri
+        const offerFormView = document.getElementById('offerFormView');
+        const savedOffersView = document.getElementById('savedOffersView');
+        const singleOfferView = document.getElementById('singleOfferView');
+        const homeBtn = document.getElementById('home-btn');
+        const offersBtn = document.getElementById('offers-btn');
         const offerForm = document.getElementById('offerForm');
         const productsContainer = document.getElementById('productsContainer');
         const addProductBtn = document.getElementById('addProductBtn');
         const calculateBtn = document.getElementById('calculateBtn');
+        const saveBtn = document.getElementById('saveBtn');
         const printBtn = document.getElementById('printBtn');
         const resultsDiv = document.getElementById('results');
+        const offersList = document.getElementById('offersList');
+        const noOffersMessage = document.getElementById('noOffersMessage');
+        const backBtn = document.getElementById('backBtn');
 
+        let userId = null;
         let productIndex = 0;
 
+        // İstifadəçi anonim olaraq daxil olur
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                userId = user.uid;
+                loadOffers();
+            } else {
+                try {
+                    await signInAnonymously(auth);
+                } catch (error) {
+                    console.error("Anonim daxil olarkən xəta:", error);
+                }
+            }
+        });
+
+        // Baxışları idarə edir
+        function showView(viewId) {
+            offerFormView.classList.add('hidden');
+            savedOffersView.classList.add('hidden');
+            singleOfferView.classList.add('hidden');
+
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        // Məhsul nömrələrini yeniləyir
+        function updateProductNumbers() {
+            const productRows = document.querySelectorAll('.product-row');
+            productRows.forEach((row, index) => {
+                const numberSpan = row.querySelector('.product-number');
+                if (numberSpan) {
+                    numberSpan.textContent = index + 1;
+                }
+            });
+        }
+
+        // Təklif sətirlərini əlavə edir
         function addProductRow() {
             const newRow = document.createElement('div');
             newRow.className = 'grid grid-cols-1 md:grid-cols-4 gap-4 items-center product-row';
             newRow.innerHTML = `
-                <div>
-                    <label for="productName-${productIndex}" class="block text-sm font-medium text-gray-700">Məhsulun adı</label>
-                    <input type="text" id="productName-${productIndex}" data-id="${productIndex}" data-field="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <div class="flex items-end space-x-2">
+                    <span class="product-number font-bold text-gray-700 text-lg"></span>
+                    <div class="flex-1">
+                        <label for="productName-${productIndex}" class="block text-sm font-medium text-gray-700">Məhsulun adı</label>
+                        <input type="text" id="productName-${productIndex}" data-id="${productIndex}" data-field="name" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
                 </div>
                 <div>
                     <label for="productQty-${productIndex}" class="block text-sm font-medium text-gray-700">Miqdar</label>
-                    <input type="number" id="productQty-${productIndex}" data-id="${productIndex}" data-field="qty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="1" min="1">
+                    <input type="number" id="productQty-${productIndex}" data-id="${productIndex}" data-field="qty" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="1" min="1">
                 </div>
                 <div>
                     <label for="productPrice-${productIndex}" class="block text-sm font-medium text-gray-700">Qiymət (AZN)</label>
-                    <input type="number" id="productPrice-${productIndex}" data-id="${productIndex}" data-field="price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" step="0.01" min="0">
+                    <input type="number" id="productPrice-${productIndex}" data-id="${productIndex}" data-field="price" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" step="0.01" min="0">
                 </div>
                 <div class="flex items-end h-full">
                     <button type="button" class="remove-product-btn w-full bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors">Sil</button>
                 </div>
             `;
             productsContainer.appendChild(newRow);
+            updateProductNumbers();
             productIndex++;
         }
 
-        addProductBtn.addEventListener('click', addProductRow);
-
-        productsContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-product-btn')) {
-                e.target.closest('.product-row').remove();
-            }
-        });
-
-        calculateBtn.addEventListener('click', function() {
+        // Hesablamaları aparır və nəticəni göstərir
+        function calculateAndShow() {
             const products = [];
             document.querySelectorAll('.product-row').forEach(row => {
                 const name = row.querySelector('input[data-field="name"]').value;
@@ -226,20 +311,18 @@
 
             resultsDiv.classList.remove('hidden');
 
-            // Çap üçün məlumatları doldur
-            updatePrintableContent(products, subtotal, vat, total);
-        });
+            return { products, subtotal, vat, total };
+        }
 
-        function updatePrintableContent(products, subtotal, vat, total) {
-            document.getElementById('printOfferNumber').textContent = document.getElementById('offerNumber').value;
-            document.getElementById('printOfferDate').textContent = document.getElementById('offerDate').value;
-            document.getElementById('printCustomerName').textContent = document.getElementById('customerName').value;
-            document.getElementById('printCustomerVOEN').textContent = document.getElementById('customerVOEN').value;
-            document.getElementById('printCustomerAddress').textContent = document.getElementById('customerAddress').value;
+        // Çap sənədinin məzmununu yeniləyir
+        function updatePrintableContent(offer) {
+            document.getElementById('printOfferNumber').textContent = offer.offerNumber || '';
+            document.getElementById('printOfferDate').textContent = offer.offerDate || '';
+            document.getElementById('printCustomerName').textContent = offer.customerName || '';
             
             const printProductsTable = document.getElementById('printProductsTable');
             printProductsTable.innerHTML = '';
-            products.forEach((product, index) => {
+            offer.products.forEach((product, index) => {
                 const totalProductPrice = product.qty * product.price;
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -252,17 +335,151 @@
                 printProductsTable.appendChild(row);
             });
 
-            document.getElementById('printSubtotal').textContent = subtotal.toFixed(2) + ' AZN';
-            document.getElementById('printVat').textContent = vat.toFixed(2) + ' AZN';
-            document.getElementById('printTotal').textContent = total.toFixed(2) + ' AZN';
+            document.getElementById('printSubtotal').textContent = offer.subtotal.toFixed(2) + ' AZN';
+            document.getElementById('printVat').textContent = offer.vat.toFixed(2) + ' AZN';
+            document.getElementById('printTotal').textContent = offer.total.toFixed(2) + ' AZN';
         }
 
-        printBtn.addEventListener('click', function() {
-            window.print();
+        // Təklifləri bazadan yükləyir
+        function loadOffers() {
+            if (!userId) return;
+            const offersCol = collection(db, `artifacts/${appId}/users/${userId}/offers`);
+            
+            onSnapshot(offersCol, (snapshot) => {
+                offersList.innerHTML = '';
+                if (snapshot.empty) {
+                    noOffersMessage.style.display = 'block';
+                } else {
+                    noOffersMessage.style.display = 'none';
+                    snapshot.forEach(doc => {
+                        const offer = doc.data();
+                        const offerId = doc.id;
+                        
+                        const offerDiv = document.createElement('div');
+                        offerDiv.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm';
+                        offerDiv.innerHTML = `
+                            <div>
+                                <h3 class="font-bold text-gray-800">Müştəri: ${offer.customerName}</h3>
+                                <p class="text-sm text-gray-500">Təklif nömrəsi: ${offer.offerNumber || '---'}</p>
+                                <p class="text-xs text-gray-400">Tarix: ${offer.offerDate || '---'}</p>
+                                <p class="text-xs text-gray-400">Yekun məbləğ: ${offer.total.toFixed(2)} AZN</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button data-id="${offerId}" class="view-offer-btn bg-blue-500 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">Bax</button>
+                                <button data-id="${offerId}" class="delete-offer-btn bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors">Sil</button>
+                            </div>
+                        `;
+                        offersList.appendChild(offerDiv);
+                    });
+                }
+            });
+        }
+
+        // Təklifə baxma funksiyası
+        async function viewOffer(offerId) {
+            const offerDocRef = doc(db, `artifacts/${appId}/users/${userId}/offers`, offerId);
+            try {
+                const offerDoc = await getDoc(offerDocRef);
+                if (offerDoc.exists()) {
+                    updatePrintableContent(offerDoc.data());
+                    showView('singleOfferView');
+                } else {
+                    console.error("Təklif tapılmadı.");
+                    alert("Təklif tapılmadı.");
+                }
+            } catch (error) {
+                console.error("Təklifə baxarkən xəta:", error);
+                alert("Təklifə baxarkən xəta baş verdi.");
+            }
+        }
+
+        // Təklif silmə funksiyası
+        async function deleteOffer(offerId) {
+            if (!confirm("Bu təklifi silmək istədiyinizə əminsiniz?")) {
+                return;
+            }
+            try {
+                const offerDocRef = doc(db, `artifacts/${appId}/users/${userId}/offers`, offerId);
+                await deleteDoc(offerDocRef);
+            } catch (error) {
+                console.error("Təklifi silərkən xəta:", error);
+                alert("Təklifi silərkən xəta baş verdi.");
+            }
+        }
+
+        // Hadisə dinləyiciləri
+        homeBtn.addEventListener('click', () => {
+            showView('offerFormView');
         });
 
-        // Səhifə yüklənəndə avtomatik olaraq bir məhsul əlavə et
-        document.addEventListener('DOMContentLoaded', addProductRow);
+        offersBtn.addEventListener('click', () => {
+            loadOffers();
+            showView('savedOffersView');
+        });
+
+        backBtn.addEventListener('click', () => {
+            showView('savedOffersView');
+        });
+
+        addProductBtn.addEventListener('click', addProductRow);
+
+        productsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-product-btn')) {
+                e.target.closest('.product-row').remove();
+                updateProductNumbers();
+            }
+        });
+
+        calculateBtn.addEventListener('click', () => {
+            calculateAndShow();
+        });
+
+        saveBtn.addEventListener('click', async () => {
+            const offerNumber = document.getElementById('offerNumber').value;
+            const offerDate = document.getElementById('offerDate').value;
+            const customerName = document.getElementById('customerName').value;
+            
+            const { products, subtotal, vat, total } = calculateAndShow();
+
+            if (!offerNumber || !customerName || !products.length) {
+                alert("Zəhmət olmasa, təklif nömrəsi, müştəri adı və ən azı bir məhsul daxil edin.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, `artifacts/${appId}/users/${userId}/offers`), {
+                    offerNumber,
+                    offerDate,
+                    customerName,
+                    products,
+                    subtotal,
+                    vat,
+                    total,
+                    createdAt: new Date()
+                });
+                alert("Təklif uğurla yadda saxlanıldı!");
+                showView('savedOffersView');
+            } catch (error) {
+                console.error("Təklifi yadda saxlayarkən xəta:", error);
+                alert("Təklifi yadda saxlayarkən xəta baş verdi. Zəhmət olmasa, yenidən cəhd edin.");
+            }
+        });
+
+        offersList.addEventListener('click', (e) => {
+            const viewBtn = e.target.closest('.view-offer-btn');
+            const deleteBtn = e.target.closest('.delete-offer-btn');
+            if (viewBtn) {
+                viewOffer(viewBtn.dataset.id);
+            } else if (deleteBtn) {
+                deleteOffer(deleteBtn.dataset.id);
+            }
+        });
+
+        // Səhifə yüklənəndə avtomatik olaraq bir məhsul əlavə edir
+        document.addEventListener('DOMContentLoaded', () => {
+            showView('offerFormView');
+            addProductRow();
+        });
     </script>
 </body>
 </html>
