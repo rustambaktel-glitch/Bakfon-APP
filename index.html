@@ -3,411 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kredit Kalkulyatoru</title>
+    <title>Baktel Electronics MMC - Təklif Forması</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 20px;
-        }
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .form-row {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .form-row.double {
-            flex-wrap: wrap;
-        }
-        .input-group {
-            flex: 1;
-            min-width: 250px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #34495e;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #bdc3c7;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        input:focus, select:focus {
-            border-color: #3498db;
-            outline: none;
-        }
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        button {
-            width: 100%;
-            padding: 15px;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        #calculate-btn {
-            background-color: #3498db;
-        }
-        #calculate-btn:hover {
-            background-color: #2980b9;
-        }
-        #finalize-btn {
-            background-color: #2ecc71;
-        }
-        #finalize-btn:hover {
-            background-color: #27ae60;
-        }
-        #print-btn {
-            background-color: #34495e;
-        }
-        #print-btn:hover {
-            background-color: #2c3e50;
-        }
-        .hidden-section {
-            display: none;
-        }
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #ecf0f1;
-            border-radius: 8px;
-            border: 1px solid #dcdcdc;
-            line-height: 1.6;
-        }
-        .info-section h2 {
-            color: #34495e;
-            margin-top: 0;
-            text-align: center;
-        }
-        #result-info {
-            display: none;
-        }
-        #payment-schedule {
-            margin-top: 25px;
-            display: none;
-            overflow-x: auto;
-        }
-        #payment-schedule h2 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        #schedule-table {
-            width: 100%;
-            min-width: 600px;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        #schedule-table th, #schedule-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        #schedule-table th {
-            background-color: #f2f2f2;
-            color: #333;
-            font-weight: 600;
-        }
-        #schedule-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .divider {
-            height: 1px;
-            background-color: #ddd;
-            margin: 25px 0;
-        }
-
-        /* Çap üçün stil */
+        body { font-family: 'Inter', sans-serif; }
         @media print {
-            body {
-                background-color: #fff;
-            }
-            .container {
-                box-shadow: none;
-                padding: 0;
-            }
-            h1, form, #monthly-result, .divider, .button-group {
-                display: none;
-            }
-            #full-details-section {
-                display: block !important;
-            }
-            #result-info, #payment-schedule, #customer-info-form {
-                display: block !important;
-                margin-top: 0;
-            }
-            .info-section {
-                padding: 0;
-                border: none;
-                background-color: #fff;
-                border: 1px solid #000;
-                padding: 10px;
-            }
-            .info-section h2, #payment-schedule h2, #customer-info-form h2 {
-                text-align: left;
-                margin-bottom: 10px;
-                border-bottom: 2px solid #333;
-                padding-bottom: 5px;
-            }
-            #result-info p {
-                border-bottom: 1px solid #ccc;
-                padding: 5px 0;
-                margin: 0;
-            }
-            #result-info p:last-child {
-                border-bottom: none;
-            }
-            #customer-info-form .form-row {
-                display: block;
-            }
-            #customer-info-form .form-row .input-group {
-                margin-bottom: 10px;
-            }
-            #customer-info-form label {
-                font-weight: bold;
-                margin-right: 5px;
-            }
-            #customer-info-form input {
-                border: none;
-                background: transparent;
-                padding: 0;
-                display: inline-block;
-                width: auto;
-            }
+            body { background-color: #fff; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .container { box-shadow: none; border: none; }
+            .product-row input, .product-row select { border: none; }
+            .invoice-table th, .invoice-table td { padding: 8px; border: 1px solid #000; }
+        }
+        .print-only { display: none; }
+        
+        /* Yenilənmiş xana stilləri */
+        input[type="text"], input[type="date"], input[type="number"], select {
+            padding: 14px; /* Daxili boşluğu artırır */
+            font-size: 18px; /* Şrift ölçüsünü artırır */
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 p-4">
 
-<div class="container">
-    <h1>Kredit Kalkulyatoru</h1>
-    
-    <form id="calculation-form">
-        <div class="form-row double">
-            <div class="input-group">
-                <label for="price">Məhsulun Qiyməti (AZN):</label>
-                <input type="number" id="price" placeholder="Məsələn, 1200" required>
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg no-print">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Təklif Forması</h1>
+        <form id="offerForm" class="space-y-6">
+            <!-- Header Məlumatları -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="offerNumber" class="block text-sm font-medium text-gray-700">Təklif nömrəsi:</label>
+                    <input type="text" id="offerNumber" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="offerDate" class="block text-sm font-medium text-gray-700">Tarix:</label>
+                    <input type="date" id="offerDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
             </div>
-            <div class="input-group">
-                <label for="initial-payment">İlkin Ödəniş (AZN):</label>
-                <input type="number" id="initial-payment" value="0" required>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="input-group">
-                <label for="months">Ay sayı:</label>
-                <select id="months">
-                    <option value="3">3 ay</option>
-                    <option value="6">6 ay</option>
-                    <option value="9">9 ay</option>
-                    <option value="12">12 ay</option>
-                    <option value="18">18 ay</option>
-                    <option value="24">24 ay</option>
-                    <option value="36">36 ay</option>
-                </select>
-            </div>
-        </div>
-        <button type="submit" id="calculate-btn">Hesabla</button>
-    </form>
 
-    <div id="monthly-result" class="hidden-section">
-        <div class="info-section">
-            <p>Aylıq Ödəniş: <strong><span id="monthly-payment"></span> AZN</strong></p>
-            <p>Ümumi Ödəniləcək Məbləğ: <strong><span id="total-payment"></span> AZN</strong></p>
-        </div>
-        <div class="button-group" style="margin-top: 20px;">
-            <button id="finalize-btn">Rəsmiləşdir</button>
-        </div>
-    </div>
-    
-    <div id="full-details-section" class="hidden-section">
-        <div class="divider"></div>
-        <form id="customer-info-form">
-            <h2>Müştəri Məlumatları</h2>
-            <div class="form-row double">
-                <div class="input-group">
-                    <label for="customer-name">Müştəri Adı, Soyadı, Atasının Adı:</label>
-                    <input type="text" id="customer-name" placeholder="Məsələn, Əli Əliyev Vəli oğlu" required>
+            <!-- Müştəri Məlumatları -->
+            <div class="border p-4 rounded-lg bg-gray-50">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Müştəri məlumatları</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="customerName" class="block text-sm font-medium text-gray-700">Şirkətin adı:</label>
+                        <input type="text" id="customerName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                    </div>
+                    <div>
+                        <label for="customerVOEN" class="block text-sm font-medium text-gray-700">VÖEN:</label>
+                        <input type="text" id="customerVOEN" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label for="fin-code">FIN Kod:</label>
-                    <input type="text" id="fin-code" placeholder="Məsələn, 1A2B3C4" required>
+                <div class="mt-4">
+                    <label for="customerAddress" class="block text-sm font-medium text-gray-700">Ünvan:</label>
+                    <input type="text" id="customerAddress" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </div>
             </div>
-            <div class="form-row double">
-                <div class="input-group">
-                    <label for="sv-series">Ş/V Seriya və Nömrəsi:</label>
-                    <input type="text" id="sv-series" placeholder="Məsələn, AA1234567" required>
+
+            <!-- Məhsullar -->
+            <div class="border p-4 rounded-lg bg-gray-50">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">Məhsullar</h2>
+                <div id="productsContainer" class="space-y-4">
+                    <!-- Dinamik olaraq məhsullar bura əlavə ediləcək -->
                 </div>
-                <div class="input-group">
-                    <label for="dob">Doğum Tarixi:</label>
-                    <input type="date" id="dob" required>
-                </div>
+                <button type="button" id="addProductBtn" class="mt-4 w-full bg-indigo-500 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors">
+                    + Məhsul əlavə et
+                </button>
             </div>
-            <div class="form-row">
-                <div class="input-group">
-                    <label for="address">Ünvan:</label>
-                    <input type="text" id="address" placeholder="Məsələn, Bakı şəhəri, Səməd Vurğun küç. 5" required>
+
+            <!-- Hesablama düyməsi -->
+            <button type="button" id="calculateBtn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-md hover:bg-green-600 transition-colors">
+                Hesabla
+            </button>
+
+            <!-- Hesablama nəticələri -->
+            <div id="results" class="hidden">
+                <div class="border p-4 rounded-lg bg-gray-50 mt-6">
+                    <div class="flex justify-end items-center mb-2">
+                        <span class="text-gray-700 font-bold">Cəm məbləğ:</span>
+                        <span id="subtotal" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
+                    </div>
+                    <div class="flex justify-end items-center mb-2">
+                        <span class="text-gray-700 font-bold">ƏDV (18%):</span>
+                        <span id="vat" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
+                    </div>
+                    <div class="flex justify-end items-center border-t pt-2 mt-2">
+                        <span class="text-xl text-gray-800 font-extrabold">Yekun məbləğ:</span>
+                        <span id="total" class="ml-4 text-xl text-indigo-600 font-extrabold">0.00 AZN</span>
+                    </div>
                 </div>
-            </div>
-            <div class="button-group">
-                <button type="submit" id="print-btn">Çap et</button>
+                <button type="button" id="printBtn" class="mt-4 w-full bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
+                    Sənədi çap et
+                </button>
             </div>
         </form>
+    </div>
 
-        <div id="result-info" class="info-section">
-            <h2>Kredit Məlumatları</h2>
-            <p><strong>Müştəri:</strong> <span id="info-name"></span></p>
-            <p><strong>FIN Kod:</strong> <span id="info-fin"></span></p>
-            <p><strong>Ş/V Seriya və Nömrəsi:</strong> <span id="info-sv"></span></p>
-            <p><strong>Kreditin Məbləği:</strong> <span id="info-credit-amount"></span></p>
-            <p><strong>İlkin Ödəniş:</strong> <span id="info-initial-payment"></span></p>
-            <p><strong>Müddət:</strong> <span id="info-months"></span></p>
-            <p><strong>Aylıq Ödəniş:</strong> <span id="info-monthly-payment"></span></p>
+    <!-- Yalnız çap üçün görünəcək səhifə -->
+    <div id="printableArea" class="print-only p-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-extrabold text-gray-900 text-center">TƏKLİF FORMASI</h1>
+            <div class="flex justify-between items-center mt-4">
+                <div>
+                    <p class="text-sm font-semibold">Göndərən:</p>
+                    <p class="font-bold text-lg">Baktel Electronics MMC</p>
+                    <p class="text-sm">VÖEN: 1234567890</p>
+                    <p class="text-sm">Ünvan: Bakı şəhəri, ...</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-semibold">Təklif nömrəsi: <span id="printOfferNumber"></span></p>
+                    <p class="text-sm font-semibold">Tarix: <span id="printOfferDate"></span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mb-8">
+            <p class="text-sm font-semibold">Alan:</p>
+            <p class="text-lg font-bold"><span id="printCustomerName"></span></p>
+            <p class="text-sm">VÖEN: <span id="printCustomerVOEN"></span></p>
+            <p class="text-sm">Ünvan: <span id="printCustomerAddress"></span></p>
         </div>
 
-        <div id="payment-schedule">
-            <h2>Ödəniş Cədvəli</h2>
-            <table id="schedule-table">
-                <thead>
-                    <tr>
-                        <th>Ay</th>
-                        <th>Ödəniş Tarixi</th>
-                        <th>Ödəniş Məbləği</th>
-                        <th>Qalıq Borc</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+        <table class="w-full border-collapse invoice-table">
+            <thead>
+                <tr>
+                    <th class="border px-4 py-2">№</th>
+                    <th class="border px-4 py-2 text-left">Məhsulun adı</th>
+                    <th class="border px-4 py-2">Miqdar</th>
+                    <th class="border px-4 py-2">Qiymət (AZN)</th>
+                    <th class="border px-4 py-2">Cəmi (AZN)</th>
+                </tr>
+            </thead>
+            <tbody id="printProductsTable">
+            </tbody>
+        </table>
+
+        <div class="flex justify-end mt-8">
+            <div class="w-1/2">
+                <div class="flex justify-between font-bold">
+                    <p>Cəm məbləğ:</p>
+                    <p><span id="printSubtotal">0.00 AZN</span></p>
+                </div>
+                <div class="flex justify-between font-bold">
+                    <p>ƏDV (18%):</p>
+                    <p><span id="printVat">0.00 AZN</span></p>
+                </div>
+                <div class="flex justify-between font-extrabold text-lg mt-4 border-t-2 pt-2">
+                    <p>Yekun məbləğ:</p>
+                    <p><span id="printTotal">0.00 AZN</span></p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-12 text-center text-sm">
+            <p>Baktel Electronics MMC-nin rəsmi təklif formasıdır.</p>
         </div>
     </div>
-</div>
 
-<script>
-    const calculationForm = document.getElementById('calculation-form');
-    const monthlyResultDiv = document.getElementById('monthly-result');
-    const finalizeBtn = document.getElementById('finalize-btn');
-    const fullDetailsSection = document.getElementById('full-details-section');
-    const customerInfoForm = document.getElementById('customer-info-form');
+    <script>
+        const offerForm = document.getElementById('offerForm');
+        const productsContainer = document.getElementById('productsContainer');
+        const addProductBtn = document.getElementById('addProductBtn');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const printBtn = document.getElementById('printBtn');
+        const resultsDiv = document.getElementById('results');
 
-    let calculatedData = {};
+        let productIndex = 0;
 
-    calculationForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const price = parseFloat(document.getElementById('price').value);
-        const initialPayment = parseFloat(document.getElementById('initial-payment').value);
-        const months = parseInt(document.getElementById('months').value);
-
-        if (isNaN(price) || isNaN(initialPayment) || price <= 0 || initialPayment < 0) {
-            alert("Zəhmət olmasa, qiymət və ilkin ödəniş sahələrini düzgün doldurun.");
-            return;
+        function addProductRow() {
+            const newRow = document.createElement('div');
+            newRow.className = 'grid grid-cols-1 md:grid-cols-4 gap-4 items-center product-row';
+            newRow.innerHTML = `
+                <div>
+                    <label for="productName-${productIndex}" class="block text-sm font-medium text-gray-700">Məhsulun adı</label>
+                    <input type="text" id="productName-${productIndex}" data-id="${productIndex}" data-field="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                </div>
+                <div>
+                    <label for="productQty-${productIndex}" class="block text-sm font-medium text-gray-700">Miqdar</label>
+                    <input type="number" id="productQty-${productIndex}" data-id="${productIndex}" data-field="qty" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="1" min="1">
+                </div>
+                <div>
+                    <label for="productPrice-${productIndex}" class="block text-sm font-medium text-gray-700">Qiymət (AZN)</label>
+                    <input type="number" id="productPrice-${productIndex}" data-id="${productIndex}" data-field="price" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" step="0.01" min="0">
+                </div>
+                <div class="flex items-end h-full">
+                    <button type="button" class="remove-product-btn w-full bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors">Sil</button>
+                </div>
+            `;
+            productsContainer.appendChild(newRow);
+            productIndex++;
         }
 
-        if (initialPayment >= price) {
-            alert("İlkin ödəniş məhsulun qiymətindən çox və ya ona bərabər ola bilməz.");
-            return;
-        }
+        addProductBtn.addEventListener('click', addProductRow);
 
-        const remainingAmount = price - initialPayment;
-        const monthlyPayment = remainingAmount / months;
-
-        document.getElementById('monthly-payment').textContent = monthlyPayment.toFixed(2);
-        document.getElementById('total-payment').textContent = remainingAmount.toFixed(2);
-        monthlyResultDiv.classList.remove('hidden-section');
-
-        calculatedData = { price, initialPayment, months, monthlyPayment, remainingAmount };
-    });
-
-    finalizeBtn.addEventListener('click', function() {
-        fullDetailsSection.classList.remove('hidden-section');
-    });
-
-    customerInfoForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const customerName = document.getElementById('customer-name').value;
-        const finCode = document.getElementById('fin-code').value;
-        const svSeries = document.getElementById('sv-series').value;
-        const dob = document.getElementById('dob').value;
-        const address = document.getElementById('address').value;
-
-        if (customerInfoForm.checkValidity()) {
-            const { price, initialPayment, months, monthlyPayment, remainingAmount } = calculatedData;
-            
-            document.getElementById('info-name').textContent = customerName;
-            document.getElementById('info-fin').textContent = finCode;
-            document.getElementById('info-sv').textContent = svSeries;
-            document.getElementById('info-credit-amount').textContent = `${remainingAmount.toFixed(2)} AZN`;
-            document.getElementById('info-initial-payment').textContent = `${initialPayment.toFixed(2)} AZN`;
-            document.getElementById('info-months').textContent = `${months} ay`;
-            document.getElementById('info-monthly-payment').textContent = `${monthlyPayment.toFixed(2)} AZN`;
-
-            document.getElementById('result-info').style.display = 'block';
-
-            const paymentScheduleDiv = document.getElementById('payment-schedule');
-            const scheduleTableBody = document.getElementById('schedule-table').getElementsByTagName('tbody')[0];
-
-            scheduleTableBody.innerHTML = ''; 
-            const today = new Date();
-
-            let currentRemaining = remainingAmount;
-            for (let i = 1; i <= months; i++) {
-                const row = scheduleTableBody.insertRow();
-                
-                const monthCell = row.insertCell(0);
-                const dateCell = row.insertCell(1);
-                const paymentCell = row.insertCell(2);
-                const remainingCell = row.insertCell(3);
-
-                let paymentDate = new Date(today.getFullYear(), today.getMonth() + i, today.getDate());
-                
-                if (i === months) {
-                    currentRemaining = 0;
-                } else {
-                    currentRemaining -= monthlyPayment;
-                }
-
-                monthCell.textContent = i;
-                dateCell.textContent = paymentDate.toLocaleDateString('az-AZ');
-                paymentCell.textContent = `${monthlyPayment.toFixed(2)} AZN`;
-                remainingCell.textContent = `${currentRemaining.toFixed(2)} AZN`;
+        productsContainer.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-product-btn')) {
+                e.target.closest('.product-row').remove();
             }
-            paymentScheduleDiv.style.display = 'block';
-            
-            window.print();
-        } else {
-            alert("Zəhmət olmasa, bütün müştəri məlumatlarını doldurun.");
-        }
-    });
-</script>
+        });
 
+        calculateBtn.addEventListener('click', function() {
+            const products = [];
+            document.querySelectorAll('.product-row').forEach(row => {
+                const name = row.querySelector('input[data-field="name"]').value;
+                const qty = parseFloat(row.querySelector('input[data-field="qty"]').value) || 0;
+                const price = parseFloat(row.querySelector('input[data-field="price"]').value) || 0;
+                if (name && qty > 0 && price > 0) {
+                    products.push({ name, qty, price });
+                }
+            });
+
+            let subtotal = 0;
+            products.forEach(product => {
+                subtotal += product.qty * product.price;
+            });
+
+            const vat = subtotal * 0.18;
+            const total = subtotal + vat;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' AZN';
+            document.getElementById('vat').textContent = vat.toFixed(2) + ' AZN';
+            document.getElementById('total').textContent = total.toFixed(2) + ' AZN';
+
+            resultsDiv.classList.remove('hidden');
+
+            // Çap üçün məlumatları doldur
+            updatePrintableContent(products, subtotal, vat, total);
+        });
+
+        function updatePrintableContent(products, subtotal, vat, total) {
+            document.getElementById('printOfferNumber').textContent = document.getElementById('offerNumber').value;
+            document.getElementById('printOfferDate').textContent = document.getElementById('offerDate').value;
+            document.getElementById('printCustomerName').textContent = document.getElementById('customerName').value;
+            document.getElementById('printCustomerVOEN').textContent = document.getElementById('customerVOEN').value;
+            document.getElementById('printCustomerAddress').textContent = document.getElementById('customerAddress').value;
+            
+            const printProductsTable = document.getElementById('printProductsTable');
+            printProductsTable.innerHTML = '';
+            products.forEach((product, index) => {
+                const totalProductPrice = product.qty * product.price;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border px-4 py-2 text-center">${index + 1}</td>
+                    <td class="border px-4 py-2">${product.name}</td>
+                    <td class="border px-4 py-2 text-center">${product.qty}</td>
+                    <td class="border px-4 py-2 text-right">${product.price.toFixed(2)}</td>
+                    <td class="border px-4 py-2 text-right">${totalProductPrice.toFixed(2)}</td>
+                `;
+                printProductsTable.appendChild(row);
+            });
+
+            document.getElementById('printSubtotal').textContent = subtotal.toFixed(2) + ' AZN';
+            document.getElementById('printVat').textContent = vat.toFixed(2) + ' AZN';
+            document.getElementById('printTotal').textContent = total.toFixed(2) + ' AZN';
+        }
+
+        printBtn.addEventListener('click', function() {
+            window.print();
+        });
+
+        // Səhifə yüklənəndə avtomatik olaraq bir məhsul əlavə et
+        document.addEventListener('DOMContentLoaded', addProductRow);
+    </script>
 </body>
 </html>
