@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baktel Electronics MMC - Qiymət Razılaşdırma Protokolu</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         @media print {
-            body { background-color: #fff; }
+            body { background-color: #fff; height: auto; overflow: visible; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             .print-container { box-shadow: none; border: none; }
             .invoice-table th, .invoice-table td { padding: 8px; border: 1px solid #000; }
             .product-row input, .product-row select { border: none; }
+            #main-content { overflow-y: visible; padding: 0; }
+            #singleOfferView { position: absolute; top: 0; left: 0; width: 100%; padding: 0; box-shadow: none; }
         }
         .print-only { display: none; }
         
@@ -160,16 +163,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-12 text-center text-sm">
-                    <p>Baktel Electronics MMC-nin rəsmi təklif formasıdır.</p>
+                
+                <div class="mt-12 flex justify-between items-end">
+                    <div>
+                        <p class="font-bold">Direktor: Mahmudov İlqar</p>
+                        <div class="mt-8 border-b border-gray-400 w-48"></div>
+                        <p class="text-sm">İmza/Möhür</p>
+                    </div>
                 </div>
+
             </div>
             <div class="flex space-x-4 mt-8 no-print">
                 <button type="button" id="backBtn" class="flex-1 bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-colors">
                     Geri qayıt
                 </button>
-                <button type="button" onclick="window.print()" class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
-                    Sənədi çap et
+                <button type="button" id="downloadPdfBtn" class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
+                    PDF yüklə
                 </button>
             </div>
         </div>
@@ -196,10 +205,10 @@
         const offerDateInput = document.getElementById('offerDate');
         const offerNumberInput = document.getElementById('offerNumber');
         const customerNameInput = document.getElementById('customerName');
+        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 
         let productIndex = 0;
 
-        // Baxışları idarə edir
         function showView(viewId) {
             offerFormView.classList.add('hidden');
             savedOffersView.classList.add('hidden');
@@ -207,7 +216,6 @@
             document.getElementById(viewId).classList.remove('hidden');
         }
 
-        // Cari tarixi avtomatik doldurur
         function setTodayDate() {
             const today = new Date();
             const year = today.getFullYear();
@@ -216,7 +224,6 @@
             offerDateInput.value = `${year}-${month}-${day}`;
         }
 
-        // Məhsul nömrələrini yeniləyir
         function updateProductNumbers() {
             const productRows = document.querySelectorAll('.product-row');
             productRows.forEach((row, index) => {
@@ -227,7 +234,6 @@
             });
         }
 
-        // Formu təmizləyir
         function clearForm() {
             offerNumberInput.value = '';
             customerNameInput.value = '';
@@ -235,9 +241,9 @@
             resultsDiv.classList.add('hidden');
             addProductRow();
             setTodayDate();
+            delete offerFormView.dataset.editingId;
         }
 
-        // Təklif sətirlərini əlavə edir
         function addProductRow() {
             const newRow = document.createElement('div');
             newRow.className = 'grid grid-cols-1 md:grid-cols-4 gap-4 items-center product-row';
@@ -266,7 +272,6 @@
             productIndex++;
         }
 
-        // Hesablamaları aparır və nəticəni göstərir
         function calculateAndShow() {
             const products = [];
             document.querySelectorAll('.product-row').forEach(row => {
@@ -295,7 +300,6 @@
             return { products, subtotal, vat, total };
         }
 
-        // Çap sənədinin məzmununu yeniləyir
         function updatePrintableContent(offer) {
             document.getElementById('printOfferNumber').textContent = offer.offerNumber || '---';
             document.getElementById('printOfferDate').textContent = offer.offerDate || '---';
@@ -321,7 +325,6 @@
             document.getElementById('printTotal').textContent = offer.total.toFixed(2) + ' AZN';
         }
 
-        // Təklifləri yerli yaddaşdan yükləyir
         function loadOffers() {
             offersList.innerHTML = '';
             const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
@@ -342,6 +345,7 @@
                         </div>
                         <div class="flex space-x-2">
                             <button data-id="${offer.id}" class="view-offer-btn bg-blue-500 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">Bax</button>
+                            <button data-id="${offer.id}" class="edit-offer-btn bg-yellow-500 text-white text-sm px-4 py-2 rounded-md hover:bg-yellow-600 transition-colors">Düzəliş et</button>
                             <button data-id="${offer.id}" class="delete-offer-btn bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors">Sil</button>
                         </div>
                     `;
@@ -350,7 +354,6 @@
             }
         }
 
-        // Təklifə baxma funksiyası
         function viewOffer(offerId) {
             const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
             const offer = savedOffers.find(o => o.id === offerId);
@@ -362,8 +365,33 @@
                 alert("Təklif tapılmadı.");
             }
         }
+        
+        function editOffer(offerId) {
+            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
+            const offerToEdit = savedOffers.find(o => o.id === offerId);
+            
+            if (offerToEdit) {
+                offerNumberInput.value = offerToEdit.offerNumber;
+                offerDateInput.value = offerToEdit.offerDate;
+                customerNameInput.value = offerToEdit.customerName;
 
-        // Təklif silmə funksiyası
+                productsContainer.innerHTML = '';
+                offerToEdit.products.forEach(product => {
+                    addProductRow();
+                    const lastRow = productsContainer.lastElementChild;
+                    lastRow.querySelector('input[data-field="name"]').value = product.name;
+                    lastRow.querySelector('input[data-field="qty"]').value = product.qty;
+                    lastRow.querySelector('input[data-field="price"]').value = product.price;
+                });
+                
+                calculateAndShow();
+                offerFormView.dataset.editingId = offerId;
+                showView('offerFormView');
+            } else {
+                alert("Təklif tapılmadı.");
+            }
+        }
+
         function deleteOffer(offerId) {
             if (!confirm("Bu təklifi silmək istədiyinizə əminsiniz?")) {
                 return;
@@ -374,7 +402,6 @@
             loadOffers();
         }
 
-        // Hadisə dinləyiciləri
         homeBtn.addEventListener('click', () => {
             clearForm();
             showView('offerFormView');
@@ -406,7 +433,6 @@
             const offerNumber = offerNumberInput.value;
             const offerDate = offerDateInput.value;
             const customerName = customerNameInput.value;
-            
             const { products, subtotal, vat, total } = calculateAndShow();
 
             if (!offerNumber || !customerName || products.length === 0) {
@@ -414,23 +440,43 @@
                 return;
             }
 
-            const newOffer = {
-                id: uuidv4(),
-                offerNumber,
-                offerDate,
-                customerName,
-                products,
-                subtotal,
-                vat,
-                total,
-                createdAt: new Date().toISOString()
-            };
+            const editingId = offerFormView.dataset.editingId;
+            let savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
 
-            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
-            savedOffers.push(newOffer);
+            if (editingId) {
+                const offerIndex = savedOffers.findIndex(o => o.id === editingId);
+                if (offerIndex !== -1) {
+                    savedOffers[offerIndex] = {
+                        ...savedOffers[offerIndex],
+                        offerNumber,
+                        offerDate,
+                        customerName,
+                        products,
+                        subtotal,
+                        vat,
+                        total,
+                        updatedAt: new Date().toISOString()
+                    };
+                }
+                delete offerFormView.dataset.editingId;
+                alert("Təklif uğurla yeniləndi!");
+            } else {
+                const newOffer = {
+                    id: uuidv4(),
+                    offerNumber,
+                    offerDate,
+                    customerName,
+                    products,
+                    subtotal,
+                    vat,
+                    total,
+                    createdAt: new Date().toISOString()
+                };
+                savedOffers.push(newOffer);
+                alert("Təklif uğurla yadda saxlanıldı!");
+            }
+
             localStorage.setItem('baktelOffers', JSON.stringify(savedOffers));
-            
-            alert("Təklif uğurla yadda saxlanıldı!");
             showView('savedOffersView');
             loadOffers();
         });
@@ -452,17 +498,33 @@
             showView('singleOfferView');
         });
 
+        downloadPdfBtn.addEventListener('click', () => {
+            const element = document.getElementById('printableArea');
+            const opt = {
+                margin:       1,
+                filename:     `Təklif_${document.getElementById('printOfferNumber').textContent}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save();
+        });
+
         offersList.addEventListener('click', (e) => {
             const viewBtn = e.target.closest('.view-offer-btn');
             const deleteBtn = e.target.closest('.delete-offer-btn');
+            const editBtn = e.target.closest('.edit-offer-btn');
+            
             if (viewBtn) {
                 viewOffer(viewBtn.dataset.id);
             } else if (deleteBtn) {
                 deleteOffer(deleteBtn.dataset.id);
+            } else if (editBtn) {
+                editOffer(editBtn.dataset.id);
             }
         });
 
-        // Səhifə yüklənəndə avtomatik olaraq bir məhsul əlavə edir
         document.addEventListener('DOMContentLoaded', () => {
             showView('offerFormView');
             addProductRow();
