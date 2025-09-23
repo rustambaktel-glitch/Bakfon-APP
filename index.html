@@ -27,6 +27,11 @@
             .invoice-table {
                 width: 100%;
             }
+
+            /* Səhifələnmənin qarşısını almaq üçün yeni CSS qaydaları */
+            .no-page-break {
+                page-break-inside: avoid;
+            }
         }
         
         .print-only { display: none; }
@@ -168,32 +173,33 @@
                     <tbody id="printProductsTable">
                     </tbody>
                 </table>
-
-                <div class="flex justify-end mt-8">
-                    <div class="w-1/2">
-                        <div class="flex justify-between font-bold">
-                            <p>Cəm məbləğ:</p>
-                            <p><span id="printSubtotal">0.00 AZN</span></p>
-                        </div>
-                        <div class="flex justify-between font-bold">
-                            <p>ƏDV (18%):</p>
-                            <p><span id="printVat">0.00 AZN</span></p>
-                        </div>
-                        <div class="flex justify-between font-extrabold text-lg mt-4 border-t-2 pt-2">
-                            <p>Yekun məbləğ:</p>
-                            <p><span id="printTotal">0.00 AZN</span></p>
-                        </div>
-                    </div>
-                </div>
                 
-                <div class="mt-12 flex justify-between items-end">
-                    <div>
-                        <p class="font-bold">Direktor: Mahmudov İlqar</p>
-                        <div class="mt-8 border-b border-gray-400 w-48"></div>
-                        <p class="text-sm">İmza/Möhür</p>
+                <div class="no-page-break">
+                    <div class="flex justify-end mt-8">
+                        <div class="w-1/2">
+                            <div class="flex justify-between font-bold">
+                                <p>Cəm məbləğ:</p>
+                                <p><span id="printSubtotal">0.00 AZN</span></p>
+                            </div>
+                            <div class="flex justify-between font-bold">
+                                <p>ƏDV (18%):</p>
+                                <p><span id="printVat">0.00 AZN</span></p>
+                            </div>
+                            <div class="flex justify-between font-extrabold text-lg mt-4 border-t-2 pt-2">
+                                <p>Yekun məbləğ:</p>
+                                <p><span id="printTotal">0.00 AZN</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-12 flex justify-between items-end">
+                        <div>
+                            <p class="font-bold">Direktor: Mahmudov İlqar</p>
+                            <div class="mt-8 border-b border-gray-400 w-48"></div>
+                            <p class="text-sm">İmza/Möhür</p>
+                        </div>
                     </div>
                 </div>
-
             </div>
             <div class="flex space-x-4 mt-8 no-print">
                 <button type="button" id="backBtn" class="flex-1 bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-colors">
