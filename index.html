@@ -7,9 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        /* Bütün şriftləri Times New Roman edir */
+        body { font-family: 'Times New Roman', Times, serif; }
+
         @media print {
-            body { background-color: #fff; height: auto; overflow: visible; }
+            body { 
+                background-color: #fff; 
+                height: auto; 
+                overflow: visible;
+                font-family: 'Times New Roman', Times, serif; 
+            }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             .print-container { box-shadow: none; border: none; }
@@ -17,7 +24,13 @@
             .product-row input, .product-row select { border: none; }
             #main-content { overflow-y: visible; padding: 0; }
             #singleOfferView { position: absolute; top: 0; left: 0; width: 100%; padding: 0; box-shadow: none; }
+            
+            /* Cədvəl üçün əlavə CSS */
+            .invoice-table {
+                width: 100%;
+            }
         }
+        
         .print-only { display: none; }
         
         input[type="text"], input[type="date"], input[type="number"], select {
@@ -26,15 +39,12 @@
             border: 1px solid #d1d5db;
         }
 
-        /* Başlığın ölçüsünü kiçildir */
+        /* Başlığın ölçüsünü daha da kiçildir */
         #printableArea h1 {
-            font-size: 2rem; /* Normalda 3xl idi, indi 2xl-ə endirilir */
+            font-size: 1.5rem; /* 2xl-dən 1.5rem-ə endirilir */
+            font-weight: bold;
         }
         
-        /* Cədvəli enli edir */
-        #printableArea .invoice-table {
-            width: 100% !important; /* Cədvəli tam səhifə enində tutur */
-        }
     </style>
 </head>
 <body class="bg-gray-200 flex h-screen overflow-hidden">
@@ -511,7 +521,7 @@
         downloadPdfBtn.addEventListener('click', () => {
             const element = document.getElementById('printableArea');
             const opt = {
-                margin:       1,
+                margin:       [0.5, 0.5, 0.5, 0.5], // Yuxarı, sağ, aşağı, sol kənar boşluqları artırdıq
                 filename:     `Təklif_${document.getElementById('printOfferNumber').textContent}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
