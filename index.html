@@ -160,8 +160,8 @@
           <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
             <button class="btn success" id="btnCalc">Hesabla (Enter)</button>
             <button class="btn danger" id="btnReset">Sıfırla (Esc)</button>
-            <button class="btn ghost" id="btnPrint">PDF (Çap)</button>
-            <button class="btn primary" id="btnFinalize">Əlavə rəsmiləşdir</button>
+            <button class="btn ghost" onclick="exportPrint()">PDF (Çap)</button>
+            <button class="btn primary" onclick="toggleFinalize()">Əlavə rəsmiləşdir</button>
           </div>
 
           <div id="finalizeWrap" class="col-12" style="display:none">
@@ -195,8 +195,8 @@
                 </div>
 
                 <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px">
-                  <button class="btn success" id="btnFinalizePrint">Təsdiqlə və Çap et</button>
-                  <button class="btn" id="btnFinalizeClose">Bağla</button>
+                  <button class="btn success" onclick="finalizeAndPrint()">Təsdiqlə və Çap et</button>
+                  <button class="btn" onclick="toggleFinalize(false)">Bağla</button>
                 </div>
               </div>
             </div>
@@ -592,6 +592,136 @@
 
     // Başlanğıc olaraq kalkulyator açıq
     showScreen('calc');
+      // ==== ORİJİNAL STİLDƏ ÇAP FUNKSİYALARI ====
+    function exportPrint(){
+      const w=window.open('','_blank');
+      const summary=document.getElementById('summary')?.innerHTML||'';
+      const sched=document.getElementById('scheduleWrap')?.innerHTML||'';
+      const today = new Date();
+      w.document.write(`<!doctype html><html><head><meta charset='utf-8'><title>Kredit Çap</title>
+        <style>body{font-family:system-ui,Segoe UI,Roboto; padding:16px} h1{margin:0 0 8px} .muted{color:#64748b}
+        table{width:100%;border-collapse:collapse} th,td{border:1px solid #e5e7eb;padding:8px;text-align:right} th{text-align:right;background:#f8fafc}
+        th:first-child,td:first-child{text-align:left} .block{border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin:8px 0}
+        </style></head><body>
+        <h1>Kredit hesablaması</h1>
+        <div class='muted'>${ddmmyyyy(today)}</div>
+        <div class='block'>${summary}</div>
+        <div class='block'>${sched}</div>
+      </body></html>`);
+      w.document.close(); w.focus(); w.print();
+    }
+
+    function computeForDocs(){
+      const risk=document.getElementById('risk').value;
+      const salaryStr=document.getElementById('salary').value;
+      const obligStr=document.getElementById('oblig').value;
+      const price=toNum('price');
+      const months=Number(document.getElementById('months').value||0);
+      const startDateStr=document.getElementById('startDate')?.value || todayISO();
+      if(!price) throw new Error('Məhsul dəyərini daxil edin.');
+      if(!months) throw new Error('Müddəti seçin.');
+      if(!risk || salaryStr==='' || obligStr==='') throw new Error('Risk, əmək haqqı və öhdəlikləri düzgün daxil edin.');
+
+      const extra = document.getElementById('addIncomeChk')?.checked ? Math.max(0, Number(document.getElementById('addIncomeAmt').value||0)) : 0;
+      const salary=Number(salaryStr)+extra;
+      const oblig=Number(obligStr)||0;
+
+      // İlkin ödəniş
+      let {down, pct, net} = getDownPayment(price, risk, salary, oblig);
+      if(document.getElementById('manualDownChk')?.checked){
+        const md = Math.max(0, Math.min(price, Number(document.getElementById('manualDownAmt').value||0)));
+        if(!isNaN(md)) down = Math.round(md*100)/100;
+      }
+      const principal = Math.round(Math.max(0, price - down)*100)/100;
+      const monthly = months>0 ? Math.round((principal/months)*100)/100 : 0;
+
+      const sd = new Date(startDateStr);
+      const day = sd.getDate();
+      let bal=principal; const rows=[];
+      for(let i=1;i<=months;i++){
+        const d=new Date(sd); d.setMonth(d.getMonth()+i); d.setDate(day);
+        let pay = monthly; if(i===months) pay = Math.round(bal*100)/100; bal = Math.round(Math.max(0, bal - pay)*100)/100;
+        rows.push({i,date:d,monthly:pay,bal});
+      }
+      return {price, months, risk, salary, oblig, startDate:sd, down, pct, principal, monthly, rows};
+    }
+
+    function finalizeAndPrint(){
+      const get=(id)=> (document.getElementById(id)?.value||'').trim();
+      const required=['custName','custPhone','prodName','idSerial','finCode','birthDate','address','imei1','contractNo','branch','currency','startDate','sellerRep'];
+      for(const id of required){ const el=document.getElementById(id); if(el && !el.value){ el.classList.add('invalid'); } }
+      if(required.some(id=> !get(id))){ showWarn('Zəhmət olmasa bütün müştəri məlumatlarını doldurun.'); return; }
+
+      let comp; try{ comp = computeForDocs(); }catch(e){ showWarn(e.message); return; }
+
+      const w=window.open('','_blank');
+      const bDate = ddmmyyyy(get('birthDate'));
+      const sDate = ddmmyyyy(get('startDate'));
+      const nowStr = ddmmyyyy(new Date());
+      const r = comp.rows.map(r=>`<tr><td>${r.i}</td><td>${ddmmyyyy(r.date)}</td><td>${fmtAZN(r.monthly)}</td><td>${fmtAZN(r.bal)}</td></tr>`).join('');
+
+      const html = `<!doctype html><html><head><meta charset='utf-8'><title>Müqavilə</title>
+      <style>
+        body{font-family:\"Times New Roman\", Times, serif; color:#111; background:#fff; padding:18mm}
+        h1{font-size:18pt; font-weight:700; text-align:center; text-transform:uppercase; margin:0 0 8mm}
+        h2{font-size:13pt; font-weight:700; text-align:center; margin:8mm 0 4mm}
+        table{width:100%; border-collapse:collapse; font-size:11pt}
+        th,td{border:1px solid #cbd5e1; padding:6px 8px; vertical-align:top}
+        th{background:#f5f5f5; text-align:left}
+        .top{display:flex; justify-content:space-between; font-size:11pt; margin-bottom:6mm}
+        .signs{display:flex; gap:20mm; margin-top:12mm}
+        .sign{flex:1}
+        .sigline{display:block; border-bottom:1px solid #111; height:18px; margin-top:18px}
+        .kecik{font-size:10.5pt}
+        ol{margin:0; padding-left:0; list-style:none}
+        ol li{margin:2.4mm 0}
+        .sub{margin-top:2mm}
+      </style></head><body>
+        <h1>Müqavilə</h1>
+        <div class='top'><div>Tarix: <b>${nowStr}</b></div><div>Müqavilə №: <b>${get('contractNo')}</b></div><div>Filial: <b>${get('branch')}</b></div></div>
+
+        <table><tr><th style='width:36%'>Müştəri</th><td>${get('custName')}</td></tr>
+          <tr><th>Əlaqə</th><td>${get('custPhone')}</td></tr>
+          <tr><th>Ş/V seriya №</th><td>${get('idSerial')}</td></tr>
+          <tr><th>FIN</th><td>${get('finCode')}</td></tr>
+          <tr><th>Doğum tarixi</th><td>${bDate}</td></tr>
+          <tr><th>Ünvan</th><td>${get('address')}</td></tr>
+        </table>
+
+        <table style='margin:6mm 0'>
+          <tr><th style='width:36%'>Məhsul</th><td>${get('prodName')}</td></tr>
+          <tr><th>IMEI 1</th><td>${get('imei1')}</td></tr>
+          ${get('imei2')? `<tr><th>IMEI 2</th><td>${get('imei2')}</td></tr>`:''}
+          <tr><th>Məhsul dəyəri</th><td>${fmtAZN(comp.price)} (${get('currency')})</td></tr>
+          <tr><th>İlkin ödəniş</th><td>${fmtAZN(comp.down)}</td></tr>
+          <tr><th>Kredit məbləği</th><td>${fmtAZN(comp.principal)}</td></tr>
+          <tr><th>Müddət</th><td>${comp.months} ay</td></tr>
+          <tr><th>Aylıq ödəniş</th><td>${fmtAZN(comp.monthly)}</td></tr>
+          <tr><th>Kreditin verilmə tarixi</th><td>${sDate}</td></tr>
+          <tr><th>Satıcı nümayəndə</th><td>${get('sellerRep')}</td></tr>
+        </table>
+
+        <h2>Ödəniş cədvəli</h2>
+        <table><thead><tr><th>Ay</th><th>Tarix</th><th>Məbləğ</th><th>Qalıq</th></tr></thead><tbody>${r}</tbody></table>
+
+        <h2>Tərəflərin hüquq və vəzifələri</h2>
+        <ol>
+          <li>2.1. Satıcı məhsulu işlək vəziyyətdə təhvil verir, zəmanət şərtlərinə riayət edir.</li>
+          <li>2.2. Alıcı aylıq ödənişləri cədvələ uyğun və vaxtında ödəməli, əlaqə məlumatlarında dəyişiklik olduqda xəbər verməlidir.</li>
+          <li>2.3. Alıcı borcu vaxtından əvvəl tam və ya qismən ödəyə bilər.</li>
+          <li>2.4. Gecikmə halında cərimə tədbirləri qüvvədə olan qaydalara uyğun tətbiq oluna bilər.</li>
+        </ol>
+
+        <div class='signs'>
+          <div class='sign'><div class='kecik'>Alıcı (Müştəri):</div><span class='sigline'></span></div>
+          <div class='sign'><div class='kecik'>Satıcı (Şirkət):</div><span class='sigline'></span></div>
+        </div>
+        <div class='kecik' style='margin-top:6mm'>Qeyd: Bu sənəd tərəflərin imzası ilə qüvvəyə minir.</div>
+      </body></html>`;
+
+      w.document.write(html); w.document.close(); w.focus(); w.print();
+    }
+
   </script>
 </body>
 </html>
