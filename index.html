@@ -1,563 +1,597 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Baktel Electronics MMC - Qiymət Razılaşdırma Protokolu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <style>
-        body { font-family: 'Times New Roman', Times, serif; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Baktel — Kredit və Satış Qiyməti</title>
+  <style>
+    :root{ 
+      --bg:#f7f9fc; --text:#0f172a; --card:#ffffff; --border:#e7eaf0; --muted:#51607a; --primary:#dc2626;
+      --input-border:#cfd5e1; --shadow:0 6px 18px rgba(2,6,23,.06); --radius:14px;
+      --table-border:#cbd5e1;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;font-size:16px;line-height:1.55; padding-left:260px}
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    header{display:flex;align-items:center;gap:10px;margin:0 0 14px 0}
+    header h1{margin:0;font-size:26px;font-weight:800;letter-spacing:.2px;color:var(--primary)}
+    h3{font-size:18px;font-weight:700;color:#111827;margin:0 0 8px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+    .row{display:grid;gap:14px}
+    @media(min-width:720px){.row{grid-template-columns:repeat(12,1fr)}}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    .col-3{grid-column:span 3}
+    label{font-size:13px;color:#334155;font-weight:600}
+    input,select{width:100%;padding:12px;border-radius:12px;border:1px solid var(--input-border);background:#fff;color:#0f172a}
+    .btn{border:1px solid #cbd5e1;background:#f1f5f9;color:#0f172a;padding:11px 16px;border-radius:12px;cursor:pointer;transition:.15s ease;box-shadow:var(--shadow);font-weight:700}
+    .btn.success{background:linear-gradient(180deg,#22c55e,#16a34a);border-color:#15803d;color:#fff}
+    .btn.danger{background:linear-gradient(180deg,#ef4444,#dc2626);border-color:#b91c1c;color:#fff}
+    .btn.ghost{background:#fff}
+    .pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #c7d2fe;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px}
+    .muted{color:var(--muted);font-size:14px}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+    thead th{position:sticky;top:0;background:#f8fafc;padding:10px;font-weight:700;font-size:14px;color:#111827;border-bottom:1px solid var(--border);text-align:right}
+    tbody td{padding:10px;border-bottom:1px solid var(--border);font-size:13px;text-align:right}
+    tbody tr:nth-child(odd){background:rgba(2,6,23,.02)}
+    .layout{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .notice{padding:12px;border-radius:12px;margin-top:8px}
+    .notice.warn{background:#fff1f2;border:1px solid #fecaca;color:#991b1b}
+    .notice.ok{background:#ecfdf5;border:1px solid #bbf7d0;color:#166534}
+    .invalid{border-color:#ef4444 !important; box-shadow:0 0 0 3px rgba(239,68,68,.12)}
 
-        @media print {
-            body { 
-                background-color: #fff; 
-                height: auto; 
-                overflow: visible;
-                font-family: 'Times New Roman', Times, serif; 
-            }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-            .print-container { box-shadow: none; border: none; }
-            .invoice-table th, .invoice-table td { padding: 8px; border: 1px solid #000; }
-            .product-row input, .product-row select { border: none; }
-            #main-content { overflow-y: visible; padding: 0; }
-            #singleOfferView { position: absolute; top: 0; left: 0; width: 100%; padding: 0; box-shadow: none; }
-            
-            .invoice-table {
-                width: 100%;
-            }
+    /* Yan panel */
+    #sidebar{position:fixed; inset:0 auto 0 0; width:240px; background:#0f172a; color:#e5e7eb; border-right:1px solid #0b1220; box-shadow:var(--shadow); display:flex; flex-direction:column}
+    #sidebar .logo{padding:18px 16px; font-weight:800; letter-spacing:.2px; color:#fff; border-bottom:1px solid #1f2937}
+    #sidebar nav{padding:12px}
+    #sidebar .navbtn{width:100%; text-align:left; border:1px solid #334155; background:#111827; color:#e5e7eb; padding:12px 14px; border-radius:12px; cursor:pointer; transition:.15s ease; margin-bottom:10px; font-weight:700}
+    #sidebar .navbtn.active{background:#dc2626; border-color:#b91c1c; color:#fff}
+    #sidebar .navbtn:hover{transform:translateY(-1px)}
 
-            /* Səhifələnmənin qarşısını almaq üçün yeni CSS qaydaları */
-            .no-page-break {
-                page-break-inside: avoid;
-            }
-        }
-        
-        .print-only { display: none; }
-        
-        input[type="text"], input[type="date"], input[type="number"], select {
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #d1d5db;
-        }
+    @media print{ #sidebar{display:none} body{padding-left:0} }
+      /* ==== ÇAP (A4) ==== */
+    .print-root{font-family:"Times New Roman", Times, serif; color:#111}
+    .print-a4{width:210mm; min-height:297mm; margin:0 auto; padding:20mm 17mm 18mm; background:#fff}
+    .print-title{font-size:18pt; font-weight:700; text-align:center; text-transform:uppercase; letter-spacing:.2px}
+    .print-subtop{display:flex; justify-content:space-between; margin:6mm 0 4mm; font-size:11pt}
+    .print-h2{font-size:13pt; font-weight:700; text-align:center; margin:8mm 0 4mm}
+    .print-block{font-size:11pt; line-height:1.5; text-align:justify; margin:3mm 0}
+    .print-table{width:100%; border-collapse:collapse; font-size:11pt}
+    .print-table th,.print-table td{border:1px solid var(--table-border); padding:5px 7px; vertical-align:top}
+    .print-table th{background:#f5f5f5}
+    .sign-cols{display:flex; justify-content:space-between; gap:16mm; margin-top:12mm}
+    .sign{flex:1}
+    .sigline{display:block; border-bottom:1px solid #111; height:18px; margin-top:18px}
+    .sigcap{font-size:10.5pt; color:#333; margin-top:2mm}
+    .kecik{font-size:10.5pt}
 
-        /* Başlığın ölçüsünü daha da kiçildir */
-        #printableArea h1 {
-            font-size: 1.25rem;
-            font-weight: bold;
-        }
-
-        /* Cədvəl sütunlarının genişliyini tənzimləyir */
-        .invoice-table th:nth-child(1), .invoice-table td:nth-child(1) { width: 5%; }
-        .invoice-table th:nth-child(2), .invoice-table td:nth-child(2) { width: 45%; } /* Məhsulun adı üçün biraz daha az yer */
-        .invoice-table th:nth-child(3), .invoice-table td:nth-child(3) { width: 15%; }
-        .invoice-table th:nth-child(4), .invoice-table td:nth-child(4) { width: 17.5%; }
-        .invoice-table th:nth-child(5), .invoice-table td:nth-child(5) { width: 17.5%; }
-    </style>
+    @media print{ 
+      #sidebar, header, #screen-calculator .card, #screen-pricing, .navbtn { display:none !important }
+      #printDoc { display:block !important }
+      body { padding-left:0; background:#fff }
+    }
+  </style>
 </head>
-<body class="bg-gray-200 flex h-screen overflow-hidden">
-    <div class="no-print w-64 bg-gray-800 text-white flex flex-col p-4 space-y-4">
-        <h2 class="text-2xl font-bold mb-4">Menyu</h2>
-        <button id="home-btn" class="bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300">
-            Yeni təklif
-        </button>
-        <button id="offers-btn" class="bg-gray-700 hover:bg-gray-600 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300">
-            Saxlanmış təkliflər
-        </button>
-    </div>
+<body>
+  <!-- Yan panel -->
+  <aside id="sidebar">
+    <div class="logo">Baktel — Modullar</div>
+    <nav>
+      <button id="btnNavCalc" class="navbtn active">Kredit kalkulyatoru</button>
+      <button id="btnNavPricing" class="navbtn">Satış qiyməti</button>
+    </nav>
+  </aside>
 
-    <div id="main-content" class="flex-1 overflow-y-auto p-8">
-        <div id="offerFormView" class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Qiymət Razılaşdırma Protokolu</h1>
-            <form id="offerForm" class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="offerNumber" class="block text-sm font-medium text-gray-700">Təklif nömrəsi:</label>
-                        <input type="text" id="offerNumber" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
-                    <div>
-                        <label for="offerDate" class="block text-sm font-medium text-gray-700">Tarix:</label>
-                        <input type="date" id="offerDate" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
+  <div class="wrap">
+    <header>
+      <h1>KREDİT KALKULYATORU</h1>
+    </header>
+
+    <!-- === KALKULYATOR: əvvəlki tam variant (sənəd + müqavilə + formalar) === -->
+    <main id="screen-calculator">
+      <section id="calc" class="card">
+        <div id="calcAlert" class="notice warn" style="display:none"></div>
+        <div id="calcOk" class="notice ok" style="display:none"></div>
+        <div class="row">
+          <div class="col-4">
+            <label>Məhsul dəyəri (AZN)</label>
+            <input id="price" type="number" min="0" step="0.01" placeholder="0.00" />
+          </div>
+          <div class="col-3">
+            <label>Müddət (ay)</label>
+            <select id="months" required>
+              <option value="">— Seçin —</option>
+              <option value="3">3</option>
+              <option value="6">6</option>
+              <option value="9">9</option>
+              <option value="12">12</option>
+              <option value="15">15</option>
+              <option value="18">18</option>
+            </select>
+          </div>
+          <div class="col-3">
+            <label>Risk qrupu</label>
+            <select id="risk" required>
+              <option value="">— Seçin —</option>
+              <option value="low">Aşağı risk (A)</option>
+              <option value="med">Orta risk (B)</option>
+              <option value="high">Yüksək risk (C)</option>
+            </select>
+          </div>
+          <div class="col-3">
+            <label>Aylıq əmək haqqı (AZN)</label>
+            <input id="salary" type="number" min="1" step="1" required />
+          </div>
+          <div class="col-3">
+            <label>Digər öhdəliklər (AZN)</label>
+            <input id="oblig" type="number" min="0" step="1" required />
+          </div>
+
+          <div class="col-12 inline-check">
+            <input class="big-check" type="checkbox" id="manualDownChk" />
+            <label for="manualDownChk">İlkin ödənişi manual daxil et</label>
+          </div>
+          <div class="col-3" id="manualDownWrap" style="display:none">
+            <label>İlkin ödəniş (AZN)</label>
+            <input id="manualDownAmt" type="number" min="0" step="0.01" placeholder="0" disabled />
+          </div>
+
+          <div class="col-12 inline-check">
+            <input class="big-check" type="checkbox" id="addIncomeChk" />
+            <label for="addIncomeChk">Əlavə gəlir var?</label>
+          </div>
+          <div class="col-3" id="addIncomeTypeWrap" style="display:none">
+            <label>Əlavə gəlir növü</label>
+            <select id="addIncomeType" disabled>
+              <option value="">— Seçin —</option>
+              <option value="muavinet">Müavinət</option>
+              <option value="bonus">Bonus</option>
+              <option value="kiraye">Kirayə gəliri</option>
+              <option value="freelance">Freelance</option>
+              <option value="parttime">Müvəqqəti əlavə iş</option>
+            </select>
+          </div>
+          <div class="col-3" id="addIncomeAmtWrap" style="display:none">
+            <label>Əlavə gəlir məbləği (AZN)</label>
+            <input id="addIncomeAmt" type="number" min="1" step="1" disabled />
+          </div>
+
+          <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <button class="btn success" id="btnCalc">Hesabla (Enter)</button>
+            <button class="btn danger" id="btnReset">Sıfırla (Esc)</button>
+            <button class="btn ghost" id="btnPrint">PDF (Çap)</button>
+            <button class="btn primary" id="btnFinalize">Əlavə rəsmiləşdir</button>
+          </div>
+
+          <div id="finalizeWrap" class="col-12" style="display:none">
+            <div class="card" style="margin:8px 0">
+              <h3>Müştəri məlumatları</h3>
+              <div class="row">
+                <div class="col-4"><label>Müştəri A.S.A.</label><input id="custName" type="text" placeholder="Ad Soyad" required /></div>
+                <div class="col-4"><label>Əlaqə nömrəsi</label><input id="custPhone" type="tel" placeholder="050 xxx xx xx" pattern="^\s*(\+?994|0)?\s*(50|51|55|70|77)\s*\d{3}\s*\d{2}\s*\d{2}\s*$" required /></div>
+                <div class="col-4"><label>Məhsul adı/model</label><input id="prodName" type="text" placeholder="Məhsul" required /></div>
+
+                <div class="col-3"><label>Ş/V seriya və nömrəsi</label><input id="idSerial" type="text" placeholder="AA 0367083" required /></div>
+                <div class="col-3"><label>FIN kodu</label><input id="finCode" type="text" placeholder="XXXXXXX" required /></div>
+                <div class="col-3"><label>Doğum tarixi</label><input id="birthDate" type="date" required /></div>
+                <div class="col-3"><label>Qeydiyyat/Yaşayış ünvanı</label><input id="address" type="text" required /></div>
+
+                <div class="col-4"><label>IMEI 1</label><input id="imei1" type="text" inputmode="numeric" pattern="^\d{15}$" placeholder="15 rəqəm" required /></div>
+                <div class="col-4"><label>IMEI 2</label><input id="imei2" type="text" inputmode="numeric" pattern="^(\d{15})?$" placeholder="(opsional) 15 rəqəm" /></div>
+                <div class="col-4"><label>Müqavilə №</label><input id="contractNo" type="text" placeholder="BT 13107" required /></div>
+
+                <div class="col-3"><label>Filial</label><input id="branch" type="text" value="Nəsimi" required /></div>
+                <div class="col-3"><label>Valyuta</label><select id="currency" required><option value="AZN" selected>AZN</option></select></div>
+                <div class="col-3"><label>Kreditin verilmə tarixi</label><input id="startDate" type="date" required /></div>
+
+                <div class="col-3">
+                  <label>Satıcı nümayəndə</label>
+                  <select id="sellerRep" required>
+                    <option value="">— Seçin —</option>
+                    <option>Vəliməmmədov Niyazi Səhhət oğlu</option>
+                    <option>Abaszadə Mədət Yusif oğlu</option>
+                  </select>
                 </div>
 
-                <div class="border p-4 rounded-lg bg-gray-50">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Qarşı tərəf</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label for="customerName" class="block text-sm font-medium text-gray-700">Şirkətin adı:</label>
-                            <input type="text" id="customerName" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
-                        </div>
-                    </div>
+                <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px">
+                  <button class="btn success" id="btnFinalizePrint">Təsdiqlə və Çap et</button>
+                  <button class="btn" id="btnFinalizeClose">Bağla</button>
                 </div>
-
-                <div class="border p-4 rounded-lg bg-gray-50">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Məhsullar</h2>
-                    <div id="productsContainer" class="space-y-4">
-                        </div>
-                    <button type="button" id="addProductBtn" class="mt-4 w-full bg-indigo-500 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors">
-                        + Məhsul əlavə et
-                    </button>
-                </div>
-
-                <button type="button" id="calculateBtn" class="w-full bg-green-500 text-white font-bold py-3 px-4 rounded-md hover:bg-green-600 transition-colors">
-                    Hesabla
-                </button>
-
-                <div id="results" class="hidden">
-                    <div class="border p-4 rounded-lg bg-gray-50 mt-6">
-                        <div class="flex justify-end items-center mb-2">
-                            <span class="text-gray-700 font-bold">Cəm məbləğ:</span>
-                            <span id="subtotal" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
-                        </div>
-                        <div class="flex justify-end items-center mb-2">
-                            <span class="text-gray-700 font-bold">ƏDV (18%):</span>
-                            <span id="vat" class="ml-4 text-gray-900 font-bold">0.00 AZN</span>
-                        </div>
-                        <div class="flex justify-end items-center border-t pt-2 mt-2">
-                            <span class="text-xl text-gray-800 font-extrabold">Yekun məbləğ:</span>
-                            <span id="total" class="ml-4 text-xl text-indigo-600 font-extrabold">0.00 AZN</span>
-                        </div>
-                    </div>
-                    <div class="flex space-x-4 mt-4">
-                        <button type="button" id="saveBtn" class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
-                            Yadda saxla
-                        </button>
-                        <button type="button" id="printBtn" class="flex-1 bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-colors">
-                            Sənədi çap et
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        
-        <div id="savedOffersView" class="max-w-4xl mx-auto hidden bg-white p-8 rounded-lg shadow-lg">
-            <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Saxlanmış Təkliflər</h1>
-            <div id="offersList" class="space-y-4">
-                <p id="noOffersMessage" class="text-center text-gray-500">Hələ heç bir təklif yoxdur.</p>
+              </div>
             </div>
+          </div>
         </div>
+      </section>
 
-        <div id="singleOfferView" class="max-w-4xl mx-auto hidden bg-white p-8 rounded-lg shadow-lg">
-            <div id="printableArea" class="p-8">
-                <div class="mb-8">
-                    <h1 class="text-4xl font-extrabold text-gray-900 text-center">QİYMƏT RAZILAŞDIRMA PROTOKOLU</h1>
-                    <div class="flex justify-between items-center mt-4">
-                        <div>
-                            <p class="text-sm font-semibold">Göndərən:</p>
-                            <p class="font-bold text-lg">Baktel Electronics MMC</p>
-                            <p class="text-sm">VÖEN: 1505350851</p>
-                            <p class="text-sm">Ünvan: Bakı şəhəri, Nəsimi rayonu, Nizami küçəsi, ev 187</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-sm font-semibold">Təklif nömrəsi: <span id="printOfferNumber"></span></p>
-                            <p class="text-sm font-semibold">Tarix: <span id="printOfferDate"></span></p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-8">
-                    <p class="text-sm font-semibold">Alan:</p>
-                    <p class="text-lg font-bold"><span id="printCustomerName"></span></p>
-                </div>
+      <div class="layout">
+        <section class="card" id="summary"></section>
+        <section class="card">
+          <h3>Ödəniş cədvəli</h3>
+          <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
+        </section>
+      </div>
+    </main>
 
-                <table class="w-full border-collapse invoice-table">
-                    <thead>
-                        <tr>
-                            <th class="border px-4 py-2">№</th>
-                            <th class="border px-4 py-2 text-left">Məhsulun adı</th>
-                            <th class="border px-4 py-2">Miqdar</th>
-                            <th class="border px-4 py-2">Qiymət (AZN)</th>
-                            <th class="border px-4 py-2">Cəmi (AZN)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="printProductsTable">
-                    </tbody>
-                </table>
-                
-                <div class="no-page-break">
-                    <div class="flex justify-end mt-8">
-                        <div class="w-1/2">
-                            <div class="flex justify-between font-bold">
-                                <p>Cəm məbləğ:</p>
-                                <p><span id="printSubtotal">0.00 AZN</span></p>
-                            </div>
-                            <div class="flex justify-between font-bold">
-                                <p>ƏDV (18%):</p>
-                                <p><span id="printVat">0.00 AZN</span></p>
-                            </div>
-                            <div class="flex justify-between font-extrabold text-lg mt-4 border-t-2 pt-2">
-                                <p>Yekun məbləğ:</p>
-                                <p><span id="printTotal">0.00 AZN</span></p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-12 flex justify-between items-end">
-                        <div>
-                            <p class="font-bold">Direktor: Mahmudov İlqar</p>
-                            <div class="mt-8 border-b border-gray-400 w-48"></div>
-                            <p class="text-sm">İmza/Möhür</p>
-                        </div>
-                    </div>
-                </div>
+    <!-- === SATIŞ QİYMƏTİ EKRANI === -->
+    <main id="screen-pricing" style="display:none">
+      <section class="card">
+        <h3>Satış qiyməti kalkulyatoru</h3>
+        <p class="muted" style="margin-top:0">Kateqoriyanı seçin, sonra maya dəyərini yazın — nağd və kredit qiymətləri avtomatik hesablanacaq.</p>
+        <div class="row">
+          <div class="col-4">
+            <label>Kateqoriya</label>
+            <select id="pCategory">
+              <option value="">— Seçin —</option>
+              <option value="phone">Mobil telefon</option>
+              <option value="home">Məişət texnikası</option>
+              <option value="acc">Aksessuar</option>
+              <option value="office">Ofis avadanlığı</option>
+            </select>
+          </div>
+          <div class="col-4">
+            <label>Maya dəyəri (AZN)</label>
+            <input id="pCost" type="number" min="0" step="0.01" placeholder="0.00" disabled />
+          </div>
+          <div class="col-12">
+            <div id="pAlert" class="notice warn" style="display:none"></div>
+          </div>
+          <div class="col-6">
+            <div class="card" style="margin:0">
+              <h3 style="margin-top:0">Nağd qiymət</h3>
+              <div id="pCash" class="pill" style="font-size:16px">—</div>
             </div>
-            <div class="flex space-x-4 mt-8 no-print">
-                <button type="button" id="backBtn" class="flex-1 bg-gray-500 text-white font-bold py-3 px-4 rounded-md hover:bg-gray-600 transition-colors">
-                    Geri qayıt
-                </button>
-                <button type="button" id="downloadPdfBtn" class="flex-1 bg-blue-500 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-600 transition-colors">
-                    PDF yüklə
-                </button>
+          </div>
+          <div class="col-6">
+            <div class="card" style="margin:0">
+              <h3 style="margin-top:0">Kredit qiyməti</h3>
+              <div id="pCredit" class="pill" style="font-size:16px">—</div>
             </div>
+          </div>
         </div>
-    </div>
+      </section>
+    </main>
+    <div id="printDoc" class="print-root" style="display:none"><div class="print-a4" id="printA4"></div></div>
+  </div>
+
+  <script>
+    /* ==== UTIL ==== */
+    const fmtAZN = n=> (new Intl.NumberFormat('az-AZ',{style:'currency',currency:'AZN',maximumFractionDigits:2})).format(n||0);
+    const round2 = n=> Math.round((n+Number.EPSILON)*100)/100;
+    const ddmmyyyy = (d)=>{ const dt=new Date(d); const dd=String(dt.getDate()).padStart(2,'0'); const mm=String(dt.getMonth()+1).padStart(2,'0'); const yyyy=dt.getFullYear(); return `${dd}.${mm}.${yyyy}`; };
+    const todayISO = ()=> { const t=new Date(); const mm=String(t.getMonth()+1).padStart(2,'0'); const dd=String(t.getDate()).padStart(2,'0'); return `${t.getFullYear()}-${mm}-${dd}`; };
+
+    /* ==== POLICY ==== */
+    const POLICY_RISK_ONLY = { low: 0.20, med: 0.30, high: 0.50 };
+    const MIN_DOWN_AZN = 50;
+    const MAX_OBLIG_SHARE = 0.50;
+    const MAX_DSR = 0.40;
+
+    /* ==== DEFAULTS & RESTORE ==== */
+    window.addEventListener('DOMContentLoaded', () => {
+      const sd = document.getElementById('startDate');
+      if (sd && !sd.value) sd.value = todayISO();
+      restoreState();
+    });
+    function ensureStartDateDefault(){
+      const sd = document.getElementById('startDate');
+      if (sd && !sd.value) sd.value = todayISO();
+    }
+
+    /* ==== STATE (yerli yaddaş) ==== */
+    function saveState(){
+      const ids=['price','months','risk','salary','oblig','manualDownChk','manualDownAmt','addIncomeChk','addIncomeType','addIncomeAmt'];
+      const obj={}; ids.forEach(id=>{ const el=document.getElementById(id); if(!el) return; if(el.type==='checkbox') obj[id]=el.checked; else obj[id]=el.value; });
+      localStorage.setItem('bk_calc_v2', JSON.stringify(obj));
+    }
+    function restoreState(){
+      try{
+        const raw=localStorage.getItem('bk_calc_v2'); if(!raw) return; const obj=JSON.parse(raw);
+        Object.entries(obj).forEach(([k,v])=>{ const el=document.getElementById(k); if(!el) return; if(el.type==='checkbox') el.checked=!!v; else el.value=v; });
+        toggleManualDown(); toggleExtraIncome(); onIncomeTypeChange();
+      }catch{}
+    }
+
+    /* ==== HELPERS ==== */
+    function getDownPayment(price, riskKey, salary=0, oblig=0){
+      const base = POLICY_RISK_ONLY[riskKey] ?? POLICY_RISK_ONLY.med;
+      salary = Number(salary)||0; oblig = Number(oblig)||0;
+      const net = Math.max(0, salary - oblig);
+      const ratio = salary>0 ? net / salary : 0;
+      let mod = 0;
+      if(ratio >= 0.70) mod = -0.10; else if(ratio >= 0.50) mod = -0.05; else if(ratio >= 0.35) mod = 0.00; else if(ratio >= 0.20) mod = +0.10; else mod = +0.20;
+      if(riskKey==='high') mod *= 0.7;
+      const pct = Math.min(0.85, Math.max(0.10, base + mod));
+      let down = price * pct;
+      if(down < MIN_DOWN_AZN) down = MIN_DOWN_AZN;
+      if(down > price) down = price;
+      return { down: round2(down), pct, ratio, net };
+    }
+
+    /* ==== UI TOGGLES ==== */
+    function toggleExtraIncome(){
+      const chk=document.getElementById('addIncomeChk');
+      const typeWrap=document.getElementById('addIncomeTypeWrap');
+      const amtWrap=document.getElementById('addIncomeAmtWrap');
+      const typeSel=document.getElementById('addIncomeType');
+      const amtInp=document.getElementById('addIncomeAmt');
+      if(!chk||!typeWrap||!amtWrap||!typeSel||!amtInp) return;
+      const on=!!chk.checked;
+      typeWrap.style.display= on? 'block':'none';
+      typeSel.disabled = !on; if(!on) typeSel.value='';
+      amtWrap.style.display = 'none';
+      amtInp.disabled = true; amtInp.value='';
+    }
+    function onIncomeTypeChange(){
+      const typeSel=document.getElementById('addIncomeType');
+      const amtWrap=document.getElementById('addIncomeAmtWrap');
+      const amtInp=document.getElementById('addIncomeAmt');
+      if(!typeSel||!amtWrap||!amtInp) return;
+      if(typeSel.value){ amtWrap.style.display='block'; amtInp.disabled=false; }
+      else { amtWrap.style.display='none'; amtInp.disabled=true; amtInp.value=''; }
+    }
+    function toggleManualDown(){
+      const chk=document.getElementById('manualDownChk');
+      const wrap=document.getElementById('manualDownWrap');
+      const inp=document.getElementById('manualDownAmt');
+      if(!chk||!wrap||!inp) return;
+      const on=!!chk.checked; wrap.style.display=on?'block':'none'; inp.disabled=!on; if(!on) inp.value='';
+    }
+    function toggleFinalize(force){
+      const box=document.getElementById('finalizeWrap'); if(!box) return;
+      const show = typeof force==='boolean' ? force : (box.style.display==='none');
+      box.style.display = show? 'block' : 'none';
+      if(show){ ensureStartDateDefault(); box.scrollIntoView({behavior:'smooth',block:'center'}); }
+    }
+
+    /* ==== CORE CALC ==== */
+    function showWarn(msg){ const box=document.getElementById('calcAlert'); box.style.display='block'; box.textContent=msg; document.getElementById('calcOk').style.display='none'; }
+    function showOk(msg){ const box=document.getElementById('calcOk'); box.style.display='block'; box.textContent=msg; document.getElementById('calcAlert').style.display='none'; }
+    function markInvalid(el){ el?.classList.add('invalid'); }
+
+    function buildSchedule(principal, months){
+      let bal = principal; const rows=[];
+      const sd=(document.getElementById('startDate')?.value? new Date(document.getElementById('startDate').value): new Date());
+      const day=sd.getDate();
+      for(let i=1;i<=months;i++){
+        const d=new Date(sd); d.setMonth(d.getMonth()+i); d.setDate(day);
+        let pay = round2(principal/months); if(i===months) pay=round2(bal);
+        bal=round2(Math.max(0, bal-pay));
+        rows.push({i,date:d,monthly:pay,bal});
+      }
+      let html = '<table><thead><tr><th style="text-align:left">Ay</th><th>Tarix</th><th>Məbləğ</th><th>Qalıq</th></tr></thead><tbody>';
+      for(const r of rows){ html += `<tr><td style="text-align:left">${r.i}</td><td>${ddmmyyyy(r.date)}</td><td>${fmtAZN(r.monthly)}</td><td>${fmtAZN(r.bal)}</td></tr>`; }
+      html += '</tbody></table>'; return html;
+    }
+
+    function calc(){
+      ['risk','salary','oblig','addIncomeType','addIncomeAmt','manualDownAmt','months','price','custPhone','imei1','imei2'].forEach(id=>document.getElementById(id)?.classList.remove('invalid'));
+      const riskEl=document.getElementById('risk');
+      const salaryEl=document.getElementById('salary');
+      const obligEl=document.getElementById('oblig');
+      const monthsEl=document.getElementById('months');
+      const priceEl=document.getElementById('price');
+      const chk=document.getElementById('addIncomeChk');
+      const typeSel=document.getElementById('addIncomeType');
+      const amtInp=document.getElementById('addIncomeAmt');
+
+      const risk=riskEl?.value||''; const salaryStr=salaryEl?.value||''; const obligStr=obligEl?.value||'';
+      const months=monthsEl?.value||''; const priceVal=priceEl?.value||'';
+      const msgs=[];
+      if(!priceVal){ priceEl.classList.add('invalid'); msgs.push('Məhsul dəyərini daxil edin.'); }
+      if(!months){ monthsEl.classList.add('invalid'); msgs.push('Müddəti seçin.'); }
+      if(!risk){ riskEl.classList.add('invalid'); msgs.push('Risk qrupunu seçin.'); }
+      if(salaryStr===''){ salaryEl.classList.add('invalid'); msgs.push('Aylıq əmək haqqını daxil edin.'); }
+      if(obligStr===''){ obligEl.classList.add('invalid'); msgs.push('Digər öhdəlikləri daxil edin.'); }
+
+      if(chk?.checked){
+        if(!typeSel.value){ typeSel.classList.add('invalid'); msgs.push('Əlavə gəlir növünü seçin.'); }
+        if(!amtInp.value){ amtInp.classList.add('invalid'); msgs.push('Əlavə gəlir məbləğini daxil edin.'); }
+      }
+
+      if(msgs.length){ showWarn(msgs.join('\n')); return; }
+
+      let extra = chk?.checked ? Math.max(0, Number(amtInp.value||0)) : 0;
+      const price=Number(priceVal||0);
+      const monthsNum=Number(months);
+      const salary=Number(salaryStr||0) + extra;
+      const oblig=Number(obligStr||0);
+      if(monthsNum<=0){ showWarn('Müddət ən az 1 ay olmalıdır.'); return; }
+
+      // İlkin ödəniş
+      const mdChk=document.getElementById('manualDownChk');
+      const mdInp=document.getElementById('manualDownAmt');
+      let {down, pct, net} = getDownPayment(price, risk, salary, oblig);
+      let manualUsed=false;
+      if(mdChk && mdChk.checked){
+        const val = Math.max(0, Math.min(price, Number(mdInp.value||0)));
+        if(isNaN(val)) { markInvalid(mdInp); return showWarn('İlkin ödəniş ədədi olmalıdır.'); }
+        down = round2(val); pct = price>0 ? (down/price) : 0; manualUsed=true;
+      }
+
+      let principal = round2(Math.max(0, price - down));
+      // Bərabər aylıq — 2 rəqəmdən yuvarlama və son ödənişdə düzəliş
+      let monthlyRaw = monthsNum>0 ? principal / monthsNum : 0;
+      let monthly = round2(monthlyRaw);
+      // DSR limitinə uyğunlaşdırma
+      const maxMonthly = round2(Math.max(0, net * MAX_DSR));
+      let autoAdj=false;
+      if(monthly > maxMonthly + 1e-9){
+        const requiredPrincipal = round2(maxMonthly * monthsNum);
+        const newDownRaw = price - requiredPrincipal;
+        const prevDown = down;
+        down = Math.min(price, Math.max(manualUsed? down : MIN_DOWN_AZN, Math.max(prevDown, newDownRaw)));
+        pct = price>0 ? (down/price) : 0;
+        principal = round2(Math.max(0, price - down));
+        monthlyRaw = monthsNum>0 ? principal / monthsNum : 0;
+        monthly = round2(monthlyRaw);
+        autoAdj=true;
+      }
+
+      // Cədvəl
+      document.getElementById('scheduleWrap').innerHTML = buildSchedule(principal, monthsNum);
+
+      // Xülasə
+      const sumEl = document.getElementById('summary');
+      sumEl.innerHTML = `
+        <h3>Nəticə</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+          <span class="pill">İlkin: <b>${fmtAZN(down)}</b> (${Math.round((pct||0)*100)}%)</span>
+          <span class="pill">Kredit məbləği: <b>${fmtAZN(principal)}</b></span>
+          <span class="pill">Aylıq ödəniş: <b>${fmtAZN(monthly)}</b></span>
+          <span class="pill">DSR limit: <b>${fmtAZN(maxMonthly)}</b></span>
+        </div>
+        ${autoAdj? '<div class="notice warn">Aylıq ödəniş DSR limitini aşdığı üçün ilkin ödəniş avtomatik artırıldı.</div>':''}
+      `;
+
+      showOk('Hesablandı.');
+      saveState();
+    }
+
+    // Hadisələr (kalkulyator)
+    document.getElementById('btnCalc').addEventListener('click', calc);
+    document.getElementById('btnReset').addEventListener('click', ()=>{ ['price','months','risk','salary','oblig','manualDownAmt','addIncomeAmt'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';}); ['manualDownChk','addIncomeChk'].forEach(id=>{const el=document.getElementById(id); if(el) el.checked=false;}); toggleManualDown(); toggleExtraIncome(); onIncomeTypeChange(); document.getElementById('summary').innerHTML=''; document.getElementById('scheduleWrap').innerHTML=''; document.getElementById('calcAlert').style.display='none'; document.getElementById('calcOk').style.display='none'; localStorage.removeItem('bk_calc_v2'); });
+    document.getElementById('manualDownChk').addEventListener('change', toggleManualDown);
+    document.getElementById('addIncomeChk').addEventListener('change', toggleExtraIncome);
+    document.getElementById('addIncomeType').addEventListener('change', onIncomeTypeChange);
+
+    // Finalize aç/bağla + çap (placeholder)
+    document.getElementById('btnFinalize')?.addEventListener('click', ()=> toggleFinalize(true));
+    document.getElementById('btnFinalizeClose')?.addEventListener('click', ()=> toggleFinalize(false));
+    document.getElementById('btnFinalizePrint')?.addEventListener('click', buildAndPrintContract);
     
-    <script type="module">
-        import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
+    function validateFinalizeFields(){
+      const reqIds = ['custName','custPhone','prodName','idSerial','finCode','birthDate','address','imei1','contractNo','branch','currency','startDate','sellerRep'];
+      const missing=[]; reqIds.forEach(id=>{ const el=document.getElementById(id); if(!el) return; const v=(el.value||'').trim(); if(!v){ el.classList.add('invalid'); missing.push(id); }});
+      if(missing.length){ showWarn('Zəhmət olmasa müştəri və müqavilə məlumatlarını tamamlayın.'); return false; }
+      return true;
+    }
 
-        const offerFormView = document.getElementById('offerFormView');
-        const savedOffersView = document.getElementById('savedOffersView');
-        const singleOfferView = document.getElementById('singleOfferView');
-        const homeBtn = document.getElementById('home-btn');
-        const offersBtn = document.getElementById('offers-btn');
-        const productsContainer = document.getElementById('productsContainer');
-        const addProductBtn = document.getElementById('addProductBtn');
-        const calculateBtn = document.getElementById('calculateBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const printBtn = document.getElementById('printBtn');
-        const resultsDiv = document.getElementById('results');
-        const offersList = document.getElementById('offersList');
-        const noOffersMessage = document.getElementById('noOffersMessage');
-        const backBtn = document.getElementById('backBtn');
-        const offerDateInput = document.getElementById('offerDate');
-        const offerNumberInput = document.getElementById('offerNumber');
-        const customerNameInput = document.getElementById('customerName');
-        const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+    function collectCalc(){
+      const price=Number(document.getElementById('price').value||0);
+      const months=Number(document.getElementById('months').value||0);
+      const risk=document.getElementById('risk').value||'';
+      const salary=Number(document.getElementById('salary').value||0);
+      const oblig=Number(document.getElementById('oblig').value||0);
+      const mdChk=document.getElementById('manualDownChk');
+      const mdInp=document.getElementById('manualDownAmt');
+      let {down, pct, net} = getDownPayment(price, risk, salary, oblig);
+      if(mdChk?.checked){ const val=Math.max(0,Math.min(price,Number(mdInp.value||0))); if(!isNaN(val)) down=round2(val); }
+      const principal=round2(Math.max(0, price-down));
+      const monthly = months>0? round2(principal/months):0;
+      // schedule
+      const sd=(document.getElementById('startDate')?.value? new Date(document.getElementById('startDate').value): new Date());
+      const day=sd.getDate();
+      let bal=principal; const rows=[];
+      for(let i=1;i<=months;i++){
+        const d=new Date(sd); d.setMonth(d.getMonth()+i); d.setDate(day);
+        let pay=monthly; if(i===months) pay=round2(bal); bal=round2(Math.max(0, bal-pay));
+        rows.push({i,date:d,monthly:pay,bal});
+      }
+      return {price, months, risk, salary, oblig, down, pct, principal, monthly, rows};
+    }
 
-        let productIndex = 0;
+    function buildAndPrintContract(){
+      if(!validateFinalizeFields()) return;
+      const data = collectCalc();
+      const g = (id)=> (document.getElementById(id)?.value||'');
+      const bDate = ddmmyyyy(g('birthDate'));
+      const sDate = ddmmyyyy(g('startDate'));
+      const nowStr = ddmmyyyy(new Date());
 
-        function showView(viewId) {
-            offerFormView.classList.add('hidden');
-            savedOffersView.classList.add('hidden');
-            singleOfferView.classList.add('hidden');
-            document.getElementById(viewId).classList.remove('hidden');
-        }
+      const rowsHtml = data.rows.map(r=>`<tr><td>${r.i}</td><td>${ddmmyyyy(r.date)}</td><td>${fmtAZN(r.monthly)}</td><td>${fmtAZN(r.bal)}</td></tr>`).join('');
 
-        function setTodayDate() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            offerDateInput.value = `${year}-${month}-${day}`;
-        }
+      const html = `
+        <div>
+          <div class="print-title">Qiymət razılaşdırma protokolu</div>
+          <div class="print-subtop"><div>Tarix: <b>${nowStr}</b></div><div>Müqavilə №: <b>${g('contractNo')}</b></div><div>Filial: <b>${g('branch')}</b></div></div>
 
-        function updateProductNumbers() {
-            const productRows = document.querySelectorAll('.product-row');
-            productRows.forEach((row, index) => {
-                const numberSpan = row.querySelector('.product-number');
-                if (numberSpan) {
-                    numberSpan.textContent = index + 1;
-                }
-            });
-        }
+          <table class="print-table" style="margin:6mm 0 4mm">
+            <tr><th style="width:36%">Müştəri</th><td>${g('custName')}</td></tr>
+            <tr><th>Əlaqə</th><td>${g('custPhone')}</td></tr>
+            <tr><th>Ş/V seriya №</th><td>${g('idSerial')}</td></tr>
+            <tr><th>FIN</th><td>${g('finCode')}</td></tr>
+            <tr><th>Doğum tarixi</th><td>${bDate}</td></tr>
+            <tr><th>Ünvan</th><td>${g('address')}</td></tr>
+          </table>
 
-        function clearForm() {
-            offerNumberInput.value = '';
-            customerNameInput.value = '';
-            productsContainer.innerHTML = '';
-            resultsDiv.classList.add('hidden');
-            addProductRow();
-            setTodayDate();
-            delete offerFormView.dataset.editingId;
-        }
+          <table class="print-table" style="margin:4mm 0 6mm">
+            <tr><th style="width:36%">Məhsul</th><td>${g('prodName')}</td></tr>
+            <tr><th>IMEI 1</th><td>${g('imei1')}</td></tr>
+            ${g('imei2')? `<tr><th>IMEI 2</th><td>${g('imei2')}</td></tr>`:''}
+            <tr><th>Məhsul dəyəri</th><td>${fmtAZN(data.price)} (${g('currency')})</td></tr>
+            <tr><th>İlkin ödəniş</th><td>${fmtAZN(data.down)}</td></tr>
+            <tr><th>Kredit məbləği</th><td>${fmtAZN(data.principal)}</td></tr>
+            <tr><th>Müddət</th><td>${data.months} ay</td></tr>
+            <tr><th>Aylıq ödəniş</th><td>${fmtAZN(data.monthly)}</td></tr>
+            <tr><th>Kreditin verilmə tarixi</th><td>${sDate}</td></tr>
+            <tr><th>Satıcı nümayəndə</th><td>${g('sellerRep')}</td></tr>
+          </table>
 
-        function addProductRow() {
-            const newRow = document.createElement('div');
-            newRow.className = 'grid grid-cols-1 md:grid-cols-4 gap-4 items-center product-row';
-            newRow.innerHTML = `
-                <div class="flex items-end space-x-2">
-                    <span class="product-number font-bold text-gray-700 text-lg"></span>
-                    <div class="flex-1">
-                        <label for="productName-${productIndex}" class="block text-sm font-medium text-gray-700">Məhsulun adı</label>
-                        <input type="text" id="productName-${productIndex}" data-id="${productIndex}" data-field="name" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    </div>
-                </div>
-                <div>
-                    <label for="productQty-${productIndex}" class="block text-sm font-medium text-gray-700">Miqdar</label>
-                    <input type="number" id="productQty-${productIndex}" data-id="${productIndex}" data-field="qty" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" value="1" min="1">
-                </div>
-                <div>
-                    <label for="productPrice-${productIndex}" class="block text-sm font-medium text-gray-700">Qiymət (AZN)</label>
-                    <input type="number" id="productPrice-${productIndex}" data-id="${productIndex}" data-field="price" class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" step="0.01" min="0">
-                </div>
-                <div class="flex items-end h-full">
-                    <button type="button" class="remove-product-btn w-full bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600 transition-colors">Sil</button>
-                </div>
-            `;
-            productsContainer.appendChild(newRow);
-            updateProductNumbers();
-            productIndex++;
-        }
+          <div class="print-h2">Ödəniş cədvəli</div>
+          <table class="print-table">
+            <thead><tr><th>Ay</th><th>Tarix</th><th>Məbləğ</th><th>Qalıq</th></tr></thead>
+            <tbody>${rowsHtml}</tbody>
+          </table>
 
-        function calculateAndShow() {
-            const products = [];
-            document.querySelectorAll('.product-row').forEach(row => {
-                const name = row.querySelector('input[data-field="name"]').value;
-                const qty = parseFloat(row.querySelector('input[data-field="qty"]').value) || 0;
-                const price = parseFloat(row.querySelector('input[data-field="price"]').value) || 0;
-                if (name && qty > 0 && price > 0) {
-                    products.push({ name, qty, price });
-                }
-            });
+          <div class="sign-cols">
+            <div class="sign"><div class="sigcap">Alıcı (Müştəri):</div><span class="sigline"></span></div>
+            <div class="sign"><div class="sigcap">Satıcı (Şirkət):</div><span class="sigline"></span></div>
+          </div>
+          <div class="kecik" style="margin-top:6mm">Qeyd: Bu protokol tərəflərin imzası ilə qüvvəyə minir.</div>
+        </div>`;
 
-            let subtotal = 0;
-            products.forEach(product => {
-                subtotal += product.qty * product.price;
-            });
+      const holder = document.getElementById('printA4');
+      holder.innerHTML = html;
+      document.getElementById('printDoc').style.display='block';
+      window.print();
+      setTimeout(()=>{ document.getElementById('printDoc').style.display='none'; }, 0);
+    }
+    document.getElementById('btnPrint')?.addEventListener('click', ()=>{ window.print(); });
 
-            const vat = subtotal * 0.18;
-            const total = subtotal + vat;
+    // ==== NAV ====
+    function showScreen(which){
+      const calc=document.getElementById('screen-calculator');
+      const pricing=document.getElementById('screen-pricing');
+      const bCalc=document.getElementById('btnNavCalc');
+      const bPrice=document.getElementById('btnNavPricing');
+      const isCalc = which==='calc';
+      calc.style.display = isCalc? 'block':'none';
+      pricing.style.display = isCalc? 'none':'block';
+      bCalc.classList.toggle('active', isCalc);
+      bPrice.classList.toggle('active', !isCalc);
+      if(!isCalc) document.getElementById('pCategory')?.focus();
+    }
+    document.getElementById('btnNavCalc').addEventListener('click',()=>showScreen('calc'));
+    document.getElementById('btnNavPricing').addEventListener('click',()=>showScreen('pricing'));
 
-            document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' AZN';
-            document.getElementById('vat').textContent = vat.toFixed(2) + ' AZN';
-            document.getElementById('total').textContent = total.toFixed(2) + ' AZN';
+    // ==== SATIŞ QİYMƏTİ LOGİKASI ====
+    function tierPrices(cost){ if(cost <= 15) return {cash: 2.5, credit: 2.5}; if(cost <= 60) return {cash: 1.7, credit: 2.0}; if(cost <= 90) return {cash: 1.5, credit: 1.8}; if(cost <= 500) return {cash: 1.3, credit: 1.5}; return {cash: 1.3, credit: 1.4}; }
+    function formatAZN2(n){ return (new Intl.NumberFormat('az-AZ',{style:'currency',currency:'AZN',maximumFractionDigits:2})).format(n||0); }
 
-            resultsDiv.classList.remove('hidden');
+    const pCategory = document.getElementById('pCategory');
+    const pCost = document.getElementById('pCost');
+    const pCash = document.getElementById('pCash');
+    const pCredit = document.getElementById('pCredit');
+    const pAlert = document.getElementById('pAlert');
 
-            return { products, subtotal, vat, total };
-        }
+    function resetPricing(){ if(pCash) pCash.textContent='—'; if(pCredit) pCredit.textContent='—'; if(pAlert) pAlert.style.display='none'; }
 
-        function updatePrintableContent(offer) {
-            document.getElementById('printOfferNumber').textContent = offer.offerNumber || '---';
-            document.getElementById('printOfferDate').textContent = offer.offerDate || '---';
-            document.getElementById('printCustomerName').textContent = offer.customerName || '---';
-            
-            const printProductsTable = document.getElementById('printProductsTable');
-            printProductsTable.innerHTML = '';
-            offer.products.forEach((product, index) => {
-                const totalProductPrice = product.qty * product.price;
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="border px-4 py-2 text-center">${index + 1}</td>
-                    <td class="border px-4 py-2">${product.name}</td>
-                    <td class="border px-4 py-2 text-center">${product.qty}</td>
-                    <td class="border px-4 py-2 text-right">${product.price.toFixed(2)}</td>
-                    <td class="border px-4 py-2 text-right">${totalProductPrice.toFixed(2)}</td>
-                `;
-                printProductsTable.appendChild(row);
-            });
+    pCategory?.addEventListener('change', ()=>{ resetPricing(); if(pCategory.value){ pCost.disabled=false; pCost.focus(); } else { pCost.value=''; pCost.disabled=true; } });
+    pCost?.addEventListener('input', ()=>{
+      resetPricing();
+      const cat = pCategory.value; const cost = Number(pCost.value||0);
+      if(!cat){ pAlert.style.display='block'; pAlert.textContent='Əvvəlcə kateqoriyanı seçin.'; return; }
+      if(!(cost>0)) return;
+      let cash=0, credit=0;
+      if(cat==='phone'){ cash = cost * 1.17; credit = cost * 1.30; }
+      else { const t=tierPrices(cost); cash = cost * t.cash; credit = cost * t.credit; }
+      pCash.textContent = formatAZN2(round2(cash));
+      pCredit.textContent = formatAZN2(round2(credit));
+    });
 
-            document.getElementById('printSubtotal').textContent = offer.subtotal.toFixed(2) + ' AZN';
-            document.getElementById('printVat').textContent = offer.vat.toFixed(2) + ' AZN';
-            document.getElementById('printTotal').textContent = offer.total.toFixed(2) + ' AZN';
-        }
-
-        function loadOffers() {
-            offersList.innerHTML = '';
-            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
-            
-            if (savedOffers.length === 0) {
-                noOffersMessage.style.display = 'block';
-            } else {
-                noOffersMessage.style.display = 'none';
-                savedOffers.forEach(offer => {
-                    const offerDiv = document.createElement('div');
-                    offerDiv.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg shadow-sm';
-                    offerDiv.innerHTML = `
-                        <div>
-                            <h3 class="font-bold text-gray-800">Müştəri: ${offer.customerName}</h3>
-                            <p class="text-sm text-gray-500">Təklif nömrəsi: ${offer.offerNumber || '---'}</p>
-                            <p class="text-xs text-gray-400">Tarix: ${offer.offerDate || '---'}</p>
-                            <p class="text-xs text-gray-400">Yekun məbləğ: ${offer.total.toFixed(2)} AZN</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button data-id="${offer.id}" class="view-offer-btn bg-blue-500 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">Bax</button>
-                            <button data-id="${offer.id}" class="edit-offer-btn bg-yellow-500 text-white text-sm px-4 py-2 rounded-md hover:bg-yellow-600 transition-colors">Düzəliş et</button>
-                            <button data-id="${offer.id}" class="delete-offer-btn bg-red-500 text-white text-sm px-4 py-2 rounded-md hover:bg-red-600 transition-colors">Sil</button>
-                        </div>
-                    `;
-                    offersList.appendChild(offerDiv);
-                });
-            }
-        }
-
-        function viewOffer(offerId) {
-            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
-            const offer = savedOffers.find(o => o.id === offerId);
-            
-            if (offer) {
-                updatePrintableContent(offer);
-                showView('singleOfferView');
-            } else {
-                alert("Təklif tapılmadı.");
-            }
-        }
-        
-        function editOffer(offerId) {
-            const savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
-            const offerToEdit = savedOffers.find(o => o.id === offerId);
-            
-            if (offerToEdit) {
-                offerNumberInput.value = offerToEdit.offerNumber;
-                offerDateInput.value = offerToEdit.offerDate;
-                customerNameInput.value = offerToEdit.customerName;
-
-                productsContainer.innerHTML = '';
-                offerToEdit.products.forEach(product => {
-                    addProductRow();
-                    const lastRow = productsContainer.lastElementChild;
-                    lastRow.querySelector('input[data-field="name"]').value = product.name;
-                    lastRow.querySelector('input[data-field="qty"]').value = product.qty;
-                    lastRow.querySelector('input[data-field="price"]').value = product.price;
-                });
-                
-                calculateAndShow();
-                offerFormView.dataset.editingId = offerId;
-                showView('offerFormView');
-            } else {
-                alert("Təklif tapılmadı.");
-            }
-        }
-
-        function deleteOffer(offerId) {
-            if (!confirm("Bu təklifi silmək istədiyinizə əminsiniz?")) {
-                return;
-            }
-            let savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
-            savedOffers = savedOffers.filter(o => o.id !== offerId);
-            localStorage.setItem('baktelOffers', JSON.stringify(savedOffers));
-            loadOffers();
-        }
-
-        homeBtn.addEventListener('click', () => {
-            clearForm();
-            showView('offerFormView');
-        });
-
-        offersBtn.addEventListener('click', () => {
-            loadOffers();
-            showView('savedOffersView');
-        });
-
-        backBtn.addEventListener('click', () => {
-            showView('savedOffersView');
-        });
-
-        addProductBtn.addEventListener('click', addProductRow);
-
-        productsContainer.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-product-btn')) {
-                e.target.closest('.product-row').remove();
-                updateProductNumbers();
-            }
-        });
-
-        calculateBtn.addEventListener('click', () => {
-            calculateAndShow();
-        });
-
-        saveBtn.addEventListener('click', () => {
-            const offerNumber = offerNumberInput.value;
-            const offerDate = offerDateInput.value;
-            const customerName = customerNameInput.value;
-            const { products, subtotal, vat, total } = calculateAndShow();
-
-            if (!offerNumber || !customerName || products.length === 0) {
-                alert("Zəhmət olmasa, təklif nömrəsi, müştəri adı və ən azı bir məhsul daxil edin.");
-                return;
-            }
-
-            const editingId = offerFormView.dataset.editingId;
-            let savedOffers = JSON.parse(localStorage.getItem('baktelOffers') || '[]');
-
-            if (editingId) {
-                const offerIndex = savedOffers.findIndex(o => o.id === editingId);
-                if (offerIndex !== -1) {
-                    savedOffers[offerIndex] = {
-                        ...savedOffers[offerIndex],
-                        offerNumber,
-                        offerDate,
-                        customerName,
-                        products,
-                        subtotal,
-                        vat,
-                        total,
-                        updatedAt: new Date().toISOString()
-                    };
-                }
-                delete offerFormView.dataset.editingId;
-                alert("Təklif uğurla yeniləndi!");
-            } else {
-                const newOffer = {
-                    id: uuidv4(),
-                    offerNumber,
-                    offerDate,
-                    customerName,
-                    products,
-                    subtotal,
-                    vat,
-                    total,
-                    createdAt: new Date().toISOString()
-                };
-                savedOffers.push(newOffer);
-                alert("Təklif uğurla yadda saxlanıldı!");
-            }
-
-            localStorage.setItem('baktelOffers', JSON.stringify(savedOffers));
-            showView('savedOffersView');
-            loadOffers();
-        });
-
-        printBtn.addEventListener('click', () => {
-            const offerData = calculateAndShow();
-            const offerNumber = offerNumberInput.value;
-            const offerDate = offerDateInput.value;
-            const customerName = customerNameInput.value;
-
-            const printableData = {
-                ...offerData,
-                offerNumber,
-                offerDate,
-                customerName
-            };
-
-            updatePrintableContent(printableData);
-            showView('singleOfferView');
-        });
-
-        downloadPdfBtn.addEventListener('click', () => {
-            const element = document.getElementById('printableArea');
-            const opt = {
-                margin:       [0.5, 0.5, 0.5, 0.5],
-                filename:     `Təklif_${document.getElementById('printOfferNumber').textContent}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-            };
-            
-            html2pdf().set(opt).from(element).save();
-        });
-
-        offersList.addEventListener('click', (e) => {
-            const viewBtn = e.target.closest('.view-offer-btn');
-            const deleteBtn = e.target.closest('.delete-offer-btn');
-            const editBtn = e.target.closest('.edit-offer-btn');
-            
-            if (viewBtn) {
-                viewOffer(viewBtn.dataset.id);
-            } else if (deleteBtn) {
-                deleteOffer(deleteBtn.dataset.id);
-            } else if (editBtn) {
-                editOffer(editBtn.dataset.id);
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            showView('offerFormView');
-            addProductRow();
-        });
-    </script>
+    // Başlanğıc olaraq kalkulyator açıq
+    showScreen('calc');
+  </script>
 </body>
 </html>
