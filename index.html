@@ -277,6 +277,11 @@
       gap: 1rem;
     }
     
+    #summary .form-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
     @media (min-width: 720px) {
         .layout {
             grid-template-columns: 1fr 1fr;
@@ -317,6 +322,38 @@
       height: 1.25rem;
       accent-color: #38a169;
     }
+    
+    #summary .form-grid > div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #summary .form-grid > div h2,
+    #summary .form-grid > div .pill {
+        margin-bottom: 0.25rem;
+    }
+    
+    #summary .form-grid > div .pill {
+        order: -1;
+    }
+    #summary .form-grid > div h2 {
+        line-height: 1.2;
+        width: 100%;
+        text-align: left;
+    }
+    
+    #scheduleCard {
+        display: none; /* Ödəniş cədvəli ekranda görünməsin */
+    }
+    
+    .summary-item {
+        margin-bottom: 1rem;
+    }
+    .summary-item h2 {
+        margin-bottom: 0.25rem;
+    }
+
 
     /* ==== ÇAP – Times New Roman (A4) ==== */
     .print-root { font-family: "Times New Roman", Times, serif; color: var(--print-text); }
@@ -326,7 +363,7 @@
     .print-h2 { font-size: 13pt; font-weight: 700; text-align: center; margin: 8mm 0 4mm; }
     .print-block { font-size: 11pt; line-height: 1.5; text-align: justify; margin: 3mm 0; }
     .print-ol { font-size: 11pt; line-height: 1.5; margin: 3mm 0 0 0; padding-left: 0; }
-    .print-ol > li { margin: 2.2mm 0; }
+    .print-ol > li{ margin: 2.2mm 0; }
     .print-ol li .sub { margin-top: 1.8mm; }
     .print-table { width: 100%; border-collapse: collapse; font-size: 11pt; }
     .print-table th, .print-table td { border: 1px solid var(--table-border); padding: 5px 7px; vertical-align: top; }
@@ -340,17 +377,18 @@
     .page-break { page-break-after: always; }
 
     @media print { 
-      .btn, .sidebar, .header, .main-content > .risk-note { display: none } 
+      .btn, .sidebar, .header, .main-content > .risk-note, #calc, .layout { display: none; } 
       .container { max-width: 1000px; padding: 0 }
       header { margin-bottom: 0 }
       .grid-container { display: block; }
+      #scheduleCard { display: block; } /* Çap zamanı ödəniş cədvəli göstərilsin */
     }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>QİYMƏT HESABLANMASI</h1>
+      <h1>KREDİT KALKULYATORU</h1>
     </header>
     <div class="grid-container">
       <aside class="sidebar">
@@ -502,7 +540,7 @@
 
           <div class="layout">
             <section class="card" id="summary"></section>
-            <section class="card">
+            <section class="card" id="scheduleCard">
               <h3>Ödəniş cədvəli</h3>
               <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
             </section>
@@ -749,36 +787,36 @@
         <h3>Xülasə</h3>
         ${dtiHtml}
         <div class="form-grid">
-          <div class="col-6">
+          <div class="summary-item col-6">
             <div class="pill">Məhsul</div>
             <h2>${fmtAZN(price)}</h2>
             <div class="muted">Risk qrupu: <strong>${risk||'-'}</strong></div>
           </div>
-          <div class="col-6">
+          <div class="summary-item col-6">
             <div class="pill">İlkin ödəniş</div>
             <h2>${fmtAZN(down)} <span class="muted">(${(pct*100).toFixed(0)}%)</span></h2>
             ${autoAdj?`<div class="muted">Aylıq ödəniş DSR həddinə uyğunlaşdırıldı.</div>`:''}
           </div>
-          <div class="col-6">
+          <div class="summary-item col-6">
             <div class="pill">Kredit məbləği</div>
             <h2>${fmtAZN(principal)}</h2>
           </div>
-          <div class="col-6">
+          <div class="summary-item col-6">
             <div class="pill">Seçilən aylıq</div>
             <h2>${fmtAZN(monthly)} ${statusBadge}</h2>
           </div>
-          <div class="col-6">
+          <div class="summary-item col-6">
             <div class="pill">Maks. aylıq (DSR 40%)</div>
             <h2>${fmtAZN(maxMonthly)}</h2>
             <div class="muted">Net gəlir: ${fmtAZN(Math.max(0, salary - oblig))}</div>
           </div>
-          <div class="col-6">
+          <div class="summary-item col-6">
             <div class="pill">Müddət</div>
             <h2>${monthsNum} ay</h2>
           </div>
         </div>`;
 
-      // UI Ödəniş cədvəli
+      // Ödəniş cədvəli
       document.getElementById('scheduleWrap').innerHTML = `
         <table>
           <thead><tr><th>#</th><th>Tarix</th><th>Aylıq</th><th>Qalıq</th></tr></thead>
