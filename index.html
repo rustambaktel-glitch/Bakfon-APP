@@ -34,7 +34,7 @@
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
       padding: 2rem 1rem;
     }
@@ -47,6 +47,18 @@
     
     @media (max-width: 900px) {
         .grid-container {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 2rem;
+    }
+    
+    @media (max-width: 1200px) {
+        .main-content {
             grid-template-columns: 1fr;
         }
     }
@@ -77,6 +89,19 @@
       font-weight: 700;
       color: #1a202c;
       margin: 0 0 0.75rem;
+    }
+    
+    .risk-note h4 {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .risk-note p {
+        font-size: 0.875rem;
+        color: var(--muted);
+        margin: 0 0 1rem;
     }
 
     .card {
@@ -315,7 +340,7 @@
     .page-break { page-break-after: always; }
 
     @media print { 
-      .btn, #calc, .sidebar, .header { display: none } 
+      .btn, .sidebar, .header, .main-content > .risk-note { display: none } 
       .container { max-width: 1000px; padding: 0 }
       header { margin-bottom: 0 }
       .grid-container { display: block; }
@@ -325,7 +350,7 @@
 <body>
   <div class="container">
     <header>
-      <h1>Qiymət Hesablanması</h1>
+      <h1>QİYMƏT HESABLANMASI</h1>
     </header>
     <div class="grid-container">
       <aside class="sidebar">
@@ -361,126 +386,145 @@
       </aside>
 
       <main class="main-content">
-        <section id="calc" class="card">
-          <div id="calcAlert" class="notice warn" style="display:none"></div>
-          <div class="form-grid">
-            <div class="col-4">
-              <label>Məhsul dəyəri (AZN)</label>
-              <input id="price" type="number" min="0" step="0.01" placeholder="0.00" />
-            </div>
-            <div class="col-3">
-              <label>Müddət (ay)</label>
-              <select id="months" required>
-                <option value="">— Seçin —</option>
-                <option value="3">3</option>
-                <option value="6">6</option>
-                <option value="9">9</option>
-                <option value="12">12</option>
-                <option value="15">15</option>
-                <option value="18">18</option>
-              </select>
-            </div>
-            <div class="col-3">
-              <label>Risk qrupu</label>
-              <select id="risk" required>
-                <option value="">— Seçin —</option>
-                <option value="low">Aşağı risk (A)</option>
-                <option value="med">Orta risk (B)</option>
-                <option value="high">Yüksək risk (C)</option>
-              </select>
-            </div>
-            <div class="col-3">
-              <label>Aylıq əmək haqqı (AZN)</label>
-              <input id="salary" type="number" min="1" step="1" required />
-            </div>
-            <div class="col-3">
-              <label>Digər öhdəliklər (AZN)</label>
-              <input id="oblig" type="number" min="0" step="1" required />
-            </div>
+        <div>
+          <section id="calc" class="card">
+            <div id="calcAlert" class="notice warn" style="display:none"></div>
+            <div class="form-grid">
+              <div class="col-4">
+                <label>Məhsul dəyəri (AZN)</label>
+                <input id="price" type="number" min="0" step="0.01" placeholder="0.00" />
+              </div>
+              <div class="col-3">
+                <label>Müddət (ay)</label>
+                <select id="months" required>
+                  <option value="">— Seçin —</option>
+                  <option value="3">3</option>
+                  <option value="6">6</option>
+                  <option value="9">9</option>
+                  <option value="12">12</option>
+                  <option value="15">15</option>
+                  <option value="18">18</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <label>Risk qrupu</label>
+                <select id="risk" required>
+                  <option value="">— Seçin —</option>
+                  <option value="low">Aşağı risk (A)</option>
+                  <option value="med">Orta risk (B)</option>
+                  <option value="high">Yüksək risk (C)</option>
+                </select>
+              </div>
+              <div class="col-3">
+                <label>Aylıq əmək haqqı (AZN)</label>
+                <input id="salary" type="number" min="1" step="1" required />
+              </div>
+              <div class="col-3">
+                <label>Digər öhdəliklər (AZN)</label>
+                <input id="oblig" type="number" min="0" step="1" required />
+              </div>
 
-            <div class="col-12 inline-check">
-              <input class="big-check" type="checkbox" id="manualDownChk" onchange="toggleManualDown()" />
-              <label for="manualDownChk">İlkin ödənişi manual daxil et</label>
-            </div>
-            <div class="col-3" id="manualDownWrap" style="display:none">
-              <label>İlkin ödəniş (AZN)</label>
-              <input id="manualDownAmt" type="number" min="0" step="0.01" placeholder="0" disabled />
-            </div>
+              <div class="col-12 inline-check">
+                <input class="big-check" type="checkbox" id="manualDownChk" onchange="toggleManualDown()" />
+                <label for="manualDownChk">İlkin ödənişi manual daxil et</label>
+              </div>
+              <div class="col-3" id="manualDownWrap" style="display:none">
+                <label>İlkin ödəniş (AZN)</label>
+                <input id="manualDownAmt" type="number" min="0" step="0.01" placeholder="0" disabled />
+              </div>
 
-            <div class="col-12 inline-check">
-              <input class="big-check" type="checkbox" id="addIncomeChk" onchange="toggleExtraIncome()" />
-              <label for="addIncomeChk">Əlavə gəlir var?</label>
-            </div>
-            <div class="col-3" id="addIncomeTypeWrap" style="display:none">
-              <label>Əlavə gəlir növü</label>
-              <select id="addIncomeType" disabled onchange="onIncomeTypeChange()">
-                <option value="">— Seçin —</option>
-                <option value="muavinet">Müavinət</option>
-                <option value="bonus">Bonus</option>
-                <option value="kiraye">Kirayə gəliri</option>
-                <option value="freelance">Freelance</option>
-                <option value="parttime">Müvəqqəti əlavə iş</option>
-              </select>
-            </div>
-            <div class="col-3" id="addIncomeAmtWrap" style="display:none">
-              <label>Əlavə gəlir məbləği (AZN)</label>
-              <input id="addIncomeAmt" type="number" min="1" step="1" disabled />
-            </div>
+              <div class="col-12 inline-check">
+                <input class="big-check" type="checkbox" id="addIncomeChk" onchange="toggleExtraIncome()" />
+                <label for="addIncomeChk">Əlavə gəlir var?</label>
+              </div>
+              <div class="col-3" id="addIncomeTypeWrap" style="display:none">
+                <label>Əlavə gəlir növü</label>
+                <select id="addIncomeType" disabled onchange="onIncomeTypeChange()">
+                  <option value="">— Seçin —</option>
+                  <option value="muavinet">Müavinət</option>
+                  <option value="bonus">Bonus</option>
+                  <option value="kiraye">Kirayə gəliri</option>
+                  <option value="freelance">Freelance</option>
+                  <option value="parttime">Müvəqqəti əlavə iş</option>
+                </select>
+              </div>
+              <div class="col-3" id="addIncomeAmtWrap" style="display:none">
+                <label>Əlavə gəlir məbləği (AZN)</label>
+                <input id="addIncomeAmt" type="number" min="1" step="1" disabled />
+              </div>
 
-            <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-              <button class="btn success" onclick="calc()">Hesabla</button>
-              <button class="btn danger" onclick="resetForm()">Sıfırla</button>
-              <button class="btn ghost" onclick="exportPrint()">PDF (Çap)</button>
-              <button class="btn primary" onclick="toggleFinalize()">Əlavə rəsmiləşdir</button>
-            </div>
+              <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <button class="btn success" onclick="calc()">Hesabla</button>
+                <button class="btn danger" onclick="resetForm()">Sıfırla</button>
+                <button class="btn ghost" onclick="exportPrint()">PDF (Çap)</button>
+                <button class="btn primary" onclick="toggleFinalize()">Əlavə rəsmiləşdir</button>
+              </div>
 
-            <div id="finalizeWrap" class="col-12" style="display:none">
-              <div class="card" style="margin:8px 0">
-                <h3>Müştəri məlumatları</h3>
-                <div class="form-grid">
-                  <div class="col-4"><label>Müştəri A.S.A.</label><input id="custName" type="text" placeholder="Ad Soyad" required /></div>
-                  <div class="col-4"><label>Əlaqə nömrəsi</label><input id="custPhone" type="tel" placeholder="050 xxx xx xx" required /></div>
-                  <div class="col-4"><label>Məhsul adı/model</label><input id="prodName" type="text" placeholder="Məhsul" required /></div>
+              <div id="finalizeWrap" class="col-12" style="display:none">
+                <div class="card" style="margin:8px 0">
+                  <h3>Müştəri məlumatları</h3>
+                  <div class="form-grid">
+                    <div class="col-4"><label>Müştəri A.S.A.</label><input id="custName" type="text" placeholder="Ad Soyad" required /></div>
+                    <div class="col-4"><label>Əlaqə nömrəsi</label><input id="custPhone" type="tel" placeholder="050 xxx xx xx" required /></div>
+                    <div class="col-4"><label>Məhsul adı/model</label><input id="prodName" type="text" placeholder="Məhsul" required /></div>
 
-                  <div class="col-3"><label>Ş/V seriya və nömrəsi</label><input id="idSerial" type="text" placeholder="AA 0367083" required /></div>
-                  <div class="col-3"><label>FIN kodu</label><input id="finCode" type="text" placeholder="XXXXXXX" required /></div>
-                  <div class="col-3"><label>Doğum tarixi</label><input id="birthDate" type="date" required /></div>
-                  <div class="col-3"><label>Qeydiyyat/Yaşayış ünvanı</label><input id="address" type="text" required /></div>
+                    <div class="col-3"><label>Ş/V seriya və nömrəsi</label><input id="idSerial" type="text" placeholder="AA 0367083" required /></div>
+                    <div class="col-3"><label>FIN kodu</label><input id="finCode" type="text" placeholder="XXXXXXX" required /></div>
+                    <div class="col-3"><label>Doğum tarixi</label><input id="birthDate" type="date" required /></div>
+                    <div class="col-3"><label>Qeydiyyat/Yaşayış ünvanı</label><input id="address" type="text" required /></div>
 
-                  <div class="col-4"><label>IMEI 1</label><input id="imei1" type="text" required /></div>
-                  <div class="col-4"><label>IMEI 2</label><input id="imei2" type="text" required /></div>
-                  <div class="col-4"><label>Müqavilə №</label><input id="contractNo" type="text" placeholder="BT 13107" required /></div>
+                    <div class="col-4"><label>IMEI 1</label><input id="imei1" type="text" required /></div>
+                    <div class="col-4"><label>IMEI 2</label><input id="imei2" type="text" required /></div>
+                    <div class="col-4"><label>Müqavilə №</label><input id="contractNo" type="text" placeholder="BT 13107" required /></div>
 
-                  <div class="col-3"><label>Filial</label><input id="branch" type="text" value="Nəsimi" required /></div>
-                  <div class="col-3"><label>Valyuta</label><select id="currency" required><option value="AZN" selected>AZN</option></select></div>
-                  <div class="col-3"><label>Kreditin verilmə tarixi</label><input id="startDate" type="date" required /></div>
+                    <div class="col-3"><label>Filial</label><input id="branch" type="text" value="Nəsimi" required /></div>
+                    <div class="col-3"><label>Valyuta</label><select id="currency" required><option value="AZN" selected>AZN</option></select></div>
+                    <div class="col-3"><label>Kreditin verilmə tarixi</label><input id="startDate" type="date" required /></div>
 
-                  <div class="col-3">
-                    <label>Satıcı nümayəndə</label>
-                    <select id="sellerRep" required>
-                      <option value="">— Seçin —</option>
-                      <option>Vəliməmmədov Niyazi Səhhət oğlu</option>
-                      <option>Abaszadə Mədət Yusif oğlu</option>
-                    </select>
-                  </div>
+                    <div class="col-3">
+                      <label>Satıcı nümayəndə</label>
+                      <select id="sellerRep" required>
+                        <option value="">— Seçin —</option>
+                        <option>Vəliməmmədov Niyazi Səhhət oğlu</option>
+                        <option>Abaszadə Mədət Yusif oğlu</option>
+                      </select>
+                    </div>
 
-                  <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px">
-                    <button class="btn success" onclick="finalizeAndPrint()">Təsdiqlə və Çap et</button>
-                    <button class="btn" onclick="toggleFinalize(false)">Bağla</button>
+                    <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:6px">
+                      <button class="btn success" onclick="finalizeAndPrint()">Təsdiqlə və Çap et</button>
+                      <button class="btn" onclick="toggleFinalize(false)">Bağla</button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <div class="layout">
-          <section class="card" id="summary"></section>
-          <section class="card">
-            <h3>Ödəniş cədvəli</h3>
-            <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
           </section>
+
+          <div class="layout">
+            <section class="card" id="summary"></section>
+            <section class="card">
+              <h3>Ödəniş cədvəli</h3>
+              <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
+            </section>
+          </div>
         </div>
+        <aside class="risk-notes">
+          <section class="card">
+            <h3>Risk kateqoriyaları</h3>
+            <div class="risk-note">
+              <h4>A) Risksiz və ya aşağı riskli peşələr</h4>
+              <p>Dövlət qulluqçuları (nazirlik, dövlət idarəsi, polis, hərbçi, müəllim, həkim və s.), böyük şirkətlərdə rəsmi müqavilə ilə çalışanlar, bank əməkdaşları və maliyyə sektorunda çalışanlardır. Bunlar stabil maaşlı və ödəniş intizamı yüksək müştərilərdir.</p>
+            </div>
+            <div class="risk-note">
+              <h4>B) Orta riskli peşələr</h4>
+              <p>Özəl şirkət əməkdaşları (amma rəsmi müqaviləsi və maaş kartı varsa), kiçik biznes sahibləri (vergi ödəyicisi kimi qeydiyyatlı olanlar), müvəqqəti müqavilə ilə çalışanlardır. Risk orta səviyyədədir, ödəniş imkanları var, amma sabitlik zəif ola bilər.</p>
+            </div>
+            <div class="risk-note">
+              <h4>C) Yüksək riskli peşələr</h4>
+              <p>Qeyri-rəsmi işləyənlər (gündəlik əmək haqqı ilə çalışanlar, tikinti fəhlələri və s.), tələbələr (öz gəliri olmayanlar, ancaq valideyn təminatı ilə), işsiz şəxslər və ya sosial müavinət alanlardır.</p>
+            </div>
+          </section>
+        </aside>
       </main>
     </div>
   </div>
@@ -491,6 +535,16 @@
     const toNum = id=> Number((document.getElementById(id)?.value) ?? 0);
     const ddmmyyyy = (d)=>{ const dt=new Date(d); const dd=String(dt.getDate()).padStart(2,'0'); const mm=String(dt.getMonth()+1).padStart(2,'0'); const yyyy=dt.getFullYear(); return `${dd}.${mm}.${yyyy}`; };
     const todayISO = ()=> { const t=new Date(); const mm=String(t.getMonth()+1).padStart(2,'0'); const dd=String(t.getDate()).padStart(2,'0'); return `${t.getFullYear()}-${mm}-${dd}`; };
+    
+    // Yeni yuvarlaqlaşdırma funksiyası
+    function roundToNearest9(num) {
+        if (num <= 0) return 0;
+        let rounded = Math.ceil(num / 10) * 10 - 1;
+        if (rounded < num) {
+            rounded += 10;
+        }
+        return rounded;
+    }
 
     /* ==== POLICY ==== */
     const POLICY_RISK_ONLY = { low: 0.20, med: 0.30, high: 0.50 };
@@ -540,8 +594,8 @@
         }
       }
       
-      document.getElementById('cashPrice').value = cashPrice > 0 ? cashPrice.toFixed(2) : '';
-      document.getElementById('creditPrice').value = creditPrice > 0 ? creditPrice.toFixed(2) : '';
+      document.getElementById('cashPrice').value = cashPrice > 0 ? roundToNearest9(cashPrice).toFixed(2) : '';
+      document.getElementById('creditPrice').value = creditPrice > 0 ? roundToNearest9(creditPrice).toFixed(2) : '';
     }
 
     function applyCreditPrice(){
