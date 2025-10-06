@@ -5,21 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KREDİT KALKULYATORU</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
-
     :root {
-      --bg: #121212;
-      --text: #f0f0f0;
-      --card: rgba(255, 255, 255, 0.08);
-      --card-blur: rgba(255, 255, 255, 0.05);
-      --border: rgba(255, 255, 255, 0.15);
-      --muted: #b0b0b0;
-      --primary: #bb86fc;
-      --accent: #03dac6;
-      --input-bg: rgba(255, 255, 255, 0.1);
-      --input-border: rgba(255, 255, 255, 0.2);
-      --shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      --radius: 14px;
+      --bg: #eef2f9;
+      --text: #2c3e50;
+      --card: #ffffff;
+      --border: #e0e7f1;
+      --muted: #95a5a6;
+      --primary: #c0392b;
+      --input-border: #bdc3c7;
+      --shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -3px rgba(0, 0, 0, 0.05);
+      --radius: 12px;
+      --grid: #d1d5db;
       --print-text: #111;
       --table-border: #cbd5e1;
     }
@@ -30,14 +26,11 @@
 
     body {
       margin: 0;
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--text);
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
       font-size: 16px;
       line-height: 1.6;
-      background: #121212;
-      background-image: radial-gradient(at 0% 0%, #1a1a1a, #0d0d0d);
-      min-height: 100vh;
     }
 
     .container {
@@ -81,7 +74,7 @@
     h2 {
       font-size: 2rem;
       font-weight: 800;
-      color: var(--text);
+      color: #34495e;
       margin-top: 0;
       margin-bottom: 0.75rem;
     }
@@ -89,7 +82,7 @@
     h3 {
       font-size: 1.6rem;
       font-weight: 700;
-      color: var(--text);
+      color: #34495e;
       margin: 0 0 1rem;
     }
     
@@ -98,7 +91,7 @@
         font-weight: bold;
         margin-top: 0.75rem;
         margin-bottom: 0.5rem;
-        color: var(--text);
+        color: #34495e;
     }
     
     .risk-note p {
@@ -115,7 +108,6 @@
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow);
       transition: transform 0.2s ease-in-out;
-      backdrop-filter: blur(10px);
     }
     
     .card:hover {
@@ -140,7 +132,7 @@
 
     label {
       font-size: 0.9rem;
-      color: var(--muted);
+      color: #34495e;
       font-weight: 600;
       display: block;
       margin-bottom: 0.4rem;
@@ -151,16 +143,16 @@
       padding: 1rem;
       border-radius: 8px;
       border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      color: var(--text);
+      background: #fdfdfd;
+      color: #2c3e50;
       font-size: 1rem;
       transition: all 0.3s ease-in-out;
     }
     
     input:focus, select:focus {
         outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(3, 218, 198, 0.3);
+        border-color: #3498db;
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
     }
 
     .btn {
@@ -176,58 +168,57 @@
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #fff !important;
     }
 
     .btn:hover {
+      background: #95a5a6;
       transform: translateY(-2px);
       box-shadow: 0 4px 6px rgba(0,0,0,0.15);
     }
 
     .btn.success {
-      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      background: #27ae60;
     }
 
     .btn.success:hover {
-      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      background: #2ecc71;
     }
 
     .btn.danger {
-      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      background: #e74c3c;
     }
 
     .btn.danger:hover {
-      background: linear-gradient(45deg, #c0392b, #e74c3c);
+      background: #c0392b;
     }
 
     .btn.ghost {
-      background: var(--input-bg);
-      border: 1px solid var(--input-border);
-      color: var(--text) !important;
-      background-image: none;
+      background: #fdfdfd;
+      border: 1px solid #bdc3c7;
+      color: var(--text);
     }
 
     .btn.ghost:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: #ecf0f1;
     }
 
     .btn.primary {
-      background: linear-gradient(45deg, #3498db, #2980b9);
+      background: #3498db;
     }
 
     .btn.primary:hover {
-      background: linear-gradient(45deg, #2980b9, #3498db);
+      background: #2980b9;
     }
 
     .pill {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid #dcdde1;
       padding: 0.4rem 0.9rem;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--muted);
+      background: #f0f4f9;
+      color: #535c68;
       font-size: 0.8rem;
       font-weight: 600;
       letter-spacing: 0.2px;
@@ -240,15 +231,15 @@
     }
     
     .status-pill.success {
-      border-color: #2ecc71;
-      background-color: rgba(46, 204, 113, 0.2);
-      color: #27ae60;
+      border-color: #a8e6cf;
+      background-color: #d1f4e3;
+      color: #1a5338;
     }
 
     .status-pill.danger {
-      border-color: #e74c3c;
-      background-color: rgba(231, 76, 60, 0.2);
-      color: #c0392b;
+      border-color: #f7a2a5;
+      background-color: #fcebeb;
+      color: #8c252d;
     }
 
     table {
@@ -264,11 +255,11 @@
     thead th {
       position: sticky;
       top: 0;
-      background: var(--card-blur);
+      background: #f7fafc;
       padding: 0.8rem 1.2rem;
       font-weight: 700;
       font-size: 0.9rem;
-      color: var(--text);
+      color: #34495e;
       border-bottom: 1px solid var(--border);
       text-align: right;
     }
@@ -281,7 +272,7 @@
     }
 
     tbody tr:nth-child(odd) {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(2, 6, 23, 0.02);
     }
     
     #summary {
@@ -291,7 +282,7 @@
     }
 
     #summary .form-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 2rem;
     }
     
@@ -313,16 +304,16 @@
     }
 
     .notice.warn {
-      background: rgba(231, 76, 60, 0.2);
-      border: 1px solid rgba(231, 76, 60, 0.4);
-      color: #e74c3c;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
       font-weight: 600;
     }
     
     .notice.info {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: var(--muted);
+      background: #f0f4f8;
+      border: 1px solid #e2e8f0;
+      color: #4a5568;
     }
 
     .invalid {
@@ -339,64 +330,7 @@
     .inline-check .big-check {
       width: 1.3rem;
       height: 1.3rem;
-      accent-color: var(--accent);
-    }
-
-    /* Modal (Popup) stili */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.6);
-      padding-top: 60px;
-    }
-
-    .modal-content {
-      background-color: var(--card);
-      margin: 5% auto;
-      padding: 2rem;
-      border: 1px solid var(--border);
-      width: 90%;
-      max-width: 1000px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      backdrop-filter: blur(15px);
-    }
-    
-    @media (max-width: 768px) {
-        .modal-content {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .close-btn {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .close-btn:hover,
-    .close-btn:focus {
-      color: #fff;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    
-    /* Responsive layout for modal */
-    @media (max-width: 768px) {
-      .modal-content {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-      }
+      accent-color: #27ae60;
     }
 
     /* ==== ÇAP – Times New Roman (A4) ==== */
@@ -410,7 +344,7 @@
     .print-ol > li{ margin: 2.2mm 0; }
     .print-ol li .sub { margin-top: 1.8mm; }
     .print-table { width: 100%; border-collapse: collapse; font-size: 11pt; }
-    .print-table th,.print-table td { border: 1px solid var(--table-border); padding: 5px 7px; vertical-align: top; }
+    .print-table th, .print-table td { border: 1px solid var(--table-border); padding: 5px 7px; vertical-align: top; }
     .print-table th { background: #f5f5f5; }
     .sign-cols { display: flex; justify-content: space-between; gap: 16mm; margin-top: 12mm; }
     .sign { flex: 1; }
@@ -421,7 +355,7 @@
     .page-break { page-break-after: always; }
 
     @media print { 
-      .btn, .sidebar, .header, .main-content > .risk-note, #calc, .layout, .modal { display: none; } 
+      .btn, .sidebar, .header, .main-content > .risk-note, #calc, .layout { display: none; } 
       .container { max-width: 1000px; padding: 0 }
       header { margin-bottom: 0 }
       .grid-container { display: block; }
@@ -595,21 +529,16 @@
               </div>
             </div>
           </section>
+
+          <div class="layout" style="display:block">
+            <section class="card" id="summary"></section>
+            <section class="card" id="scheduleCard">
+              <h3>Ödəniş cədvəli</h3>
+              <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
+            </section>
+          </div>
         </div>
       </main>
-    </div>
-  </div>
-
-  <div id="resultModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn">&times;</span>
-        <section class="card" id="summary">
-            </section>
-        <section class="card">
-            <h3>Ödəniş cədvəli</h3>
-            <div id="scheduleWrap" style="overflow:auto;max-height:420px">
-                </div>
-        </section>
     </div>
   </div>
 
@@ -640,17 +569,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       const sd = document.getElementById('startDate');
       if (sd && !sd.value) sd.value = todayISO();
-      
-      const modal = document.getElementById('resultModal');
-      const closeBtn = modal.querySelector('.close-btn');
-      closeBtn.onclick = function() { modal.style.display = 'none'; };
-      window.onclick = function(event) {
-          if (event.target == modal) {
-              modal.style.display = 'none';
-          }
-      };
     });
-    
     function ensureStartDateDefault(){
       const sd = document.getElementById('startDate');
       if (sd && !sd.value) sd.value = todayISO();
@@ -831,73 +750,53 @@
       const dti = (salary>0)? (oblig/salary) : (oblig>0? Infinity : 0);
       const dtiWarn = dti > MAX_OBLIG_SHARE;
 
-      // Xülasə HTML-i
+      // Xülasə
       const statusBadge = monthly <= maxMonthly + 1e-9
         ? `<span class="pill status-pill success">Uyğundur</span>`
         : `<span class="pill status-pill danger">Limitdən yüksək</span>`;
+
       const dtiHtml = dtiWarn ? `<div class="notice warn">Diqqət: Öhdəlik/Gəlir ${(dti*100).toFixed(0)}% (hədd ${Math.round(MAX_OBLIG_SHARE*100)}%).</div>` : '';
-      
-      const summaryHtml = `
-        <div class="card" id="summary-card">
-          <h3>Xülasə</h3>
-          ${dtiHtml}
-          <div class="form-grid">
-            <div class="summary-item col-6">
-              <div class="pill">Məhsul</div>
-              <h2>${fmtAZN(price)}</h2>
-              <div class="muted">Risk qrupu: <strong>${risk||'-'}</strong></div>
-            </div>
-            <div class="summary-item col-6">
-              <div class="pill">İlkin ödəniş</div>
-              <h2>${fmtAZN(down)} <span class="muted">(${(pct*100).toFixed(0)}%)</span></h2>
-              ${autoAdj?`<div class="muted">Aylıq ödəniş DSR həddinə uyğunlaşdırıldı.</div>`:''}
-            </div>
-            <div class="summary-item col-6">
-              <div class="pill">Kredit məbləği</div>
-              <h2>${fmtAZN(principal)}</h2>
-            </div>
-            <div class="summary-item col-6">
-              <div class="pill">Seçilən aylıq</div>
-              <h2>${fmtAZN(monthly)} ${statusBadge}</h2>
-            </div>
-            <div class="summary-item col-6">
-              <div class="pill">Maks. aylıq (DSR 40%)</div>
-              <h2>${fmtAZN(maxMonthly)}</h2>
-              <div class="muted">Net gəlir: ${fmtAZN(Math.max(0, salary - oblig))}</div>
-            </div>
-            <div class="summary-item col-6">
-              <div class="pill">Müddət</div>
-              <h2>${monthsNum} ay</h2>
-            </div>
-          </div>
-        </div>`;
-      
-      const scheduleHtml = `
-        <div class="card">
-          <h3>Ödəniş cədvəli</h3>
-          <div id="scheduleWrap" style="overflow:auto;max-height:420px">
-            <table>
-              <thead><tr><th>#</th><th>Tarix</th><th>Aylıq</th><th>Qalıq</th></tr></thead>
-              <tbody>${rows.map(r=>`<tr><td>${r.i}</td><td>${ddmmyyyy(r.date)}</td><td>${fmtAZN(r.monthly)}</td><td>${fmtAZN(r.bal)}</td></tr>`).join('')}</tbody>
-            </table>
-          </div>
-        </div>`;
-      
-      // Modal pəncərədə göstər
-      const modal = document.getElementById('resultModal');
-      const modalContent = modal.querySelector('.modal-content');
-      modalContent.innerHTML = `
-        <span class="close-btn">&times;</span>
-        <div style="grid-column: span 2;">
-            ${summaryHtml}
-        </div>
-        <div style="grid-column: span 2;">
-            ${scheduleHtml}
-        </div>`;
-      
-      modal.style.display = 'block';
 
       document.getElementById('calcAlert').style.display='none';
+      document.getElementById('summary').innerHTML=`
+        <h3>Xülasə</h3>
+        ${dtiHtml}
+        <div class="form-grid">
+          <div class="summary-item col-6">
+            <div class="pill">Məhsul</div>
+            <h2>${fmtAZN(price)}</h2>
+            <div class="muted">Risk qrupu: <strong>${risk||'-'}</strong></div>
+          </div>
+          <div class="summary-item col-6">
+            <div class="pill">İlkin ödəniş</div>
+            <h2>${fmtAZN(down)} <span class="muted">(${(pct*100).toFixed(0)}%)</span></h2>
+            ${autoAdj?`<div class="muted">Aylıq ödəniş DSR həddinə uyğunlaşdırıldı.</div>`:''}
+          </div>
+          <div class="summary-item col-6">
+            <div class="pill">Kredit məbləği</div>
+            <h2>${fmtAZN(principal)}</h2>
+          </div>
+          <div class="summary-item col-6">
+            <div class="pill">Seçilən aylıq</div>
+            <h2>${fmtAZN(monthly)} ${statusBadge}</h2>
+          </div>
+          <div class="summary-item col-6">
+            <div class="pill">Maks. aylıq (DSR 40%)</div>
+            <h2>${fmtAZN(maxMonthly)}</h2>
+            <div class="muted">Net gəlir: ${fmtAZN(Math.max(0, salary - oblig))}</div>
+          </div>
+          <div class="summary-item col-6">
+            <div class="pill">Müddət</div>
+            <h2>${monthsNum} ay</h2>
+          </div>
+        </div>`;
+
+      // Ödəniş cədvəli
+      document.getElementById('scheduleWrap').innerHTML = `
+        <table>
+          <thead><tr><th>#</th><th>Tarix</th><th>Aylıq</th><th>Qalıq</th></tr></thead>
+          <tbody>${rows.map(r=>`<tr><td>${r.i}</td><td>${ddmmyyyy(r.date)}</td><td>${fmtAZN(r.monthly)}</td><td>${fmtAZN(r.bal)}</td></tr>`).join('')}</tbody>
+        </table>`;
     }
 
     function resetForm(){
@@ -939,12 +838,11 @@
       document.getElementById('cost').value = '';
       document.getElementById('cashPrice').value = '';
       document.getElementById('creditPrice').value = '';
-      document.getElementById('resultModal').style.display = 'none';
     }
 
     function exportPrint(){
       const w=window.open('','_blank');
-      const summary=document.getElementById('summary-card').innerHTML;
+      const summary=document.getElementById('summary').innerHTML;
       const sched=document.getElementById('scheduleWrap').innerHTML;
       w.document.write(`<!doctype html><html><head><meta charset='utf-8'><title>Kredit Çap</title>
         <style>body{font-family:system-ui,Segoe UI,Roboto; padding:16px} h1{margin:0 0 8px} .muted{color:#64748b}
@@ -1289,6 +1187,66 @@
           </div>
           <div class="sign">
             <div class="sigcap">Alıcı: ${custName}</div>
+            <span class="sigline"></span>
+          </div>
+        </div>
+      </div>`;
+
+      /* ==== 5) ZƏMANƏT TALONU – nümayəndə burada göstərilir ==== */
+      const zemanet = `
+      <div class="print-a4 page-break">
+        <div class="print-title">ZƏMANƏT TALONU</div>
+        <div class="print-block"><strong>Zəmanət şərtləri:</strong></div>
+        <div class="print-block kecik">
+          • Zəmanət blankı əsasında təmir yalnız istehsalçı səhvindən meydana gəlmiş qüsurlara şamil edilir.<br>
+          • Qüsurun istehsalçı tərəfindən baş verib vermədiyini yalnız “Baktel Electronics” MMC və digər rəsmi şirkətləlrin
+          texniki servis mütəxəssisləri tərəfindən müəyyənləşdirilə bilər.<br>
+          • Zəmanət müddəti məhsulun satıldığı gündən hesablanır. • Hər hansı xarici zədə almamış (korpus və ekranda cızıq,
+          batıq, əzik və s.) məhsul 14 gün ərzində müştərinin istəyi ilə qaytarıla və ya dəyişdirilə bilər.<br>
+          • Əgər məhsullun zəmanət müddəti bitib və ya zəmanət şərtlərində göstərilən qüsurlar təyin edilməyibsə, bu zaman
+          məhsul “Baktel Electronics” MMC-nin uyğun, ödənişli tarifləri ilə təmir olunur.<br>
+          • Təmirə təqdim olunmuş məhsul müayinə və təmir məqsədilə 2-14 iş günü ərzində texniki servis mərkəzində
+          saxlanıla bilər.<br>
+          • Təmir üçün lazım olan ehtiyyat hissəsi və ya detal tapılmadıqda, onun sifarişi və gətirilməsi müəyyən vaxt
+          tələb etdiyindən göstərilən müddət tərəflərin razılığı ilə müəyyən qədər uzadıla bilər. Zəmanət müddəti bitməmiş
+          məhsulun
+          texniki baxış və təmir xidməti onun rəsmi nümayəndəliyi tərəfindən daxili təlimatlara uyğun olaraq aparılır
+        </div>
+
+        <div class="print-block"><strong>Satılmış məhsullar yalnız aşağıdakı şərtlər daxilində təmirə qəbul olunur:</strong></div>
+        <div class="print-block kecik">
+          • Təmir üçün müraciət edilmiş məhmsulun yalnız bu blankda adı və soyadı qeyd olunan şəxsin şəxsiyyət vəsiqəsi ilə təqdim olunması;<br>
+          • Zəmanət müddətinin bitməməsi.
+        </div>
+
+        <div class="print-block"><strong>Məhsullar bu hallarda zəmanətli təmirə qəbul edilmir:</strong></div>
+        <div class="print-block kecik">
+          • Əgər məhsul “Baktel Electronics” MMC və digər rəsmi şirkətlərin servis mütəxəssislərinə təqdim olunmazdan əvvəl
+          hansısa kənar şəxs tərəfindən təmir edilər, təmir haqqında lazımi sənədlər verilməz və bu təmirin keyfiyyətsizliyi nəticsində cihaz zədələnırsə;<br>
+          • Daxili və xarici zədələnmə, cihazın daxilində yad cisim və ya maye düşməsi, yaxud digər xarici zərbə nəticəsi yaranarsa;<br>
+          • Sıçrayışlar və gərginliyin həddən artıq yuxarı olması nəticəsində cihazda gərginlik və digər qüsurlar əmələ gələrsə.
+        </div>
+
+        <table class="print-table" style="margin-top:6mm">
+          <tr><th style="width:28%;">Malın adı</th><td>${prodName}</td></tr>
+          <tr><th>İMEİ və ya SN</th><td>${imei1}${imei2 ? ` / ${imei2}` : ''}</td></tr>
+          <tr><th>Zəmanət müddəti</th><td>1 (bir) il</td></tr>
+          <tr><th>Satış tarixi</th><td>${ddmmyyyy(startDate)}</td></tr>
+          <tr><th>Alıcının A.S.A</th><td>${custName}</td></tr>
+          <tr><th>Alıcının əlaqə nömrəsi</th><td>${custPhone}</td></tr>
+        </table>
+
+        <div class="print-block" style="margin-top:6mm;"><strong>Şərtlər ilə tanış oldum və razıyam</strong></div>
+
+        <div class="sign-cols">
+          <div class="sign" style="text-align:center">
+            ${custName}
+            <div class="sigcap">Alıcının adı, soyadı və imzası</div>
+            <span class="sigline"></span>
+          </div>
+          <div class="sign" style="text-align:center">
+            ${sellerRep}
+            <div class="sigcap">Satıcının adı, soyadı və imzası</div>
             <span class="sigline"></span>
           </div>
         </div>
