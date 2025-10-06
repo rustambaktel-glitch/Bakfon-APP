@@ -775,7 +775,7 @@
       const dti = (salary>0)? (oblig/salary) : (oblig>0? Infinity : 0);
       const dtiWarn = dti > MAX_OBLIG_SHARE;
 
-      // Xülasə
+      // Hesbalamanın nəticəsi
       const statusBadge = monthly <= maxMonthly + 1e-9
         ? `<span class="pill status-pill success">Uyğundur</span>`
         : `<span class="pill status-pill danger">Limitdən yüksək</span>`;
@@ -784,7 +784,7 @@
 
       document.getElementById('calcAlert').style.display='none';
       document.getElementById('summary').innerHTML=`
-        <h3>Xülasə</h3>
+        <h3>Hesablamanın nəticəsi</h3>
         ${dtiHtml}
         <div class="form-grid">
           <div class="summary-item col-6">
