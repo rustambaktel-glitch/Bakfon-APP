@@ -72,6 +72,13 @@
     .logo-fade{opacity:.08;text-align:center;font-size:28pt;font-weight:700}
     .kecik{font-size:10.5pt}
     .page-break{page-break-after:always}
+    /* Yalnız müqavilə vərəqini sıxlaşdırmaq üçün */
+    .contract-compact{padding:14mm 14mm 14mm !important}
+    .contract-compact .print-title{font-size:16pt}
+    .contract-compact .print-h2{font-size:12pt;margin:6mm 0 3mm}
+    .contract-compact .print-block,
+    .contract-compact .print-ol{font-size:10pt;line-height:1.4}
+    .contract-compact .print-table{font-size:10pt}
     @media print{
       .btn,.sidebar,.header,.main-content>.risk-note,#calc,.layout{display:none}
       .container{max-width:1000px;padding:0} header{margin-bottom:0} .grid-container{display:block}
@@ -213,6 +220,7 @@
                   <div class="col-3"><label>Doğum tarixi</label><input id="birthDate" type="date" required /></div>
                   <div class="col-3"><label>Qeydiyyat/Yaşayış ünvanı</label><input id="address" type="text" required /></div>
 
+                  <div class="col-3"><label>Müqavilə №</label><input id="contractNo" type="text" placeholder="BT 13107" required /></div>
                   <div class="col-3"><label>Filial</label><input id="branch" type="text" value="Nəsimi" required /></div>
                   <div class="col-3"><label>Valyuta</label><select id="currency" required><option value="AZN" selected>AZN</option></select></div>
                   <div class="col-3"><label>Kreditin verilmə tarixi</label><input id="startDate" type="date" required /></div>
@@ -578,10 +586,8 @@
       document.getElementById('scheduleWrap').innerHTML="";
       toggleFinalize(false);
 
-      // Satış qiyməti modulunu sıfırla
       ['productType','cost','cashPrice','creditPrice'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
 
-      // Məhsul siyahısını sıfırla
       PRODUCTS = [];
       renderProducts();
     }
@@ -705,9 +711,9 @@
 
       let comp; try{ comp = computeForDocs(); }catch(e){ alert(e.message); return; }
 
-      /* ==== 1) MÜQAVİLƏ ==== */
+      /* ==== 1) MÜQAVİLƏ (compact – 1 səhifə) ==== */
       const contractHTML = `
-      <div class="print-a4 page-break">
+      <div class="print-a4 page-break contract-compact">
         <div class="print-title">MÜDDƏTLİ (NİSYƏ) ALQI-SATQI MÜQAVİLƏSİ № ${contractNo}</div>
         <div class="print-subtop">
           <div><strong>Bakı şəhəri</strong></div>
@@ -847,13 +853,12 @@
         </div>
       </div>`;
 
-      /* ==== 3) ƏLAVƏ 2 – Təhvil-Təslim ==== */
+      /* ==== 3) ƏLAVƏ 2 – Təhvil-Təslim (qiymət YOXDUR) ==== */
       const rowsTT = PRODUCTS.map((p,i)=>`
         <tr>
           <td>${i+1}</td>
           <td>${escapeHtml(p.name)}${p.imeis.length?'<br><span class="kecik">'+p.imeis.map(escapeHtml).join(', ')+'</span>':''}</td>
           <td>1</td>
-          <td>${toNum('price').toFixed(2)}</td>
         </tr>`).join('');
 
       const elave2 = `
@@ -879,7 +884,6 @@
               <th style="width:6%">№</th>
               <th>Malların adları və təsviri (İMEİ kodları)</th>
               <th style="width:10%">Miqdar</th>
-              <th style="width:18%">Məbləğ (AZN)</th>
             </tr>
           </thead>
           <tbody>${rowsTT}</tbody>
