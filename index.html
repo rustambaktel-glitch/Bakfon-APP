@@ -6,132 +6,76 @@
   <title>KREDİT KALKULYATORU</title>
   <style>
     :root {
-      --bg: #eef2f9;
-      --text: #2c3e50;
-      --card: #ffffff;
-      --border: #e0e7f1;
-      --muted: #95a5a6;
-      --primary: #c0392b;
-      --input-border: #bdc3c7;
-      --shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -3px rgba(0, 0, 0, 0.05);
-      --radius: 12px;
-      --grid: #d1d5db;
-      --print-text: #111;
-      --table-border: #cbd5e1;
+      --bg: #eef2f9; --text: #2c3e50; --card: #ffffff; --border: #e0e7f1; --muted: #95a5a6; --primary: #c0392b;
+      --input-border: #bdc3c7; --shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -3px rgba(0, 0, 0, 0.05);
+      --radius: 12px; --grid: #d1d5db; --print-text: #111; --table-border: #cbd5e1;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .container { max-width: 1400px; margin: 0 auto; padding: 2rem 1rem; }
-    .grid-container { display: grid; grid-template-columns: 320px 1fr; gap: 2rem; }
-    @media (max-width: 900px) { .grid-container { grid-template-columns: 1fr; } }
-    .main-content { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-
-    header { text-align: center; margin-bottom: 2.5rem; }
-    header h1 { margin: 0; font-size: 2.8rem; font-weight: 900; letter-spacing: 1px; color: var(--primary); text-transform: uppercase; }
-
-    h2 { font-size: 2rem; font-weight: 800; color: #34495e; margin-top: 0; margin-bottom: 0.75rem; }
-    h3 { font-size: 1.6rem; font-weight: 700; color: #34495e; margin: 0 0 1rem; }
-
-    .risk-note h4 { font-size: 1.2rem; font-weight: bold; margin-top: 0.75rem; margin-bottom: 0.5rem; color: #34495e; }
-    .risk-note p { font-size: 0.95rem; color: var(--muted); margin: 0 0 1.2rem; }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      box-shadow: var(--shadow);
-      transition: transform 0.2s ease-in-out;
-    }
-    .card:hover { transform: translateY(-5px); }
-
-    .form-grid { display: grid; gap: 1.5rem; }
-    @media (min-width: 720px) { .form-grid { grid-template-columns: repeat(12, 1fr); } }
-    .col-12 { grid-column: span 12; } .col-6 { grid-column: span 6; } .col-4 { grid-column: span 4; } .col-3 { grid-column: span 3; }
-
-    label { font-size: 0.9rem; color: #34495e; font-weight: 600; display: block; margin-bottom: 0.4rem; }
-
-    input, select {
-      width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--input-border);
-      background: #fdfdfd; color: #2c3e50; font-size: 1rem; transition: all 0.3s ease-in-out;
-    }
-    input:focus, select:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); }
-
-    .btn {
-      border: none; background: #bdc3c7; color: #ffffff; padding: 0.8rem 1.8rem; border-radius: 8px; cursor: pointer;
-      transition: all 0.3s ease-in-out; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: 700; font-size: 1rem;
-      text-transform: uppercase; letter-spacing: 0.5px;
-    }
-    .btn:hover { background: #95a5a6; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
-    .btn.success { background: #27ae60; } .btn.success:hover { background: #2ecc71; }
-    .btn.danger { background: #e74c3c; } .btn.danger:hover { background: #c0392b; }
-    .btn.ghost { background: #fdfdfd; border: 1px solid #bdc3c7; color: var(--text); }
-    .btn.ghost:hover { background: #ecf0f1; }
-    .btn.primary { background: #3498db; } .btn.primary:hover { background: #2980b9; }
-
-    .pill { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid #dcdde1; padding: 0.4rem 0.9rem; border-radius: 999px; background: #f0f4f9; color: #535c68; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2px; margin-bottom: 0.5rem; }
-    .muted { color: var(--muted); font-size: 0.9rem; }
-    .status-pill.success { border-color: #a8e6cf; background-color: #d1f4e3; color: #1a5338; }
-    .status-pill.danger  { border-color: #f7a2a5; background-color: #fcebeb; color: #8c252d; }
-
-    table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    thead th { position: sticky; top: 0; background: #f7fafc; padding: 0.8rem 1.2rem; font-weight: 700; font-size: 0.9rem; color: #34495e; border-bottom: 1px solid var(--border); text-align: right; }
-    tbody td { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; text-align: right; }
-    tbody tr:nth-child(odd) { background: rgba(2, 6, 23, 0.02); }
-
-    #summary { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-    #summary .form-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
-    .summary-item { margin-bottom: 0; } .summary-item h2 { margin-bottom: 0.25rem; }
-
-    #scheduleCard { display: none; }
-
-    .notice { padding: 1.2rem; border-radius: 8px; margin-top: 1rem; }
-    .notice.warn { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-weight: 600; }
-    .notice.info { background: #f0f4f8; border: 1px solid #e2e8f0; color: #4a5568; }
-
-    .invalid { border-color: #e53e3e !important; box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2) !important; }
-
-    .inline-check { display: flex; align-items: center; gap: 0.5rem; }
-    .inline-check .big-check { width: 1.3rem; height: 1.3rem; accent-color: #27ae60; }
-
-    /* ==== ÇAP – Times New Roman (A4) ==== */
-    .print-root { font-family: "Times New Roman", Times, serif; color: var(--print-text); }
-    .print-a4 { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 20mm 17mm 18mm; }
-    .print-title { font-size: 18pt; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 0.2px; }
-    .print-subtop { display: flex; justify-content: space-between; margin: 6mm 0 4mm; font-size: 11pt; }
-    .print-h2 { font-size: 13pt; font-weight: 700; text-align: center; margin: 8mm 0 4mm; }
-    .print-block { font-size: 11pt; line-height: 1.5; text-align: justify; margin: 3mm 0; }
-    .print-ol { font-size: 11pt; line-height: 1.5; margin: 3mm 0 0 0; padding-left: 0; }
-    .print-ol > li{ margin: 2.2mm 0; }
-    .print-ol li .sub { margin-top: 1.8mm; }
-    .print-table { width: 100%; border-collapse: collapse; font-size: 11pt; }
-    .print-table th, .print-table td { border: 1px solid var(--table-border); padding: 5px 7px; vertical-align: top; }
-    .print-table th { background: #f5f5f5; }
-    .sign-cols { display: flex; justify-content: space-between; gap: 16mm; margin-top: 12mm; }
-    .sign { flex: 1; }
-    .sigline { display: block; border-bottom: 1px solid #111; height: 18px; margin-top: 18px; }
-    .sigcap { font-size: 10.5pt; color: #333; margin-top: 2mm; }
-    .logo-fade { opacity: 0.08; text-align: center; font-size: 28pt; font-weight: 700; }
-    .kecik { font-size: 10.5pt; }
-    .page-break { page-break-after: always; }
-
-    @media print {
-      .btn, .sidebar, .header, .main-content > .risk-note, #calc, .layout { display: none; }
-      .container { max-width: 1000px; padding: 0 }
-      header { margin-bottom: 0 }
-      .grid-container { display: block; }
-      #scheduleCard { display: block; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:1.6}
+    .container{max-width:1400px;margin:0 auto;padding:2rem 1rem}
+    .grid-container{display:grid;grid-template-columns:320px 1fr;gap:2rem}
+    @media (max-width:900px){.grid-container{grid-template-columns:1fr}}
+    .main-content{display:grid;grid-template-columns:1fr;gap:2rem}
+    header{text-align:center;margin-bottom:2.5rem}
+    header h1{margin:0;font-size:2.8rem;font-weight:900;letter-spacing:1px;color:var(--primary);text-transform:uppercase}
+    h2{font-size:2rem;font-weight:800;color:#34495e;margin:0 0 .75rem}
+    h3{font-size:1.6rem;font-weight:700;color:#34495e;margin:0 0 1rem}
+    .risk-note h4{font-size:1.2rem;font-weight:bold;margin:.75rem 0 .5rem;color:#34495e}
+    .risk-note p{font-size:.95rem;color:var(--muted);margin:0 0 1.2rem}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);transition:transform .2s}
+    .card:hover{transform:translateY(-5px)}
+    .form-grid{display:grid;gap:1.5rem}
+    @media (min-width:720px){.form-grid{grid-template-columns:repeat(12,1fr)}}
+    .col-12{grid-column:span 12}.col-6{grid-column:span 6}.col-4{grid-column:span 4}.col-3{grid-column:span 3}
+    label{font-size:.9rem;color:#34495e;font-weight:600;display:block;margin-bottom:.4rem}
+    input,select{width:100%;padding:1rem;border-radius:8px;border:1px solid var(--input-border);background:#fdfdfd;color:#2c3e50;font-size:1rem;transition:all .3s}
+    input:focus,select:focus{outline:none;border-color:#3498db;box-shadow:0 0 0 3px rgba(52,152,219,.3)}
+    .btn{border:none;background:#bdc3c7;color:#fff;padding:.8rem 1.8rem;border-radius:8px;cursor:pointer;transition:all .3s;box-shadow:0 2px 4px rgba(0,0,0,.1);font-weight:700;font-size:1rem;text-transform:uppercase;letter-spacing:.5px}
+    .btn:hover{background:#95a5a6;transform:translateY(-2px);box-shadow:0 4px 6px rgba(0,0,0,.15)}
+    .btn.success{background:#27ae60}.btn.success:hover{background:#2ecc71}
+    .btn.danger{background:#e74c3c}.btn.danger:hover{background:#c0392b}
+    .btn.ghost{background:#fdfdfd;border:1px solid #bdc3c7;color:var(--text)}.btn.ghost:hover{background:#ecf0f1}
+    .btn.primary{background:#3498db}.btn.primary:hover{background:#2980b9}
+    .pill{display:inline-flex;align-items:center;gap:.5rem;border:1px solid #dcdde1;padding:.4rem .9rem;border-radius:999px;background:#f0f4f9;color:#535c68;font-size:.8rem;font-weight:600;letter-spacing:.2px;margin-bottom:.5rem}
+    .muted{color:var(--muted);font-size:.9rem}
+    .status-pill.success{border-color:#a8e6cf;background:#d1f4e3;color:#1a5338}
+    .status-pill.danger{border-color:#f7a2a5;background:#fcebeb;color:#8c252d}
+    table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+    thead th{position:sticky;top:0;background:#f7fafc;padding:.8rem 1.2rem;font-weight:700;font-size:.9rem;color:#34495e;border-bottom:1px solid var(--border);text-align:right}
+    tbody td{padding:.8rem 1.2rem;border-bottom:1px solid var(--border);font-size:.85rem;text-align:right}
+    tbody tr:nth-child(odd){background:rgba(2,6,23,.02)}
+    #summary{display:grid;grid-template-columns:1fr;gap:1.5rem}
+    #summary .form-grid{grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem}
+    .summary-item{margin-bottom:0}.summary-item h2{margin-bottom:.25rem}
+    #scheduleCard{display:none}
+    .notice{padding:1.2rem;border-radius:8px;margin-top:1rem}
+    .notice.warn{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-weight:600}
+    .notice.info{background:#f0f4f8;border:1px solid #e2e8f0;color:#4a5568}
+    .invalid{border-color:#e53e3e!important;box-shadow:0 0 0 3px rgba(229,62,62,.2)!important}
+    .inline-check{display:flex;align-items:center;gap:.5rem}
+    .inline-check .big-check{width:1.3rem;height:1.3rem;accent-color:#27ae60}
+    /* Çap */
+    .print-root{font-family:"Times New Roman",Times,serif;color:var(--print-text)}
+    .print-a4{width:210mm;min-height:297mm;margin:0 auto;padding:20mm 17mm 18mm}
+    .print-title{font-size:18pt;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.2px}
+    .print-subtop{display:flex;justify-content:space-between;margin:6mm 0 4mm;font-size:11pt}
+    .print-h2{font-size:13pt;font-weight:700;text-align:center;margin:8mm 0 4mm}
+    .print-block{font-size:11pt;line-height:1.5;text-align:justify;margin:3mm 0}
+    .print-ol{font-size:11pt;line-height:1.5;margin:3mm 0 0 0;padding-left:0}
+    .print-ol>li{margin:2.2mm 0}.print-ol li .sub{margin-top:1.8mm}
+    .print-table{width:100%;border-collapse:collapse;font-size:11pt}
+    .print-table th,.print-table td{border:1px solid var(--table-border);padding:5px 7px;vertical-align:top}
+    .print-table th{background:#f5f5f5}
+    .sign-cols{display:flex;justify-content:space-between;gap:16mm;margin-top:12mm}
+    .sign{flex:1}.sigline{display:block;border-bottom:1px solid #111;height:18px;margin-top:18px}
+    .sigcap{font-size:10.5pt;color:#333;margin-top:2mm}
+    .logo-fade{opacity:.08;text-align:center;font-size:28pt;font-weight:700}
+    .kecik{font-size:10.5pt}
+    .page-break{page-break-after:always}
+    @media print{
+      .btn,.sidebar,.header,.main-content>.risk-note,#calc,.layout{display:none}
+      .container{max-width:1000px;padding:0} header{margin-bottom:0} .grid-container{display:block}
+      #scheduleCard{display:block}
     }
   </style>
 </head>
@@ -174,15 +118,15 @@
           <h3>Risk kateqoriyaları</h3>
           <div class="risk-note">
             <h4>A) Risksiz və ya aşağı riskli peşələr</h4>
-            <p>Dövlət qulluqçuları (nazirlik, dövlət idarəsi, polis, hərbçi, müəllim, həkim və s.), böyük şirkətlərdə rəsmi müqavilə ilə çalışanlar, bank əməkdaşları və maliyyə sektorunda çalışanlardır. Bunlar stabil maaşlı və ödəniş intizamı yüksək müştərilərdir.</p>
+            <p>Dövlət qulluqçuları (nazirlik, dövlət idarəsi, polis, hərbçi, müəllim, həkim və s.), böyük şirkətlərdə rəsmi müqavilə ilə çalışanlar, bank əməkdaşları və maliyyə sektorunda çalışanlardır.</p>
           </div>
           <div class="risk-note">
             <h4>B) Orta riskli peşələr</h4>
-            <p>Özəl şirkət əməkdaşları (amma rəsmi müqaviləsi və maaş kartı varsa), kiçik biznes sahibləri (vergi ödəyicisi kimi qeydiyyatlı olanlar), müvəqqəti müqavilə ilə çalışanlardır. Risk orta səviyyədədir, ödəniş imkanları var, amma sabitlik zəif ola bilər.</p>
+            <p>Rəsmi müqaviləli özəl sektor əməkdaşları, qeydiyyatlı kiçik biznes sahibləri, müvəqqəti müqaviləlilər.</p>
           </div>
           <div class="risk-note">
             <h4>C) Yüksək riskli peşələr</h4>
-            <p>Qeyri-rəsmi işləyənlər (gündəlik əmək haqqı ilə çalışanlar, tikinti fəhlələri və s.), tələbələr (öz gəliri olmayanlar, ancaq valideyn təminatı ilə), işsiz şəxslər və ya sosial müavinət alanlardır.</p>
+            <p>Qeyri-rəsmi işləyənlər, tələbələr (öz gəliri olmayanlar), işsizlər və sosial müavinət alanlar.</p>
           </div>
         </section>
       </aside>
@@ -263,16 +207,11 @@
                 <div class="form-grid">
                   <div class="col-4"><label>Müştəri A.S.A.</label><input id="custName" type="text" placeholder="Ad Soyad" required /></div>
                   <div class="col-4"><label>Əlaqə nömrəsi</label><input id="custPhone" type="tel" placeholder="050 xxx xx xx" required /></div>
-                  <div class="col-4"><label>Məhsul adı/model</label><input id="prodName" type="text" placeholder="Məhsul" required /></div>
 
                   <div class="col-3"><label>Ş/V seriya və nömrəsi</label><input id="idSerial" type="text" placeholder="AA 0367083" required /></div>
                   <div class="col-3"><label>FIN kodu</label><input id="finCode" type="text" placeholder="XXXXXXX" required /></div>
                   <div class="col-3"><label>Doğum tarixi</label><input id="birthDate" type="date" required /></div>
                   <div class="col-3"><label>Qeydiyyat/Yaşayış ünvanı</label><input id="address" type="text" required /></div>
-
-                  <div class="col-4"><label>IMEI 1</label><input id="imei1" type="text" required /></div>
-                  <div class="col-4"><label>IMEI 2</label><input id="imei2" type="text" required /></div>
-                  <div class="col-4"><label>Müqavilə №</label><input id="contractNo" type="text" placeholder="BT 13107" required /></div>
 
                   <div class="col-3"><label>Filial</label><input id="branch" type="text" value="Nəsimi" required /></div>
                   <div class="col-3"><label>Valyuta</label><select id="currency" required><option value="AZN" selected>AZN</option></select></div>
@@ -286,12 +225,32 @@
                       <option>Abaszadə Mədət Yusif oğlu</option>
                     </select>
                   </div>
-
-                  <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-                    <button class="btn success" onclick="finalizeAndPrint()">Təsdiqlə və Çap et</button>
-                    <button class="btn" onclick="toggleFinalize(false)">Bağla</button>
-                  </div>
                 </div>
+              </div>
+
+              <!-- Məhsul məlumatları -->
+              <div class="card" style="margin:8px 0">
+                <h3>Məhsul məlumatları</h3>
+                <div class="form-grid">
+                  <div class="col-6">
+                    <label>Məhsul adı/model</label>
+                    <input id="pName" type="text" placeholder="iPhone 14 Pro 256GB" />
+                  </div>
+                  <div class="col-6">
+                    <label>IMEI-lər (vergül və ya sətir ilə ayır)</label>
+                    <input id="pImeis" type="text" placeholder="3539..., 3539..., 3539..." />
+                  </div>
+                  <div class="col-12" style="display:flex;gap:10px;flex-wrap:wrap">
+                    <button class="btn success" type="button" onclick="addProduct()">Məhsul əlavə et</button>
+                    <span class="muted">İpucu: Bir məhsul üçün birdən çox IMEI varsa, hamısını vergüllə yaz.</span>
+                  </div>
+                  <div class="col-12" id="productsTableWrap"></div>
+                </div>
+              </div>
+
+              <div class="col-12" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <button class="btn success" onclick="finalizeAndPrint()">Təsdiqlə və Çap et</button>
+                <button class="btn" onclick="toggleFinalize(false)">Bağla</button>
               </div>
             </div>
           </div>
@@ -309,19 +268,66 @@
   </div>
 
   <script>
+    /* ==== STATE: Məhsullar ==== */
+    let PRODUCTS = []; // {name:string, imeis:string[]}
+
+    function renderProducts(){
+      const wrap = document.getElementById('productsTableWrap');
+      if(!wrap) return;
+      if(PRODUCTS.length===0){
+        wrap.innerHTML = '<div class="notice info">Hələ məhsul əlavə edilməyib.</div>';
+        return;
+      }
+      const rows = PRODUCTS.map((p,idx)=>`
+        <tr>
+          <td style="text-align:center">${idx+1}</td>
+          <td style="text-align:left">${escapeHtml(p.name)}</td>
+          <td style="text-align:left">${p.imeis.map(escapeHtml).join('<br>')}</td>
+          <td style="text-align:center"><button class="btn danger" type="button" onclick="removeProduct(${idx})">Sil</button></td>
+        </tr>`).join('');
+      wrap.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th style="width:6%;text-align:center">#</th>
+              <th style="text-align:left">Məhsul</th>
+              <th style="text-align:left">IMEI-lər</th>
+              <th style="width:12%;text-align:center">Əməl.</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    }
+
+    function addProduct(){
+      const nameEl = document.getElementById('pName');
+      const imeisEl = document.getElementById('pImeis');
+      const name = (nameEl?.value||'').trim();
+      const imeisRaw = (imeisEl?.value||'').trim();
+      if(!name){ alert('Məhsul adını daxil edin.'); return; }
+      const imeis = imeisRaw
+        ? imeisRaw.split(/[\n,;]+/).map(s=>s.trim()).filter(Boolean)
+        : [];
+      PRODUCTS.push({name, imeis});
+      nameEl.value=''; imeisEl.value='';
+      renderProducts();
+    }
+
+    function removeProduct(idx){
+      PRODUCTS.splice(idx,1);
+      renderProducts();
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+    }
+
     /* ==== UTIL ==== */
     const fmtAZN = n=> (new Intl.NumberFormat('az-AZ',{style:'currency',currency:'AZN',maximumFractionDigits:2})).format(n||0);
     const toNum = id=> Number((document.getElementById(id)?.value) ?? 0);
     const ddmmyyyy = (d)=>{ const dt=new Date(d); const dd=String(dt.getDate()).padStart(2,'0'); const mm=String(dt.getMonth()+1).padStart(2,'0'); const yyyy=dt.getFullYear(); return `${dd}.${mm}.${yyyy}`; };
     const todayISO = ()=> { const t=new Date(); const mm=String(t.getMonth()+1).padStart(2,'0'); const dd=String(t.getDate()).padStart(2,'0'); return `${t.getFullYear()}-${mm}-${dd}`; };
-
-    // Yeni yuvarlaqlaşdırma funksiyası
-    function roundToNearest9(num) {
-      if (num <= 0) return 0;
-      let rounded = Math.ceil(num / 10) * 10 - 1;
-      if (rounded < num) { rounded += 10; }
-      return rounded;
-    }
+    function roundToNearest9(num){ if(num<=0) return 0; let r=Math.ceil(num/10)*10-1; if(r<num) r+=10; return r; }
 
     /* ==== POLICY ==== */
     const POLICY_RISK_ONLY = { low: 0.20, med: 0.30, high: 0.50 };
@@ -333,52 +339,42 @@
     window.addEventListener('DOMContentLoaded', () => {
       const sd = document.getElementById('startDate');
       if (sd && !sd.value) sd.value = todayISO();
+      renderProducts();
     });
-    function ensureStartDateDefault(){
-      const sd = document.getElementById('startDate');
-      if (sd && !sd.value) sd.value = todayISO();
-    }
+    function ensureStartDateDefault(){ const sd=document.getElementById('startDate'); if(sd && !sd.value) sd.value=todayISO(); }
 
-    /* ==== NEW SALES PRICE CALCULATION ==== */
+    /* ==== SALES PRICE ==== */
     function calculateSalesPrices(){
       const type = document.getElementById('productType').value;
       const cost = toNum('cost');
       let cashPrice = 0, creditPrice = 0;
-
-      if(type === 'new_phone'){
-        cashPrice = cost * 1.17; creditPrice = cost * 1.30;
-      } else if(type === 'used_phone'){
-        cashPrice = cost * 1.20; creditPrice = cost * 1.35;
-      } else if(type === 'appliance'){
-        if(cost <= 15){ cashPrice = cost * 2.50; creditPrice = cost * 2.50; }
-        else if(cost > 15 && cost <= 60){ cashPrice = cost * 1.70; creditPrice = cost * 2.00; }
-        else if(cost > 60 && cost <= 90){ cashPrice = cost * 1.50; creditPrice = cost * 1.80; }
-        else if(cost > 90 && cost <= 500){ cashPrice = cost * 1.30; creditPrice = cost * 1.50; }
-        else if(cost > 500){ cashPrice = cost * 1.30; creditPrice = cost * 1.40; }
+      if(type==='new_phone'){ cashPrice=cost*1.17; creditPrice=cost*1.30; }
+      else if(type==='used_phone'){ cashPrice=cost*1.20; creditPrice=cost*1.35; }
+      else if(type==='appliance'){
+        if(cost<=15){ cashPrice=cost*2.50; creditPrice=cost*2.50; }
+        else if(cost<=60){ cashPrice=cost*1.70; creditPrice=cost*2.00; }
+        else if(cost<=90){ cashPrice=cost*1.50; creditPrice=cost*1.80; }
+        else if(cost<=500){ cashPrice=cost*1.30; creditPrice=cost*1.50; }
+        else { cashPrice=cost*1.30; creditPrice=cost*1.40; }
       }
-
-      document.getElementById('cashPrice').value   = cashPrice  > 0 ? roundToNearest9(cashPrice).toFixed(2)  : '';
-      document.getElementById('creditPrice').value = creditPrice> 0 ? roundToNearest9(creditPrice).toFixed(2) : '';
+      document.getElementById('cashPrice').value   = cashPrice  >0 ? roundToNearest9(cashPrice).toFixed(2)  : '';
+      document.getElementById('creditPrice').value = creditPrice>0 ? roundToNearest9(creditPrice).toFixed(2) : '';
     }
-
-    function applyCreditPrice(){
-      const creditPrice = toNum('creditPrice');
-      if (creditPrice > 0) document.getElementById('price').value = creditPrice.toFixed(2);
-    }
+    function applyCreditPrice(){ const creditPrice=toNum('creditPrice'); if(creditPrice>0) document.getElementById('price').value=creditPrice.toFixed(2); }
 
     /* ==== HELPERS ==== */
     function getDownPayment(price, riskKey, salary=0, oblig=0){
       const base = POLICY_RISK_ONLY[riskKey] ?? POLICY_RISK_ONLY.med;
-      salary = Number(salary)||0; oblig = Number(oblig)||0;
+      salary=Number(salary)||0; oblig=Number(oblig)||0;
       const net = Math.max(0, salary - oblig);
-      const ratio = salary>0 ? net / salary : 0;
-      let mod = 0;
-      if(ratio >= 0.70) mod = -0.10; else if(ratio >= 0.50) mod = -0.05; else if(ratio >= 0.35) mod = 0.00; else if(ratio >= 0.20) mod = +0.10; else mod = +0.20;
-      if(riskKey==='high') mod *= 0.7;
-      const pct = Math.min(0.85, Math.max(0.10, base + mod));
-      let down = price * pct;
-      if(down < MIN_DOWN_AZN) down = MIN_DOWN_AZN;
-      if(down > price) down = price;
+      const ratio = salary>0 ? net/salary : 0;
+      let mod=0;
+      if(ratio>=0.70) mod=-0.10; else if(ratio>=0.50) mod=-0.05; else if(ratio>=0.35) mod=0.00; else if(ratio>=0.20) mod=+0.10; else mod=+0.20;
+      if(riskKey==='high') mod*=0.7;
+      const pct = Math.min(0.85, Math.max(0.10, base+mod));
+      let down = price*pct;
+      if(down<MIN_DOWN_AZN) down=MIN_DOWN_AZN;
+      if(down>price) down=price;
       return { down, pct, ratio, net };
     }
 
@@ -470,7 +466,7 @@
       let principal = Math.max(0, price - down);
       let monthly = monthsNum>0 ? principal / monthsNum : 0;
 
-      // Maksimum aylıq (DSR 40% * net gəlir)
+      // Maks. aylıq (DSR 40%)
       const maxMonthly = Math.max(0, net * MAX_DSR);
       let autoAdj=false;
       if(monthly > maxMonthly + 1e-9){
@@ -548,7 +544,7 @@
     }
 
     function resetForm(){
-      ['price','months','risk','salary','oblig','addIncomeType','addIncomeAmt','custName','custPhone','prodName','idSerial','finCode','address','birthDate','imei1','imei2','contractNo','manualDownAmt','branch','currency','startDate','sellerRep'].forEach(id=>{
+      ['price','months','risk','salary','oblig','addIncomeType','addIncomeAmt','custName','custPhone','idSerial','finCode','address','birthDate','contractNo','manualDownAmt','branch','currency','startDate','sellerRep'].forEach(id=>{
         const el=document.getElementById(id); if(!el) return;
         if(id==='months' || id==='risk' || id==='addIncomeType' || id==='sellerRep'){ el.value=''; }
         else if(id==='branch'){ el.value='Nəsimi'; }
@@ -558,6 +554,7 @@
         else { el.value=''; }
         el.classList.remove('invalid');
       });
+
       const chk=document.getElementById('addIncomeChk');
       const typeWrap=document.getElementById('addIncomeTypeWrap');
       const amtWrap=document.getElementById('addIncomeAmtWrap');
@@ -581,11 +578,12 @@
       document.getElementById('scheduleWrap').innerHTML="";
       toggleFinalize(false);
 
-      // Reset new fields
-      document.getElementById('productType').value = '';
-      document.getElementById('cost').value = '';
-      document.getElementById('cashPrice').value = '';
-      document.getElementById('creditPrice').value = '';
+      // Satış qiyməti modulunu sıfırla
+      ['productType','cost','cashPrice','creditPrice'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+
+      // Məhsul siyahısını sıfırla
+      PRODUCTS = [];
+      renderProducts();
     }
 
     function exportPrint(){
@@ -627,13 +625,11 @@
       const mdInp=document.getElementById('manualDownAmt');
       let {down, pct, net} = getDownPayment(price, risk, salary, oblig);
 
-      // >>>>> DÜZƏLİŞ: manualUsed elan edildi
       const manualUsed = !!(mdChk && mdChk.checked);
       if(manualUsed){
         const val = Math.max(0, Math.min(price, Number(mdInp.value||0)));
         if(!isNaN(val)) { down = val; pct = price>0 ? (down/price) : 0; }
       }
-      // <<<<<
 
       let principal = Math.max(0, price - down);
       let monthly = months>0 ? principal / months : 0;
@@ -641,7 +637,6 @@
       if(monthly>maxMonthly){
         const requiredPrincipal = Math.max(0, maxMonthly * months);
         const newDownRaw = price - requiredPrincipal;
-        // manualUsed burada artıq mövcuddur
         const newDown = Math.min(price, Math.max(manualUsed ? down : MIN_DOWN_AZN, newDownRaw));
         down = newDown;
         pct = price>0 ? (down/price) : 0;
@@ -652,6 +647,23 @@
       for(let i=1;i<=months;i++){ const d=new Date(sd); d.setMonth(d.getMonth()+i); d.setDate(day); bal=Math.max(0, bal-monthly); rows.push({i,date:d,monthly,bal}); }
       return {price, months, down, pct, principal, monthly, schedule:rows, startDate:sd};
     }
+
+    function productTableHTML(){
+      if(PRODUCTS.length===0) return '<em>Məhsul daxil edilməyib</em>';
+      return `
+      <table class="print-table" style="margin:3mm 0 5mm">
+        <thead><tr><th style="width:8%">#</th><th>Məhsul</th><th>IMEI-lər</th></tr></thead>
+        <tbody>
+          ${PRODUCTS.map((p,i)=>`
+            <tr>
+              <td style="text-align:center">${i+1}</td>
+              <td>${escapeHtml(p.name)}</td>
+              <td>${p.imeis.map(escapeHtml).join('<br>')}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
+    }
+    function productShortList(){ if(PRODUCTS.length===0) return '-'; return PRODUCTS.map(p=>escapeHtml(p.name)).join(', '); }
 
     function openPrintDocCombined(title, sectionsHtml){
       const w=window.open('','_blank');
@@ -681,15 +693,15 @@
 
     function finalizeAndPrint(){
       const get=(id)=> (document.getElementById(id)?.value||'').trim();
-      const requiredIds=['custName','custPhone','prodName','idSerial','finCode','birthDate','address','imei1','imei2','contractNo','branch','currency','startDate','sellerRep'];
+      const requiredIds=['custName','custPhone','idSerial','finCode','birthDate','address','contractNo','branch','currency','startDate','sellerRep'];
       for(const id of requiredIds){
         const el=document.getElementById(id); if(el && !el.value){ el.reportValidity?.(); alert('Zəhmət olmasa bütün müştəri məlumatlarını doldurun.'); return; }
       }
+      if(PRODUCTS.length===0){ alert('Ən azı bir məhsul əlavə edin.'); return; }
 
-      const custName=get('custName'); const custPhone=get('custPhone'); const prodName=get('prodName');
+      const custName=get('custName'); const custPhone=get('custPhone');
       const idSerial=get('idSerial'); const finCode=get('finCode'); const address=get('address'); const birthDate=get('birthDate');
-      const imei1=get('imei1'); const imei2=get('imei2'); const contractNo=get('contractNo');
-      const branch=get('branch'); const currency=get('currency'); const startDate=get('startDate'); const sellerRep=get('sellerRep');
+      const contractNo=get('contractNo'); const branch=get('branch'); const currency=get('currency'); const startDate=get('startDate'); const sellerRep=get('sellerRep');
 
       let comp; try{ comp = computeForDocs(); }catch(e){ alert(e.message); return; }
 
@@ -703,21 +715,17 @@
         </div>
 
         <div class="print-block">
-          Bu müqaviləni (bundan sonra “Müqavilə”) bir tərəfdən Azərbaycan Respublikasının qanunvericiliyinə əsasən
-          qeydiyyatdan keçmiş və Nizamnamə əsasında fəaliyyət göstərən “Baktel Electronics” MMC (bundan sonra “Satıcı”),
-          digər tərəfdən isə şəxsiyyət vəsiqəsinin seriya və nömrəsi ${idSerial} olan ${custName}
-          (bundan sonra “Alıcı”) birlikdə “Tərəflər” adlandırılmaqla aşağıdakı şərtlərlə bağladılar.
+          Bu müqaviləni (bundan sonra “Müqavilə”) bir tərəfdən Azərbaycan Respublikasının qanunvericiliyinə əsasən qeydiyyatdan keçmiş və Nizamnamə əsasında fəaliyyət göstərən “Baktel Electronics” MMC (bundan sonra “Satıcı”), digər tərəfdən isə şəxsiyyət vəsiqəsinin seriya və nömrəsi ${idSerial} olan ${custName} (bundan sonra “Alıcı”) birlikdə “Tərəflər” adlandırılmaqla aşağıdakı şərtlərlə bağladılar.
         </div>
 
         <div class="print-h2">1. MÜQAVİLƏNİN PREDMETİ</div>
         <ol class="print-ol">
           <li>
-            1.1. Satıcı Alıcıya “Əlavə 1”də göstərilən Mal(lar)ı sənədlər (qaimə, vergi hesab-fakturası və s.) əsasında
-            nisyə satır, Alıcı isə Mal(lar)ı qəbul edib bu Müqavilə ilə müəyyən edilmiş qaydada dəyərini ödəməyi öhdəsinə götürür.
+            1.1. Satıcı Alıcıya “Əlavə 1”də göstərilən Mal(lar)ı sənədlər əsasında nisyə satır, Alıcı isə Mal(lar)ı qəbul edib bu Müqavilə ilə müəyyən edilmiş qaydada dəyərini ödəməyi öhdəsinə götürür.
             <div class="sub">
+              ${productTableHTML()}
               <table class="print-table" style="margin:3mm 0 5mm">
-                <tr><th style="width:35%">Məhsulun adı/modeli</th><td>${prodName} ${imei1 ? `(${imei1})` : ''}</td><td style="width:10%">&nbsp;</td></tr>
-                <tr><th>İlkin ödəniş məbləği</th><td>${comp.down.toFixed(2)}</td><td>AZN</td></tr>
+                <tr><th style="width:35%">İlkin ödəniş məbləği</th><td>${comp.down.toFixed(2)}</td><td>AZN</td></tr>
                 <tr><th>Kredit məbləği</th><td>${comp.principal.toFixed(2)}</td><td>AZN</td></tr>
                 <tr><th>Kredit müddəti</th><td>${comp.months}</td><td>ay</td></tr>
                 <tr><th>Aylıq ödəniş</th><td>${comp.monthly.toFixed(2)}</td><td>AZN</td></tr>
@@ -762,7 +770,7 @@
         <div class="print-h2">3. MƏSULİYYƏT</div>
         <ol class="print-ol">
           <li>3.1. Aylıq ödəniş 5 təqvim günü və daha çox gecikərsə, Satıcı borcun tam həcmdə vaxtından əvvəl ödənilməsini tələb edə bilər.</li>
-          <li>3.2. Ödəniş 30 təqvim günündən artıq gecikərsə və ya 3.1-ə əsasən 2 dəfədən çox gecikmə olarsa, nisyə alınmış cihazın İMEİ nömrəsinin deaktiv edilməsi və digər tədbirlər tətbiq oluna bilər.</li>
+          <li>3.2. Ödəniş 30 təqvim günündən artıq gecikərsə və ya 3.1-ə əsasən 2 dəfədən çox gecikmə olarsa, nisyə alınmış cihazların İMEİ-lərinin deaktiv edilməsi və digər tədbirlər tətbiq oluna bilər.</li>
         </ol>
 
         <div class="print-h2">4. ƏLAVƏ ŞƏRTLƏR</div>
@@ -813,13 +821,14 @@
 
         <div class="print-block">
           Mən, <strong>${custName}</strong> (Ş/V № ${idSerial}, Fin: ${finCode}, doğum tarixi: ${ddmmyyyy(birthDate)})
-          “Baktel Electronics” MMC-dən qarşılıqlı razılaşma əsasında hissə-hissə ödənişlə aldığım
-          <strong>${prodName}</strong> cihazının İMEİ: ${imei1}${imei2 ? `; İMEİ 2: ${imei2}` : ''} nömrəsinin,
-          Müqavilə şərtləri pozularsa, hüquqi əsaslar daxilində deaktiv edilməsinə və vahid şəbəkədə riskli müştəri
+          “Baktel Electronics” MMC-dən qarşılıqlı razılaşma əsasında hissə-hissə ödənişlə aldığım aşağıdakı cihaz(lar)ın
+          Müqavilə şərtləri pozularsa, hüquqi əsaslar daxilində İMEİ-lərinin deaktiv edilməsinə və vahid şəbəkədə riskli müştəri
           siyahısına daxil edilməsinə etiraz etmirəm.
         </div>
 
-        <div class="sign-cols">
+        ${productTableHTML()}
+
+        <div class="sign-cols" style="margin-top:6mm">
           <div class="sign">
             <div class="sigcap">Satan</div>
             <span class="sigline"></span>
@@ -839,6 +848,14 @@
       </div>`;
 
       /* ==== 3) ƏLAVƏ 2 – Təhvil-Təslim ==== */
+      const rowsTT = PRODUCTS.map((p,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${escapeHtml(p.name)}${p.imeis.length?'<br><span class="kecik">'+p.imeis.map(escapeHtml).join(', ')+'</span>':''}</td>
+          <td>1</td>
+          <td>${toNum('price').toFixed(2)}</td>
+        </tr>`).join('');
+
       const elave2 = `
       <div class="print-a4 page-break">
         <div class="print-h2">2 SAYLI ƏLAVƏ</div>
@@ -853,57 +870,28 @@
         </div>
 
         <div class="print-block" style="text-align:justify">
-          Hazırkı Təhvil-Təslim Aktı, bir tərəfdən (bundan sonra ayrılıqda Tərəf, birlikdə isə Tərəflər adlanacaq)
-          “Baktel Electronics” MMC (bundan sonra “Satıcı” adlanacaq) və digər tərəfdən, şəxsiyyət vəsiqəsinin
-          seriya nömrəsi ${idSerial} olan <strong>${custName}</strong> şəxsində (bundan sonra “Alıcı” adlanacaq)
-          arasında aşağıdakılar barəsində imzalanmışdır:
+          Tərəflər təsdiq edirlər ki, Müqaviləyə əsasən aşağıdakı Mal(lar) Alıcıya təhvil verilmişdir:
         </div>
-
-        <ol class="print-ol">
-          <li>
-            1. Tərəflər hazırkı Təhvil-Təslim Aktını tərtib edərək təsdiq edirlər ki, Tərəflər arasında imzalanmış
-            ${contractNo} saylı, ${ddmmyyyy(startDate)} tarixli nisyə alqı-satqı müqaviləsinə (bundan sonra – Müqavilə)
-            əsasən, aşağıdakı cədvəldə göstərilən Mal(lar)ı Müqavilənin şərtlərinə uyğun şəkildə Alıcıya təhvil vermiş,
-            Alıcı isə həmin Mal(lar)ı Satıcıdan tam və qüsursuz şəkildə təhvil almışdır:
-          </li>
-        </ol>
 
         <table class="print-table" style="margin:4mm 0 6mm">
           <thead>
             <tr>
               <th style="width:6%">№</th>
-              <th>Malların adları və təsviri (İMEİ kodu)</th>
+              <th>Malların adları və təsviri (İMEİ kodları)</th>
               <th style="width:10%">Miqdar</th>
               <th style="width:18%">Məbləğ (AZN)</th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td>${prodName} ${imei1 ? imei1 : ''}</td>
-              <td>1</td>
-              <td>${toNum('price').toFixed(2)}</td>
-            </tr>
-          </tbody>
+          <tbody>${rowsTT}</tbody>
         </table>
 
-        <ol class="print-ol">
-          <li>
-            2. Bu Aktın imzalandığı tarixdən etibarən Müqaviləyə uyğun olaraq Alıcı təsdiq və qəbul edir ki,
-            Satıcı tərəfindən təhvil verilmiş Mallar işlək və qüsursuz vəziyyətdədir.
-          </li>
-          <li>3. Hazırkı Aktın doğruluğunu aşağıda öz imzalarımızla təsdiq edirik:</li>
-        </ol>
+        <div class="print-block" style="text-align:justify">
+          Hazırkı Aktın imzalandığı tarixdən etibarən Alıcı Malları qüsursuz vəziyyətdə təhvil aldığını təsdiq edir.
+        </div>
 
         <div class="sign-cols">
-          <div class="sign">
-            <div class="sigcap">Satıcı: “Baktel Electronics” MMC</div>
-            <span class="sigline"></span>
-          </div>
-          <div class="sign">
-            <div class="sigcap">Alıcı: ${custName}</div>
-            <span class="sigline"></span>
-          </div>
+          <div class="sign"><div class="sigcap">Satıcı: “Baktel Electronics” MMC</div><span class="sigline"></span></div>
+          <div class="sign"><div class="sigcap">Alıcı: ${custName}</div><span class="sigline"></span></div>
         </div>
       </div>`;
 
@@ -926,7 +914,7 @@
           <tr><th>Ş/V seriya və nömrəsi</th><td>${idSerial}</td></tr>
           <tr><th>Kreditin verilmə tarixi</th><td>${ddmmyyyy(startDate)}</td></tr>
           <tr><th>Müqavilə nömrəsi</th><td>${contractNo}</td></tr>
-          <tr><th>Məhsul</th><td>${prodName} ${imei1 ? `(${imei1})` : ''}</td></tr>
+          <tr><th>Məhsullar</th><td>${productShortList()}</td></tr>
           <tr><th>Satış qiyməti</th><td>${toNum('price').toFixed(2)} AZN</td></tr>
           <tr><th>İlkin ödəniş</th><td>${comp.down.toFixed(2)} AZN</td></tr>
           <tr><th>Qalıq borc</th><td>${comp.principal.toFixed(2)} AZN</td></tr>
@@ -941,14 +929,8 @@
         </table>
 
         <div class="sign-cols">
-          <div class="sign">
-            <div class="sigcap">Satıcı: “Baktel Electronics” MMC</div>
-            <span class="sigline"></span>
-          </div>
-          <div class="sign">
-            <div class="sigcap">Alıcı: ${custName}</div>
-            <span class="sigline"></span>
-          </div>
+          <div class="sign"><div class="sigcap">Satıcı: “Baktel Electronics” MMC</div><span class="sigline"></span></div>
+          <div class="sign"><div class="sigcap">Alıcı: ${custName}</div><span class="sigline"></span></div>
         </div>
       </div>`;
 
@@ -956,40 +938,33 @@
       const zemanet = `
       <div class="print-a4 page-break">
         <div class="print-title">ZƏMANƏT TALONU</div>
+
         <div class="print-block"><strong>Zəmanət şərtləri:</strong></div>
         <div class="print-block kecik">
           • Zəmanət blankı əsasında təmir yalnız istehsalçı səhvindən meydana gəlmiş qüsurlara şamil edilir.<br>
-          • Qüsurun istehsalçı tərəfindən baş verib vermədiyini yalnız “Baktel Electronics” MMC və digər rəsmi şirkətləlrin
-          texniki servis mütəxəssisləri tərəfindən müəyyənləşdirilə bilər.<br>
-          • Zəmanət müddəti məhsulun satıldığı gündən hesablanır. • Hər hansı xarici zədə almamış (korpus və ekranda cızıq,
-          batıq, əzik və s.) məhsul 14 gün ərzində müştərinin istəyi ilə qaytarıla və ya dəyişdirilə bilər.<br>
-          • Əgər məhsullun zəmanət müddəti bitib və ya zəmanət şərtlərində göstərilən qüsurlar təyin edilməyibsə, bu zaman
-          məhsul “Baktel Electronics” MMC-nin uyğun, ödənişli tarifləri ilə təmir olunur.<br>
-          • Təmirə təqdim olunmuş məhsul müayinə və təmir məqsədilə 2-14 iş günü ərzində texniki servis mərkəzində
-          saxlanıla bilər.<br>
-          • Təmir üçün lazım olan ehtiyyat hissəsi və ya detal tapılmadıqda, onun sifarişi və gətirilməsi müəyyən vaxt
-          tələb etdiyindən göstərilən müddət tərəflərin razılığı ilə müəyyən qədər uzadıla bilər. Zəmanət müddəti bitməmiş
-          məhsulun
-          texniki baxış və təmir xidməti onun rəsmi nümayəndəliyi tərəfindən daxili təlimatlara uyğun olaraq aparılır
+          • Qüsurun istehsalçı tərəfindən baş verib-vermədiyini yalnız “Baktel Electronics” MMC və digər rəsmi şirkətlərin texniki servis mütəxəssisləri tərəfindən müəyyənləşdirilə bilər.<br>
+          • Zəmanət müddəti məhsulun satıldığı gündən hesablanır. • Hər hansı xarici zədə almamış (korpus və ekranda cızıq, batıq, əzik və s.) məhsul 14 gün ərzində müştərinin istəyi ilə qaytarıla və ya dəyişdirilə bilər.<br>
+          • Əgər məhsulun zəmanət müddəti bitibsə və ya zəmanət şərtlərində göstərilən qüsurlar təyin edilməyibsə, bu zaman məhsul “Baktel Electronics” MMC-nin uyğun, ödənişli tarifləri ilə təmir olunur.<br>
+          • Təmirə təqdim olunmuş məhsul müayinə və təmir məqsədilə 2–14 iş günü ərzində texniki servis mərkəzində saxlanıla bilər.<br>
+          • Təmir üçün lazım olan ehtiyat hissəsi və ya detal tapılmadıqda, onun sifarişi və gətirilməsi müəyyən vaxt tələb etdiyindən göstərilən müddət tərəflərin razılığı ilə müəyyən qədər uzadıla bilər. Zəmanət müddəti bitməmiş məhsulun texniki baxış və təmir xidməti onun rəsmi nümayəndəliyi tərəfindən daxili təlimatlara uyğun olaraq aparılır.
         </div>
 
         <div class="print-block"><strong>Satılmış məhsullar yalnız aşağıdakı şərtlər daxilində təmirə qəbul olunur:</strong></div>
         <div class="print-block kecik">
-          • Təmir üçün müraciət edilmiş məhmsulun yalnız bu blankda adı və soyadı qeyd olunan şəxsin şəxsiyyət vəsiqəsi ilə təqdim olunması;<br>
+          • Təmir üçün müraciət edilmiş məhsulun yalnız bu blankda adı və soyadı qeyd olunan şəxsin şəxsiyyət vəsiqəsi ilə təqdim olunması;<br>
           • Zəmanət müddətinin bitməməsi.
         </div>
 
         <div class="print-block"><strong>Məhsullar bu hallarda zəmanətli təmirə qəbul edilmir:</strong></div>
         <div class="print-block kecik">
-          • Əgər məhsul “Baktel Electronics” MMC və digər rəsmi şirkətlərin servis mütəxəssislərinə təqdim olunmazdan əvvəl
-          hansısa kənar şəxs tərəfindən təmir edilər, təmir haqqında lazımi sənədlər verilməz və bu təmirin keyfiyyətsizliyi nəticsində cihaz zədələnırsə;<br>
-          • Daxili və xarici zədələnmə, cihazın daxilində yad cisim və ya maye düşməsi, yaxud digər xarici zərbə nəticəsi yaranarsa;<br>
-          • Sıçrayışlar və gərginliyin həddən artıq yuxarı olması nəticəsində cihazda gərginlik və digər qüsurlar əmələ gələrsə.
+          • Məhsul rəsmi servisə təqdim olunmazdan əvvəl kənar şəxs tərəfindən təmir edilibsə, təmir haqqında lazımi sənədlər verilməyibsə və ya bu təmirin keyfiyyətsizliyi nəticəsində cihaz zədələnibsə;<br>
+          • Daxili və ya xarici zədələnmə, cihazın daxilinə yad cisim və ya maye düşməsi, yaxud digər xarici zərbə nəticəsində yaranan nasazlıqlar olduqda;<br>
+          • Sıçrayışlar və gərginliyin həddən artıq yuxarı olması nəticəsində cihazda gərginlik və digər qüsurlar əmələ gəlibsə.
         </div>
 
         <table class="print-table" style="margin-top:6mm">
-          <tr><th style="width:28%;">Malın adı</th><td>${prodName}</td></tr>
-          <tr><th>İMEİ və ya SN</th><td>${imei1}${imei2 ? ` / ${imei2}` : ''}</td></tr>
+          <tr><th style="width:28%;">Mal(lar)ın adı</th><td>${productShortList()}</td></tr>
+          <tr><th>İMEİ-lər</th><td>${PRODUCTS.flatMap(p=>p.imeis).map(escapeHtml).join(', ')}</td></tr>
           <tr><th>Zəmanət müddəti</th><td>1 (bir) il</td></tr>
           <tr><th>Satış tarixi</th><td>${ddmmyyyy(startDate)}</td></tr>
           <tr><th>Alıcının A.S.A</th><td>${custName}</td></tr>
@@ -1026,6 +1001,8 @@
     window.toggleManualDown=toggleManualDown;
     window.calculateSalesPrices=calculateSalesPrices;
     window.applyCreditPrice=applyCreditPrice;
+    window.addProduct=addProduct;
+    window.removeProduct=removeProduct;
   </script>
 </body>
 </html>
