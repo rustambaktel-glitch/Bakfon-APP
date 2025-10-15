@@ -20,9 +20,7 @@
       --table-border: #cbd5e1;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -33,72 +31,19 @@
       line-height: 1.6;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-    
-    .grid-container {
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      gap: 2rem;
-    }
-    
-    @media (max-width: 900px) {
-        .grid-container {
-            grid-template-columns: 1fr;
-        }
-    }
-    
-    .main-content {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem 1rem; }
+    .grid-container { display: grid; grid-template-columns: 320px 1fr; gap: 2rem; }
+    @media (max-width: 900px) { .grid-container { grid-template-columns: 1fr; } }
+    .main-content { display: grid; grid-template-columns: 1fr; gap: 2rem; }
 
-    header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
+    header { text-align: center; margin-bottom: 2.5rem; }
+    header h1 { margin: 0; font-size: 2.8rem; font-weight: 900; letter-spacing: 1px; color: var(--primary); text-transform: uppercase; }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.8rem;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: var(--primary);
-      text-transform: uppercase;
-    }
+    h2 { font-size: 2rem; font-weight: 800; color: #34495e; margin-top: 0; margin-bottom: 0.75rem; }
+    h3 { font-size: 1.6rem; font-weight: 700; color: #34495e; margin: 0 0 1rem; }
 
-    h2 {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #34495e;
-      margin-top: 0;
-      margin-bottom: 0.75rem;
-    }
-
-    h3 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #34495e;
-      margin: 0 0 1rem;
-    }
-    
-    .risk-note h4 {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-top: 0.75rem;
-        margin-bottom: 0.5rem;
-        color: #34495e;
-    }
-    
-    .risk-note p {
-        font-size: 0.95rem;
-        color: var(--muted);
-        margin: 0 0 1.2rem;
-    }
+    .risk-note h4 { font-size: 1.2rem; font-weight: bold; margin-top: 0.75rem; margin-bottom: 0.5rem; color: #34495e; }
+    .risk-note p { font-size: 0.95rem; color: var(--muted); margin: 0 0 1.2rem; }
 
     .card {
       background: var(--card);
@@ -109,229 +54,56 @@
       box-shadow: var(--shadow);
       transition: transform 0.2s ease-in-out;
     }
-    
-    .card:hover {
-        transform: translateY(-5px);
-    }
-    
-    .form-grid {
-      display: grid;
-      gap: 1.5rem;
-    }
+    .card:hover { transform: translateY(-5px); }
 
-    @media (min-width: 720px) {
-      .form-grid {
-        grid-template-columns: repeat(12, 1fr);
-      }
-    }
+    .form-grid { display: grid; gap: 1.5rem; }
+    @media (min-width: 720px) { .form-grid { grid-template-columns: repeat(12, 1fr); } }
+    .col-12 { grid-column: span 12; } .col-6 { grid-column: span 6; } .col-4 { grid-column: span 4; } .col-3 { grid-column: span 3; }
 
-    .col-12 { grid-column: span 12; }
-    .col-6 { grid-column: span 6; }
-    .col-4 { grid-column: span 4; }
-    .col-3 { grid-column: span 3; }
-
-    label {
-      font-size: 0.9rem;
-      color: #34495e;
-      font-weight: 600;
-      display: block;
-      margin-bottom: 0.4rem;
-    }
+    label { font-size: 0.9rem; color: #34495e; font-weight: 600; display: block; margin-bottom: 0.4rem; }
 
     input, select {
-      width: 100%;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--input-border);
-      background: #fdfdfd;
-      color: #2c3e50;
-      font-size: 1rem;
-      transition: all 0.3s ease-in-out;
+      width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--input-border);
+      background: #fdfdfd; color: #2c3e50; font-size: 1rem; transition: all 0.3s ease-in-out;
     }
-    
-    input:focus, select:focus {
-        outline: none;
-        border-color: #3498db;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
-    }
+    input:focus, select:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3); }
 
     .btn {
-      border: none;
-      background: #bdc3c7;
-      color: #ffffff;
-      padding: 0.8rem 1.8rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease-in-out;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      font-weight: 700;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      border: none; background: #bdc3c7; color: #ffffff; padding: 0.8rem 1.8rem; border-radius: 8px; cursor: pointer;
+      transition: all 0.3s ease-in-out; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: 700; font-size: 1rem;
+      text-transform: uppercase; letter-spacing: 0.5px;
     }
+    .btn:hover { background: #95a5a6; transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.15); }
+    .btn.success { background: #27ae60; } .btn.success:hover { background: #2ecc71; }
+    .btn.danger { background: #e74c3c; } .btn.danger:hover { background: #c0392b; }
+    .btn.ghost { background: #fdfdfd; border: 1px solid #bdc3c7; color: var(--text); }
+    .btn.ghost:hover { background: #ecf0f1; }
+    .btn.primary { background: #3498db; } .btn.primary:hover { background: #2980b9; }
 
-    .btn:hover {
-      background: #95a5a6;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-    }
+    .pill { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid #dcdde1; padding: 0.4rem 0.9rem; border-radius: 999px; background: #f0f4f9; color: #535c68; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.2px; margin-bottom: 0.5rem; }
+    .muted { color: var(--muted); font-size: 0.9rem; }
+    .status-pill.success { border-color: #a8e6cf; background-color: #d1f4e3; color: #1a5338; }
+    .status-pill.danger  { border-color: #f7a2a5; background-color: #fcebeb; color: #8c252d; }
 
-    .btn.success {
-      background: #27ae60;
-    }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    thead th { position: sticky; top: 0; background: #f7fafc; padding: 0.8rem 1.2rem; font-weight: 700; font-size: 0.9rem; color: #34495e; border-bottom: 1px solid var(--border); text-align: right; }
+    tbody td { padding: 0.8rem 1.2rem; border-bottom: 1px solid var(--border); font-size: 0.85rem; text-align: right; }
+    tbody tr:nth-child(odd) { background: rgba(2, 6, 23, 0.02); }
 
-    .btn.success:hover {
-      background: #2ecc71;
-    }
+    #summary { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    #summary .form-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; }
+    .summary-item { margin-bottom: 0; } .summary-item h2 { margin-bottom: 0.25rem; }
 
-    .btn.danger {
-      background: #e74c3c;
-    }
+    #scheduleCard { display: none; }
 
-    .btn.danger:hover {
-      background: #c0392b;
-    }
+    .notice { padding: 1.2rem; border-radius: 8px; margin-top: 1rem; }
+    .notice.warn { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; font-weight: 600; }
+    .notice.info { background: #f0f4f8; border: 1px solid #e2e8f0; color: #4a5568; }
 
-    .btn.ghost {
-      background: #fdfdfd;
-      border: 1px solid #bdc3c7;
-      color: var(--text);
-    }
+    .invalid { border-color: #e53e3e !important; box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2) !important; }
 
-    .btn.ghost:hover {
-      background: #ecf0f1;
-    }
-
-    .btn.primary {
-      background: #3498db;
-    }
-
-    .btn.primary:hover {
-      background: #2980b9;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      border: 1px solid #dcdde1;
-      padding: 0.4rem 0.9rem;
-      border-radius: 999px;
-      background: #f0f4f9;
-      color: #535c68;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-      margin-bottom: 0.5rem;
-    }
-
-    .muted {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-    
-    .status-pill.success {
-      border-color: #a8e6cf;
-      background-color: #d1f4e3;
-      color: #1a5338;
-    }
-
-    .status-pill.danger {
-      border-color: #f7a2a5;
-      background-color: #fcebeb;
-      color: #8c252d;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    thead th {
-      position: sticky;
-      top: 0;
-      background: #f7fafc;
-      padding: 0.8rem 1.2rem;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #34495e;
-      border-bottom: 1px solid var(--border);
-      text-align: right;
-    }
-
-    tbody td {
-      padding: 0.8rem 1.2rem;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.85rem;
-      text-align: right;
-    }
-
-    tbody tr:nth-child(odd) {
-      background: rgba(2, 6, 23, 0.02);
-    }
-    
-    #summary {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    #summary .form-grid {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 2rem;
-    }
-    
-    .summary-item {
-        margin-bottom: 0;
-    }
-    .summary-item h2 {
-        margin-bottom: 0.25rem;
-    }
-    
-    #scheduleCard {
-        display: none;
-    }
-
-    .notice {
-      padding: 1.2rem;
-      border-radius: 8px;
-      margin-top: 1rem;
-    }
-
-    .notice.warn {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      color: #b91c1c;
-      font-weight: 600;
-    }
-    
-    .notice.info {
-      background: #f0f4f8;
-      border: 1px solid #e2e8f0;
-      color: #4a5568;
-    }
-
-    .invalid {
-      border-color: #e53e3e !important;
-      box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.2) !important;
-    }
-
-    .inline-check {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .inline-check .big-check {
-      width: 1.3rem;
-      height: 1.3rem;
-      accent-color: #27ae60;
-    }
+    .inline-check { display: flex; align-items: center; gap: 0.5rem; }
+    .inline-check .big-check { width: 1.3rem; height: 1.3rem; accent-color: #27ae60; }
 
     /* ==== ÇAP – Times New Roman (A4) ==== */
     .print-root { font-family: "Times New Roman", Times, serif; color: var(--print-text); }
@@ -354,8 +126,8 @@
     .kecik { font-size: 10.5pt; }
     .page-break { page-break-after: always; }
 
-    @media print { 
-      .btn, .sidebar, .header, .main-content > .risk-note, #calc, .layout { display: none; } 
+    @media print {
+      .btn, .sidebar, .header, .main-content > .risk-note, #calc, .layout { display: none; }
       .container { max-width: 1000px; padding: 0 }
       header { margin-bottom: 0 }
       .grid-container { display: block; }
@@ -365,9 +137,7 @@
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>KREDİT KALKULYATORU</h1>
-    </header>
+    <header><h1>KREDİT KALKULYATORU</h1></header>
     <div class="grid-container">
       <aside class="sidebar">
         <section class="card">
@@ -399,21 +169,21 @@
             </div>
           </div>
         </section>
-        
+
         <section class="card">
-            <h3>Risk kateqoriyaları</h3>
-            <div class="risk-note">
-              <h4>A) Risksiz və ya aşağı riskli peşələr</h4>
-              <p>Dövlət qulluqçuları (nazirlik, dövlət idarəsi, polis, hərbçi, müəllim, həkim və s.), böyük şirkətlərdə rəsmi müqavilə ilə çalışanlar, bank əməkdaşları və maliyyə sektorunda çalışanlardır. Bunlar stabil maaşlı və ödəniş intizamı yüksək müştərilərdir.</p>
-            </div>
-            <div class="risk-note">
-              <h4>B) Orta riskli peşələr</h4>
-              <p>Özəl şirkət əməkdaşları (amma rəsmi müqaviləsi və maaş kartı varsa), kiçik biznes sahibləri (vergi ödəyicisi kimi qeydiyyatlı olanlar), müvəqqəti müqavilə ilə çalışanlardır. Risk orta səviyyədədir, ödəniş imkanları var, amma sabitlik zəif ola bilər.</p>
-            </div>
-            <div class="risk-note">
-              <h4>C) Yüksək riskli peşələr</h4>
-              <p>Qeyri-rəsmi işləyənlər (gündəlik əmək haqqı ilə çalışanlar, tikinti fəhlələri və s.), tələbələr (öz gəliri olmayanlar, ancaq valideyn təminatı ilə), işsiz şəxslər və ya sosial müavinət alanlardır.</p>
-            </div>
+          <h3>Risk kateqoriyaları</h3>
+          <div class="risk-note">
+            <h4>A) Risksiz və ya aşağı riskli peşələr</h4>
+            <p>Dövlət qulluqçuları (nazirlik, dövlət idarəsi, polis, hərbçi, müəllim, həkim və s.), böyük şirkətlərdə rəsmi müqavilə ilə çalışanlar, bank əməkdaşları və maliyyə sektorunda çalışanlardır. Bunlar stabil maaşlı və ödəniş intizamı yüksək müştərilərdir.</p>
+          </div>
+          <div class="risk-note">
+            <h4>B) Orta riskli peşələr</h4>
+            <p>Özəl şirkət əməkdaşları (amma rəsmi müqaviləsi və maaş kartı varsa), kiçik biznes sahibləri (vergi ödəyicisi kimi qeydiyyatlı olanlar), müvəqqəti müqavilə ilə çalışanlardır. Risk orta səviyyədədir, ödəniş imkanları var, amma sabitlik zəif ola bilər.</p>
+          </div>
+          <div class="risk-note">
+            <h4>C) Yüksək riskli peşələr</h4>
+            <p>Qeyri-rəsmi işləyənlər (gündəlik əmək haqqı ilə çalışanlar, tikinti fəhlələri və s.), tələbələr (öz gəliri olmayanlar, ancaq valideyn təminatı ilə), işsiz şəxslər və ya sosial müavinət alanlardır.</p>
+          </div>
         </section>
       </aside>
 
@@ -429,12 +199,8 @@
               <label>Müddət (ay)</label>
               <select id="months" required>
                 <option value="">— Seçin —</option>
-                <option value="3">3</option>
-                <option value="6">6</option>
-                <option value="9">9</option>
-                <option value="12">12</option>
-                <option value="15">15</option>
-                <option value="18">18</option>
+                <option value="3">3</option><option value="6">6</option><option value="9">9</option>
+                <option value="12">12</option><option value="15">15</option><option value="18">18</option>
               </select>
             </div>
             <div class="col-3">
@@ -528,15 +294,15 @@
                 </div>
               </div>
             </div>
-          </section>
-
-          <div class="layout" style="display:block">
-            <section class="card" id="summary"></section>
-            <section class="card" id="scheduleCard">
-              <h3>Ödəniş cədvəli</h3>
-              <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
-            </section>
           </div>
+        </section>
+
+        <div class="layout" style="display:block">
+          <section class="card" id="summary"></section>
+          <section class="card" id="scheduleCard">
+            <h3>Ödəniş cədvəli</h3>
+            <div id="scheduleWrap" style="overflow:auto;max-height:420px"></div>
+          </section>
         </div>
       </main>
     </div>
@@ -548,15 +314,13 @@
     const toNum = id=> Number((document.getElementById(id)?.value) ?? 0);
     const ddmmyyyy = (d)=>{ const dt=new Date(d); const dd=String(dt.getDate()).padStart(2,'0'); const mm=String(dt.getMonth()+1).padStart(2,'0'); const yyyy=dt.getFullYear(); return `${dd}.${mm}.${yyyy}`; };
     const todayISO = ()=> { const t=new Date(); const mm=String(t.getMonth()+1).padStart(2,'0'); const dd=String(t.getDate()).padStart(2,'0'); return `${t.getFullYear()}-${mm}-${dd}`; };
-    
+
     // Yeni yuvarlaqlaşdırma funksiyası
     function roundToNearest9(num) {
-        if (num <= 0) return 0;
-        let rounded = Math.ceil(num / 10) * 10 - 1;
-        if (rounded < num) {
-            rounded += 10;
-        }
-        return rounded;
+      if (num <= 0) return 0;
+      let rounded = Math.ceil(num / 10) * 10 - 1;
+      if (rounded < num) { rounded += 10; }
+      return rounded;
     }
 
     /* ==== POLICY ==== */
@@ -579,43 +343,27 @@
     function calculateSalesPrices(){
       const type = document.getElementById('productType').value;
       const cost = toNum('cost');
-      let cashPrice = 0;
-      let creditPrice = 0;
-      
+      let cashPrice = 0, creditPrice = 0;
+
       if(type === 'new_phone'){
-        cashPrice = cost * 1.17;
-        creditPrice = cost * 1.30;
+        cashPrice = cost * 1.17; creditPrice = cost * 1.30;
       } else if(type === 'used_phone'){
-        cashPrice = cost * 1.20;
-        creditPrice = cost * 1.35;
+        cashPrice = cost * 1.20; creditPrice = cost * 1.35;
       } else if(type === 'appliance'){
-        if(cost <= 15){
-          cashPrice = cost * 2.50;
-          creditPrice = cost * 2.50;
-        } else if(cost > 15 && cost <= 60){
-          cashPrice = cost * 1.70;
-          creditPrice = cost * 2.00;
-        } else if(cost > 60 && cost <= 90){
-          cashPrice = cost * 1.50;
-          creditPrice = cost * 1.80;
-        } else if(cost > 90 && cost <= 500){
-          cashPrice = cost * 1.30;
-          creditPrice = cost * 1.50;
-        } else if(cost > 500){
-          cashPrice = cost * 1.30;
-          creditPrice = cost * 1.40;
-        }
+        if(cost <= 15){ cashPrice = cost * 2.50; creditPrice = cost * 2.50; }
+        else if(cost > 15 && cost <= 60){ cashPrice = cost * 1.70; creditPrice = cost * 2.00; }
+        else if(cost > 60 && cost <= 90){ cashPrice = cost * 1.50; creditPrice = cost * 1.80; }
+        else if(cost > 90 && cost <= 500){ cashPrice = cost * 1.30; creditPrice = cost * 1.50; }
+        else if(cost > 500){ cashPrice = cost * 1.30; creditPrice = cost * 1.40; }
       }
-      
-      document.getElementById('cashPrice').value = cashPrice > 0 ? roundToNearest9(cashPrice).toFixed(2) : '';
-      document.getElementById('creditPrice').value = creditPrice > 0 ? roundToNearest9(creditPrice).toFixed(2) : '';
+
+      document.getElementById('cashPrice').value   = cashPrice  > 0 ? roundToNearest9(cashPrice).toFixed(2)  : '';
+      document.getElementById('creditPrice').value = creditPrice> 0 ? roundToNearest9(creditPrice).toFixed(2) : '';
     }
 
     function applyCreditPrice(){
       const creditPrice = toNum('creditPrice');
-      if (creditPrice > 0) {
-        document.getElementById('price').value = creditPrice.toFixed(2);
-      }
+      if (creditPrice > 0) document.getElementById('price').value = creditPrice.toFixed(2);
     }
 
     /* ==== HELPERS ==== */
@@ -832,7 +580,7 @@
       document.getElementById('summary').innerHTML="";
       document.getElementById('scheduleWrap').innerHTML="";
       toggleFinalize(false);
-      
+
       // Reset new fields
       document.getElementById('productType').value = '';
       document.getElementById('cost').value = '';
@@ -878,15 +626,27 @@
       const mdChk=document.getElementById('manualDownChk');
       const mdInp=document.getElementById('manualDownAmt');
       let {down, pct, net} = getDownPayment(price, risk, salary, oblig);
-      if(mdChk && mdChk.checked){ const val = Math.max(0, Math.min(price, Number(mdInp.value||0))); if(!isNaN(val)) { down = val; pct = price>0 ? (down/price) : 0; } }
+
+      // >>>>> DÜZƏLİŞ: manualUsed elan edildi
+      const manualUsed = !!(mdChk && mdChk.checked);
+      if(manualUsed){
+        const val = Math.max(0, Math.min(price, Number(mdInp.value||0)));
+        if(!isNaN(val)) { down = val; pct = price>0 ? (down/price) : 0; }
+      }
+      // <<<<<
+
       let principal = Math.max(0, price - down);
       let monthly = months>0 ? principal / months : 0;
       const maxMonthly = Math.max(0, net * MAX_DSR);
       if(monthly>maxMonthly){
         const requiredPrincipal = Math.max(0, maxMonthly * months);
         const newDownRaw = price - requiredPrincipal;
-        down = Math.min(price, Math.max(manualUsed? down : MIN_DOWN_AZN, newDownRaw));
-        pct = price>0 ? (down/price) : 0; principal = Math.max(0, price - down); monthly = months>0 ? principal / months : 0;
+        // manualUsed burada artıq mövcuddur
+        const newDown = Math.min(price, Math.max(manualUsed ? down : MIN_DOWN_AZN, newDownRaw));
+        down = newDown;
+        pct = price>0 ? (down/price) : 0;
+        principal = Math.max(0, price - down);
+        monthly = months>0 ? principal / months : 0;
       }
       let bal=principal; const rows=[]; const sd = new Date(startDateStr); const day=sd.getDate();
       for(let i=1;i<=months;i++){ const d=new Date(sd); d.setMonth(d.getMonth()+i); d.setDate(day); bal=Math.max(0, bal-monthly); rows.push({i,date:d,monthly,bal}); }
@@ -933,7 +693,7 @@
 
       let comp; try{ comp = computeForDocs(); }catch(e){ alert(e.message); return; }
 
-      /* ==== 1) MÜQAVİLƏ – nümayəndə adı yoxdur ==== */
+      /* ==== 1) MÜQAVİLƏ ==== */
       const contractHTML = `
       <div class="print-a4 page-break">
         <div class="print-title">MÜDDƏTLİ (NİSYƏ) ALQI-SATQI MÜQAVİLƏSİ № ${contractNo}</div>
@@ -1192,7 +952,7 @@
         </div>
       </div>`;
 
-      /* ==== 5) ZƏMANƏT TALONU – nümayəndə burada göstərilir ==== */
+      /* ==== 5) ZƏMANƏT TALONU ==== */
       const zemanet = `
       <div class="print-a4 page-break">
         <div class="print-title">ZƏMANƏT TALONU</div>
@@ -1255,7 +1015,7 @@
       openPrintDocCombined('Sənədlər', contractHTML + elave1 + elave2 + odeme + zemanet);
     }
 
-    /* ==== EXPOSE (düymələr üçün global) ==== */
+    /* ==== EXPOSE ==== */
     window.calc=calc;
     window.resetForm=resetForm;
     window.exportPrint=exportPrint;
